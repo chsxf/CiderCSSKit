@@ -23,9 +23,8 @@ final class CSSTokenizer {
         
         let tokenizer = CSSTokenizer(buffer: buffer.trimmingCharacters(in: .whitespacesAndNewlines))
         while !tokenizer.hasReachedEndOfBuffer() {
-            if let token = try tokenizer.getNextToken() {
-                tokens.append(token)
-            }
+            let token = try tokenizer.getNextToken()
+            tokens.append(token)
         }
         
         return tokens;
@@ -35,7 +34,7 @@ final class CSSTokenizer {
         return currentPosition >= lastPosition
     }
     
-    private func getNextToken() throws -> CSSToken? {
+    private func getNextToken() throws -> CSSToken {
         var firstCharacter: Character
 
         repeat {
@@ -45,23 +44,23 @@ final class CSSTokenizer {
 
         switch firstCharacter {
         case "{":
-            return .openingBrace
+            return CSSToken(type: .openingBrace)
         case "}":
-            return .closingBrace
+            return CSSToken(type: .closingBrace)
         case "(":
-            return .openingParenthesis
+            return CSSToken(type: .openingParenthesis)
         case ")":
-            return .closingParenthesis
+            return CSSToken(type: .closingParenthesis)
         case ":":
-            return .colon
+            return CSSToken(type: .colon)
         case ";":
-            return .semiColon
+            return CSSToken(type: .semiColon)
         case ",":
-            return .comma
+            return CSSToken(type: .comma)
         case "#":
-            return .sharp
+            return CSSToken(type: .sharp)
         case ".":
-            return .dot
+            return CSSToken(type: .dot)
         default:
             return try getGeneralToken(firstCharacter: firstCharacter)
         }
@@ -89,7 +88,7 @@ final class CSSTokenizer {
             token.append(character)
         }
         
-        return .stringToken(token)
+        return CSSToken(type: .stringToken, value: token)
     }
     
     private func nextCharacter() -> Character {
