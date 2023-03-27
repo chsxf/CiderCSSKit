@@ -23,6 +23,10 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "CiderCSSKitTests",
-            dependencies: ["CiderCSSKit"]),
+            dependencies: ["CiderCSSKit"],
+            resources: [
+                .copy("TokenizerTests.ckcss"),
+                .copy("ParserTests.ckcss")
+            ]),
     ]
 )

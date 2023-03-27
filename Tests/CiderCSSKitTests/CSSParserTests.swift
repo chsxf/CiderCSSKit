@@ -1,35 +1,104 @@
-//
-//  CSSParserTests.swift
-//  
-//
-//  Created by Christophe SAUVEUR on 27/03/2023.
-//
-
 import XCTest
+@testable import CiderCSSKit
 
 final class CSSParserTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    private static var buffer: String!
+    
+    override class func setUp() {
+        let dataURL = Bundle.module.url(forResource: "ParserTests", withExtension: "ckcss")
+        XCTAssertNotNil(dataURL)
+        Self.buffer = try! String(contentsOf: dataURL!)
+    }
+    
+    override class func tearDown() {
+        Self.buffer = nil
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func testBasicParsing() throws {
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        XCTAssertEqual(parsedRules.count, 5)
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testAttributeRetrieval() throws {
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        
+        let stub1 = StubCSSConsumer(type: "button")
+        let value = parsedRules.getValue(with: "background-image", for: stub1)
+        let unwrappedValue = try XCTUnwrap(value)
+        XCTAssertEqual(unwrappedValue.count, 1)
+        
+        guard case let CSSValue.string(str) = unwrappedValue[0] else {
+            XCTFail("Value must a string");
+            return
         }
+        XCTAssertEqual(str, "background")
     }
-
+    
+    func testHierarchicalAttributeRetrieval() throws {
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        
+        var stubChild = StubCSSConsumer(type: "img")
+        let value1 = parsedRules.getValue(with: "background-image", for: stubChild)
+        XCTAssertNil(value1)
+        
+        let stubParent = StubCSSConsumer(type: "dummy", classes: ["youpi"])
+        stubChild.parent = stubParent
+        let value2 = parsedRules.getValue(with: "background-image", for: stubChild)
+        let unwrappedValue2 = try XCTUnwrap(value2)
+        XCTAssertEqual(unwrappedValue2.count, 1)
+        
+        guard case let CSSValue.string(str) = unwrappedValue2[0] else {
+            XCTFail("Value must a string");
+            return
+        }
+        XCTAssertEqual(str, "background")
+    }
+    
+    func testClauseScore() throws {
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        
+        let stub1 = StubCSSConsumer(type: "dummy", classes: ["first", "second"])
+        let value1 = parsedRules.getValue(with: "color", for: stub1)
+        let unwrappedValue1 = try XCTUnwrap(value1)
+        
+        guard case CSSValue.color(_, _, _, _) = unwrappedValue1[0] else {
+            XCTFail("Value must a color");
+            return
+        }
+        XCTAssertEqual(unwrappedValue1[0], CSSValue.color(1, 0, 0, 1))
+        
+        let stub2 = StubCSSConsumer(type: "label", identifier: "id", classes: ["first", "second"])
+        let value2 = parsedRules.getValue(with: "color", for: stub2)
+        let unwrappedValue2 = try XCTUnwrap(value2)
+        
+        guard case CSSValue.color(_, _, _, _) = unwrappedValue2[0] else {
+            XCTFail("Value must a color");
+            return
+        }
+        XCTAssertEqual(unwrappedValue2[0], CSSValue.color(0, 0, 0, 1))
+    }
+    
+    func testAllValues() throws {
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        
+        let stub = StubCSSConsumer(type: "label", identifier: "id", classes: ["first", "second"])
+        let values = parsedRules.getAllValues(for: stub)
+        XCTAssertEqual(values.count, 2)
+        
+        let color = try XCTUnwrap(values["color"])[0]
+        guard case CSSValue.color(_, _, _, _) = color else {
+            XCTFail("Value must be a color")
+            return
+        }
+        XCTAssertEqual(color, CSSValue.color(0, 0, 0, 1))
+        
+        let textColor = try XCTUnwrap(values["text-color"])[0]
+        guard case CSSValue.color(_, _, _, _) = textColor else {
+            XCTFail("Value must be a color")
+            return
+        }
+        XCTAssertEqual(textColor, CSSValue.color(0, 0.502, 0, 1))
+    }
+    
 }

@@ -1,0 +1,18 @@
+#test {
+    background-color: rgba(1, 1, 1, 0.5);
+    color: #ff9900;
+    name: "A \"super\" name";
+}
+
+button, .youpi img {
+    background-image: "background";
+}
+
+label#id.first.second {
+    color: black;
+}
+
+.first.second {
+    color: red;
+    text-color: green;
+}

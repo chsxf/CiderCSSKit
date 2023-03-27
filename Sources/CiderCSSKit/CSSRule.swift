@@ -1,6 +1,6 @@
 struct CSSRule {
     
-    let clause: String
-    let attributes: [String: CSSValue]
+    let clause: CSSClause
+    let attributes: [String: [CSSValue]]
 
 }
