@@ -1,6 +1,6 @@
 import Foundation
 
-enum CSSTokenizerErrors : Error {
+public enum CSSTokenizerErrors : Error {
     case invalidCharacter
     case missingValidCharacter
 }
@@ -23,7 +23,11 @@ final class CSSTokenizer {
         
         let tokenizer = CSSTokenizer(buffer: buffer.trimmingCharacters(in: .whitespacesAndNewlines))
         while !tokenizer.hasReachedEndOfBuffer() {
-            let token = try tokenizer.getNextToken()
+            var hasWhitespaceBefore = false
+            let token = try tokenizer.getNextToken(hasWhitespaceBefore: &hasWhitespaceBefore)
+            if hasWhitespaceBefore {
+                tokens.append(CSSToken(type: .whitespace))
+            }
             tokens.append(token)
         }
         
@@ -34,14 +38,18 @@ final class CSSTokenizer {
         return currentPosition >= lastPosition
     }
     
-    private func getNextToken() throws -> CSSToken {
+    private func getNextToken(hasWhitespaceBefore: inout Bool) throws -> CSSToken {
         var firstCharacter: Character
 
+        var countWhitespaces = -1
         repeat {
             firstCharacter = nextCharacter()
+            countWhitespaces += 1
         }
         while firstCharacter.isWhitespaceOrNewline
 
+        hasWhitespaceBefore = countWhitespaces >= 1
+                
         switch firstCharacter {
         case "{":
             return CSSToken(type: .openingBrace)
@@ -88,7 +96,7 @@ final class CSSTokenizer {
             token.append(character)
         }
         
-        return CSSToken(type: .stringToken, value: token)
+        return CSSToken(type: .string, value: token)
     }
     
     private func nextCharacter() -> Character {

@@ -9,8 +9,9 @@ enum CSSTokenType {
     case comma
     case sharp
     case dot
-    case stringToken
-
+    case string
+    case whitespace
+    
 }
 
 struct CSSToken : Equatable {
