@@ -1,6 +1,6 @@
 import Foundation
 
-public enum CSSTokenizerErrors : Error {
+enum CSSTokenizerErrors : Error {
     
     case unexpectedEndOfBuffer
     

@@ -1,6 +1,6 @@
 import Foundation
 
-public enum CSSParserErrors : Error {
+enum CSSParserErrors : Error {
     
     case invalidToken(CSSToken)
     case malformedToken(CSSToken)

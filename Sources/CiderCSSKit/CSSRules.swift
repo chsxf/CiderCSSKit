@@ -34,7 +34,7 @@ public final class CSSRules {
         rules.forEach { self.addRule($0) }
     }
     
-    func getValue(with attribute: String, for consumer: CSSConsumer) -> [CSSValue]? {
+    public func getValue(with attribute: String, for consumer: CSSConsumer) -> [CSSValue]? {
         if let rulesForAttribute = rulesByAttribute[attribute] {
             for rule in rulesForAttribute {
                 if consumer.isMatching(rule: rule) {
@@ -45,7 +45,7 @@ public final class CSSRules {
         return nil
     }
     
-    func getAllValues(for consumer: CSSConsumer) -> [String: [CSSValue]] {
+    public func getAllValues(for consumer: CSSConsumer) -> [String: [CSSValue]] {
         var values = [String:[CSSValue]]()
         for attribute in attributes {
             if let value = getValue(with: attribute, for: consumer) {
