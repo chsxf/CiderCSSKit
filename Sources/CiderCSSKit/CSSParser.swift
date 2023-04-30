@@ -7,7 +7,7 @@ enum CSSParserErrors : Error {
     case unknownedFunction(CSSToken)
     case invalidFunctionAttribute(CSSToken, CSSValue)
     case tooFewFunctionAttributes(CSSToken, [CSSValue])
-    case tooManyFunctionAttributs(CSSToken, [CSSValue])
+    case tooManyFunctionAttributes(CSSToken, [CSSValue])
     case unexpectedEnd
     
 }

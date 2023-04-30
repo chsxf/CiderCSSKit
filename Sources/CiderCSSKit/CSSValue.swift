@@ -4,11 +4,17 @@ public enum CSSValueUnit: String {
     case pt = "pt"
 }
 
+public enum CSSSpriteScalingMethod: String {
+    case sliced
+    case fill
+}
+
 public enum CSSValue: Equatable {
     
     case string(String)
     case unit(Float, CSSValueUnit)
     case color(Float, Float, Float, Float)
+    case sprite(String, CSSSpriteScalingMethod, Float, Float, Float, Float)
     
     static func parseStringToken(_ token: CSSToken) throws -> CSSValue {
         guard token.type == .string else { throw CSSParserErrors.invalidToken(token) }
@@ -33,23 +39,25 @@ public enum CSSValue: Equatable {
             return try Self.parseRGBFunction(functionToken: functionToken, attributes: attributes)
         case "rgba":
             return try Self.parseRGBAFunction(functionToken: functionToken, attributes: attributes)
+        case "sprite":
+            return try Self.parseSpriteFunction(functionToken: functionToken, attributes: attributes)
         default:
             throw CSSParserErrors.unknownedFunction(functionToken)
         }
     }
     
-    private static func parseFloatComponents(numberOfComponents: Int, functionToken: CSSToken, attributes: [CSSValue]) throws -> [Float] {
-        if attributes.count < numberOfComponents {
+    private static func parseFloatComponents(numberOfComponents: Int, functionToken: CSSToken, attributes: [CSSValue], from baseIndex: Int = 0) throws -> [Float] {
+        if attributes.count < numberOfComponents + baseIndex {
             throw CSSParserErrors.tooFewFunctionAttributes(functionToken, attributes)
         }
-        else if attributes.count > numberOfComponents {
-            throw CSSParserErrors.tooManyFunctionAttributs(functionToken, attributes)
+        else if attributes.count > numberOfComponents + baseIndex {
+            throw CSSParserErrors.tooManyFunctionAttributes(functionToken, attributes)
         }
         
         var components = [Float]()
         
         for i in 0..<numberOfComponents {
-            let attr = attributes[i]
+            let attr = attributes[baseIndex + i]
             if case let .unit(value, unit) = attr {
                 if value < 0 || value > 1 || unit != .none {
                     throw CSSParserErrors.invalidFunctionAttribute(functionToken, attr)
@@ -74,6 +82,32 @@ public enum CSSValue: Equatable {
     private static func parseRGBAFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         let components = try parseFloatComponents(numberOfComponents: 4, functionToken: functionToken, attributes: attributes)
         return .color(components[0], components[1], components[2], components[3])
+    }
+    
+    private static func parseSpriteFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
+        if attributes.count < 2 {
+            throw CSSParserErrors.tooFewFunctionAttributes(functionToken, attributes)
+        }
+        
+        guard case let .string(spriteName) = attributes[0] else {
+            throw CSSParserErrors.invalidFunctionAttribute(functionToken, attributes[0])
+        }
+        
+        guard
+            case let .string(scalingMethodString) = attributes[1],
+            let scalingMethod = CSSSpriteScalingMethod(rawValue: scalingMethodString)
+        else {
+            throw CSSParserErrors.invalidFunctionAttribute(functionToken, attributes[1])
+        }
+        
+        switch scalingMethod {
+        case .fill:
+            return .sprite(spriteName, scalingMethod, 0, 0, 0, 0)
+            
+        case .sliced:
+            let components = try parseFloatComponents(numberOfComponents: 4, functionToken: functionToken, attributes: attributes, from: 2)
+            return .sprite(spriteName, scalingMethod, components[0], components[1], components[2], components[3])
+        }
     }
     
 }

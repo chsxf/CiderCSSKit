@@ -84,7 +84,7 @@ final class CSSParserTests: XCTestCase {
         
         let stub = StubCSSConsumer(type: "label", identifier: "id", classes: ["first", "second"])
         let values = parsedRules.getAllValues(for: stub)
-        XCTAssertEqual(values.count, 2)
+        XCTAssertEqual(values.count, 3)
         
         let color = try XCTUnwrap(values["color"])[0]
         guard case CSSValue.color(_, _, _, _) = color else {
@@ -99,6 +99,18 @@ final class CSSParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(textColor, CSSValue.color(0, 0.502, 0, 1))
+        
+        let backgroundImage = try XCTUnwrap(values["background-image"])[0]
+        guard case let CSSValue.sprite(spriteName, scalingMethod, float1, float2, float3, float4) = backgroundImage else {
+            XCTFail("Value must be a sprite")
+            return
+        }
+        XCTAssertEqual(spriteName, "test")
+        XCTAssertEqual(scalingMethod, .sliced)
+        XCTAssertEqual(float1, 0.2)
+        XCTAssertEqual(float2, 0.3)
+        XCTAssertEqual(float3, 0.8)
+        XCTAssertEqual(float4, 1)
     }
     
 }
