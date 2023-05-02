@@ -15,6 +15,7 @@ public enum CSSValue: Equatable {
     case unit(Float, CSSValueUnit)
     case color(Float, Float, Float, Float)
     case sprite(String, CSSSpriteScalingMethod, Float, Float, Float, Float)
+    case spriteReference(String)
     
     static func parseStringToken(_ token: CSSToken) throws -> CSSValue {
         guard token.type == .string else { throw CSSParserErrors.invalidToken(token) }
@@ -41,6 +42,8 @@ public enum CSSValue: Equatable {
             return try Self.parseRGBAFunction(functionToken: functionToken, attributes: attributes)
         case "sprite":
             return try Self.parseSpriteFunction(functionToken: functionToken, attributes: attributes)
+        case "spriteref":
+            return try Self.parseSpriteReferenceFunction(functionToken: functionToken, attributes: attributes)
         default:
             throw CSSParserErrors.unknownedFunction(functionToken)
         }
@@ -108,6 +111,21 @@ public enum CSSValue: Equatable {
             let components = try parseFloatComponents(numberOfComponents: 4, functionToken: functionToken, attributes: attributes, from: 2)
             return .sprite(spriteName, scalingMethod, components[0], components[1], components[2], components[3])
         }
+    }
+    
+    private static func parseSpriteReferenceFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
+        if attributes.count < 1 {
+            throw CSSParserErrors.tooFewFunctionAttributes(functionToken, attributes)
+        }
+        else if attributes.count > 1 {
+            throw CSSParserErrors.tooManyFunctionAttributes(functionToken, attributes)
+        }
+        
+        guard case let .string(reference) = attributes[0] else {
+            throw CSSParserErrors.invalidFunctionAttribute(functionToken, attributes[0])
+        }
+        
+        return .spriteReference(reference)
     }
     
 }

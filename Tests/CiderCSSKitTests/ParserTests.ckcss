@@ -6,7 +6,7 @@
 }
 
 button, .youpi img {
-    background-image: "background";
+    background-image: spriteref("background");
 }
 
 label#id.first.second {

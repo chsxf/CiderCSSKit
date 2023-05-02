@@ -28,11 +28,11 @@ final class CSSParserTests: XCTestCase {
         let unwrappedValue = try XCTUnwrap(value)
         XCTAssertEqual(unwrappedValue.count, 1)
         
-        guard case let CSSValue.string(str) = unwrappedValue[0] else {
+        guard case let CSSValue.spriteReference(reference) = unwrappedValue[0] else {
             XCTFail("Value must a string");
             return
         }
-        XCTAssertEqual(str, "background")
+        XCTAssertEqual(reference, "background")
     }
     
     func testHierarchicalAttributeRetrieval() throws {
@@ -48,11 +48,11 @@ final class CSSParserTests: XCTestCase {
         let unwrappedValue2 = try XCTUnwrap(value2)
         XCTAssertEqual(unwrappedValue2.count, 1)
         
-        guard case let CSSValue.string(str) = unwrappedValue2[0] else {
+        guard case let CSSValue.spriteReference(reference) = unwrappedValue2[0] else {
             XCTFail("Value must a string");
             return
         }
-        XCTAssertEqual(str, "background")
+        XCTAssertEqual(reference, "background")
     }
     
     func testClauseScore() throws {
