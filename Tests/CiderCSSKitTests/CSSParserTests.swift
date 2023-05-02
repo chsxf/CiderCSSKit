@@ -113,4 +113,18 @@ final class CSSParserTests: XCTestCase {
         XCTAssertEqual(float4, 1)
     }
     
+    func testStandaloneAttributeValueParsing() throws {
+        let attributeValue = "sprite(\"test\", \"fill\")"
+        let values = try CSSParser.parse(attributeValue: attributeValue)
+        XCTAssertEqual(values.count, 1)
+        
+        guard case let CSSValue.sprite(name, scalingMethod, _, _, _, _) = values[0] else {
+            XCTFail("Value must be a sprite")
+            return
+        }
+        
+        XCTAssertEqual(name, "test")
+        XCTAssertEqual(scalingMethod, CSSSpriteScalingMethod.fill)
+    }
+    
 }

@@ -66,5 +66,25 @@ final class CSSTokenizerTests: XCTestCase {
             XCTAssertEqual(tokens[i], expectedTokens[i])
         }
     }
+    
+    func testStandaloneAttributeValueTokenization() throws {
+        let attributeValue = "sprite(\"test\", \"fill\")"
+        let tokens = try CSSTokenizer.tokenize(buffer: attributeValue)
+        
+        let expectedTokens = [
+            CSSToken(line: 0, type: .string, value: "sprite"),
+            CSSToken(line: 0, type: .openingParenthesis),
+            CSSToken(line: 0, type: .string, value: "test", literalString: true),
+            CSSToken(line: 0, type: .comma),
+            CSSToken(line: 0, type: .string, value: "fill", literalString: true),
+            CSSToken(line: 0, type: .closingParenthesis)
+        ]
+        
+        XCTAssertEqual(tokens.count, expectedTokens.count)
+
+        for i in 0..<expectedTokens.count {
+            XCTAssertEqual(tokens[i], expectedTokens[i])
+        }
+    }
 
 }

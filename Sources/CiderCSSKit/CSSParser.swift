@@ -40,6 +40,19 @@ public final class CSSParser {
         return parser.rules
     }
     
+    public static func parse(attributeValue: String) throws -> [CSSValue] {
+        var tokens = try CSSTokenizer.tokenize(buffer: attributeValue)
+        guard let lastToken = tokens.last else {
+            throw CSSParserErrors.unexpectedEnd
+        }
+        if lastToken.type != .semiColon {
+            tokens.append(CSSToken(line: lastToken.line, type: .semiColon))
+        }
+        
+        let parser = CSSParser(tokens: tokens)
+        return try parser.parseAttributeValue(level: 0)
+    }
+    
     private func parse() throws {
         while !hasReachedEndOfTokens() {
             rules.addRules(try parseNextRules())
