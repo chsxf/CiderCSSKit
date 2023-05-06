@@ -28,7 +28,7 @@ Even if the ultimate goal is to support all syntax features, there is a long roa
 
 - [ ] Implement ways to extend the capaibilities of the parser, with a specific model for custom validation and functions
 
-# Installation With Swift Package Manager
+# 📦 Installation with Swift Package Manager
 
 CiderCSSKit is available through [Swift Package Manager](https://github.com/apple/swift-package-manager).
 
