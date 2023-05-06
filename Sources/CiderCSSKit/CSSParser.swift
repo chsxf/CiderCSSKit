@@ -1,6 +1,6 @@
 import Foundation
 
-enum CSSParserErrors : Error {
+public enum CSSParserErrors : Error {
     
     case invalidToken(CSSToken)
     case malformedToken(CSSToken)
@@ -31,6 +31,11 @@ public final class CSSParser {
     
     private init(tokens: [CSSToken]) {
         tokensToParse = tokens
+    }
+    
+    public static func parse(contentsOf: URL) throws -> CSSRules {
+        let buffer = try String(contentsOf: contentsOf)
+        return try Self.parse(buffer: buffer)
     }
     
     public static func parse(buffer: String) throws -> CSSRules {

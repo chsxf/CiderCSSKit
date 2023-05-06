@@ -1,4 +1,4 @@
-enum CSSTokenType {
+public enum CSSTokenType {
     
     case openingBrace
     case closingBrace
@@ -15,7 +15,7 @@ enum CSSTokenType {
     
 }
 
-struct CSSToken: Equatable {
+public struct CSSToken: Equatable {
     
     let line: Int
     let type: CSSTokenType
@@ -29,7 +29,7 @@ struct CSSToken: Equatable {
         self.literalString = type == .string && literalString
     }
     
-    static func == (lhs: CSSToken, rhs: CSSToken) -> Bool {
+    public static func == (lhs: CSSToken, rhs: CSSToken) -> Bool {
         guard lhs.type == rhs.type, lhs.line == rhs.line else { return false }
         
         switch lhs.type {
