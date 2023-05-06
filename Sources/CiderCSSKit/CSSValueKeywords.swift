@@ -1,6 +1,6 @@
 final class CSSValueKeywords {
     
-    static var keywords: [String: CSSValue] = [
+    static var colors: [String: CSSValue] = [
         "aliceblue": .color(0.9412, 0.9725, 1.0000, 1.0), // #F0F8FF
         "antiquewhite": .color(0.9804, 0.9216, 0.8431, 1.0), // #FAEBD7
         "aqua": .color(0.0000, 1.0000, 1.0000, 1.0), // #00FFFF
@@ -150,5 +150,9 @@ final class CSSValueKeywords {
         "yellow": .color(1.0000, 1.0000, 0.0000, 1.0), // #FFFF00
         "yellowgreen": .color(0.6039, 0.8039, 0.1961, 1.0) // #9ACD32
     ]
+    
+    static func getValue(for keyword: String) -> CSSValue? {
+        return Self.colors[keyword]
+    }
     
 }

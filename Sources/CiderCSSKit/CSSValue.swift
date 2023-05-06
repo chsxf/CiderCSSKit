@@ -24,7 +24,7 @@ public enum CSSValue: Equatable {
         
         guard
             !token.literalString,
-            let keywordValue = CSSValueKeywords.keywords[stringTokenValue.lowercased()]
+            let keywordValue = CSSValueKeywords.getValue(for: stringTokenValue.lowercased())
         else {
             return .string(stringTokenValue)
         }
