@@ -26,7 +26,8 @@ let package = Package(
             dependencies: ["CiderCSSKit"],
             resources: [
                 .copy("TokenizerTests.ckcss"),
-                .copy("ParserTests.ckcss")
+                .copy("ParserTests.ckcss"),
+                .copy("ParserCustomTests.ckcss")
             ]),
     ]
 )

@@ -2,11 +2,10 @@
     background-color: rgba(1, 1, 1, 0.5);
     color: #ff9900;
     name: "A \"super\" name";
-    background-image: sprite("test", "fill");
 }
 
 button, .youpi img {
-    background-image: spriteref("background");
+    color: yellow;
 }
 
 label#id.first.second {
@@ -16,5 +15,4 @@ label#id.first.second {
 .first.second {
     color: red;
     text-color: green;
-    background-image: sprite("test", "sliced", 0.2, 0.3, 0.8, 1);
 }

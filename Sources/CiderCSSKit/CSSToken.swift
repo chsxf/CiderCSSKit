@@ -18,9 +18,9 @@ public enum CSSTokenType {
 public struct CSSToken: Equatable {
     
     let line: Int
-    let type: CSSTokenType
-    let value: Any?
-    let literalString: Bool
+    public let type: CSSTokenType
+    public let value: Any?
+    public let literalString: Bool
     
     init(line: Int, type: CSSTokenType, value: Any? = nil, literalString: Bool = false) {
         self.line = line
