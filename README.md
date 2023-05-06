@@ -41,7 +41,7 @@ dependencies: [
     .package(url: "https://github.com/chsxf/CiderCSSKit.git", requirement: .branch("main")),
 ],
 targets: [
-    .target( name: "YourTarget", dependencies: ["CiderCSSKit"]),
+    .target(name: "YourTarget", dependencies: ["CiderCSSKit"]),
 ]
 ```
 
