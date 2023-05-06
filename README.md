@@ -28,6 +28,30 @@ Even if the ultimate goal is to support all syntax features, there is a long roa
 
 - [ ] Implement ways to extend the capaibilities of the parser, with a specific model for custom validation and functions
 
+# Installation With Swift Package Manager
+
+CiderCSSKit is available through [Swift Package Manager](https://github.com/apple/swift-package-manager).
+
+## As a Package Dependency
+
+To install it, simply add the dependency to your Package.Swift file:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/chsxf/CiderCSSKit.git", requirement: .branch("main")),
+],
+targets: [
+    .target( name: "YourTarget", dependencies: ["CiderCSSKit"]),
+]
+```
+
+## As a Project Dependency in Xcode
+
+- In Xcode, select **File > Add Packages...** and enter `https://github.com/chsxf/CiderCSSKit.git` in the search field (top-right). 
+- Then select **Branch** as the **Dependency Rule** with `main` in the associated text field.
+- Then select the project of your choice in the **Add to Project** list.
+- Finally, click the **Add Package** button.
+
 # ⚖️ License
 
-Unless state otherwise, all source code and assets are distributed under the [MIT License](LICENSE).
+Unless stated otherwise, all source code and assets are distributed under the [MIT License](LICENSE).
