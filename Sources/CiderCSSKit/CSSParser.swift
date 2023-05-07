@@ -207,7 +207,7 @@ public final class CSSParser {
                 let parsedFunctionValue = try CSSValue.parseFunction(functionToken: currentStringToken!, attributes: functionAttributes, validationConfiguration: validationConfiguration)
                 values.append(parsedFunctionValue)
                 currentStringToken = nil
-                eligibleTokenTypes = [.closingParenthesis, .semiColon, .whitespace]
+                eligibleTokenTypes = [.closingParenthesis, .semiColon, .whitespace, .comma]
             case .comma, .whitespace:
                 if !inHexadecimalColor && currentStringToken != nil {
                     values.append(try CSSValue.parseStringToken(currentStringToken!, validationConfiguration: validationConfiguration))

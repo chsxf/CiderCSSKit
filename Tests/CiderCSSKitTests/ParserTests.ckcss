@@ -6,6 +6,7 @@
 
 button, .youpi img {
     color: yellow;
+    background: rgb(1.0, 0, 0), #ff0080, rgba(0.5, 0.5, 0.5, 1.0);
 }
 
 label#id.first.second {
