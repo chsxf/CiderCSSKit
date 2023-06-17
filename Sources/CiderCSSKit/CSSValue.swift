@@ -83,7 +83,7 @@ public enum CSSValue: Equatable {
         throw CSSParserErrors.unknownFunction(functionToken)
     }
     
-    public static func parseFloatComponents(numberOfComponents: Int, functionToken: CSSToken, attributes: [CSSValue], from baseIndex: Int = 0) throws -> [Float] {
+    public static func parseFloatComponents(numberOfComponents: Int, functionToken: CSSToken, attributes: [CSSValue], from baseIndex: Int = 0, min: Float? = nil, max: Float? = nil, specificUnit: CSSValueUnit? = nil) throws -> [Float] {
         if attributes.count < numberOfComponents + baseIndex {
             throw CSSParserErrors.tooFewFunctionAttributes(functionToken, attributes)
         }
@@ -96,12 +96,16 @@ public enum CSSValue: Equatable {
         for i in 0..<numberOfComponents {
             let attr = attributes[baseIndex + i]
             if case let .number(value, unit) = attr {
-                if value < 0 || value > 1 || unit != .none {
+                if let min, value < min {
                     throw CSSParserErrors.invalidFunctionAttribute(functionToken, attr)
                 }
-                else {
-                    components.append(value)
+                if let max, value > max {
+                    throw CSSParserErrors.invalidFunctionAttribute(functionToken, attr)
                 }
+                if let specificUnit, unit != specificUnit {
+                    throw CSSParserErrors.invalidFunctionAttribute(functionToken, attr)
+                }
+                components.append(value)
             }
             else {
                 throw CSSParserErrors.invalidFunctionAttribute(functionToken, attr)
@@ -112,12 +116,12 @@ public enum CSSValue: Equatable {
     }
     
     private static func parseRGBFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
-        let components = try parseFloatComponents(numberOfComponents: 3, functionToken: functionToken, attributes: attributes)
+        let components = try parseFloatComponents(numberOfComponents: 3, functionToken: functionToken, attributes: attributes, min: 0, max: 1, specificUnit: CSSValueUnit.none)
         return .color(components[0], components[1], components[2], 1)
     }
     
     private static func parseRGBAFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
-        let components = try parseFloatComponents(numberOfComponents: 4, functionToken: functionToken, attributes: attributes)
+        let components = try parseFloatComponents(numberOfComponents: 4, functionToken: functionToken, attributes: attributes, min: 0, max: 1, specificUnit: CSSValueUnit.none)
         return .color(components[0], components[1], components[2], components[3])
     }
     
