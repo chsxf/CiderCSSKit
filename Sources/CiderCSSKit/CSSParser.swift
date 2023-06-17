@@ -50,6 +50,18 @@ public final class CSSParser {
         return parser.rules
     }
     
+    public static func parse(ruleBlock: String, validationConfiguration: CSSValidationConfiguration? = nil) throws -> [String:[CSSValue]] {
+        var tokens = try CSSTokenizer.tokenize(buffer: ruleBlock)
+        guard let lastToken = tokens.last else {
+            throw CSSParserErrors.unexpectedEnd
+        }
+        if lastToken.type != .closingBrace {
+            tokens.append(CSSToken(line: lastToken.line, type: .closingBrace))
+        }
+        let parser = CSSParser(tokens: tokens, validationConfiguration: validationConfiguration)
+        return try parser.parseRuleBlock()
+    }
+    
     public static func parse(attributeValue: String, validationConfiguration: CSSValidationConfiguration? = nil) throws -> [CSSValue] {
         var tokens = try CSSTokenizer.tokenize(buffer: attributeValue)
         guard let lastToken = tokens.last else {

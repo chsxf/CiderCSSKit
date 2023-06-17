@@ -5,6 +5,7 @@ final class CSSParserTests: XCTestCase {
 
     private static var buffer: String!
     private static var bufferCustom: String!
+    private static var bufferRuleBlock: String!
     
     override class func setUp() {
         let dataURL = Bundle.module.url(forResource: "ParserTests", withExtension: "ckcss")
@@ -14,10 +15,16 @@ final class CSSParserTests: XCTestCase {
         let customDataURL = Bundle.module.url(forResource: "ParserCustomTests", withExtension: "ckcss")
         XCTAssertNotNil(customDataURL)
         Self.bufferCustom = try! String(contentsOf: customDataURL!)
+        
+        let ruleBlockDataURL = Bundle.module.url(forResource: "ParserRuleBlockTests", withExtension: "ckcss")
+        XCTAssertNotNil(ruleBlockDataURL)
+        Self.bufferRuleBlock = try! String(contentsOf: ruleBlockDataURL!)
     }
     
     override class func tearDown() {
         Self.buffer = nil
+        Self.bufferCustom = nil
+        Self.bufferRuleBlock = nil
     }
 
     func testBasicParsing() throws {
@@ -107,6 +114,16 @@ final class CSSParserTests: XCTestCase {
         
         let greenColor = CSSValueKeywords.getValue(for: "green")
         XCTAssertEqual(values[0], greenColor)
+    }
+    
+    func testStandaloneRuleBlockParsing() throws {
+        let parsedRuleBlock = try CSSParser.parse(ruleBlock: Self.bufferRuleBlock, validationConfiguration: StubCSSValidationConfiguration())
+        let colorValues = parsedRuleBlock["color"]
+        XCTAssertNotNil(colorValues)
+        
+        let colorValue = colorValues![0]
+        let sourceColor = CSSValueKeywords.getValue(for: "black")
+        XCTAssertEqual(colorValue, sourceColor)
     }
     
     func testValuesValidation() throws {
