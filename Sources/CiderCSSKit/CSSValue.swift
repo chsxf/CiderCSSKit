@@ -80,7 +80,7 @@ public enum CSSValue: Equatable {
             return try validationConfiguration.parseFunction(functionToken: functionToken, attributes: attributes)
         }
         
-        throw CSSParserErrors.unknownedFunction(functionToken)
+        throw CSSParserErrors.unknownFunction(functionToken)
     }
     
     public static func parseFloatComponents(numberOfComponents: Int, functionToken: CSSToken, attributes: [CSSValue], from baseIndex: Int = 0) throws -> [Float] {

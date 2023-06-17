@@ -133,7 +133,7 @@ final class CSSParserTests: XCTestCase {
             let _ = try CSSParser.parse(buffer: Self.bufferCustom, validationConfiguration: StubInvalidCSSValidationConfiguration())
             XCTFail("Error should be raised")
         }
-        catch CSSParserErrors.unknownedFunction(let functionToken) {
+        catch CSSParserErrors.unknownFunction(let functionToken) {
             XCTAssertEqual(functionToken, CSSToken(line: 1, type: .string, value: "color"))
         }
     }

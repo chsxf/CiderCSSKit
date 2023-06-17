@@ -24,7 +24,7 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         case "custommethod":
             return try Self.parseCustomMethodFunction(functionToken: functionToken, attributes: attributes)
         default:
-            throw CSSParserErrors.unknownedFunction(functionToken)
+            throw CSSParserErrors.unknownFunction(functionToken)
         }
     }
     

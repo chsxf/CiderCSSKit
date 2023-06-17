@@ -14,7 +14,7 @@ open class CSSValidationConfiguration {
     open var valuesTypesByAttribute: [String:[CSSValueType]] { [:] }
     
     open func parseFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
-        throw CSSParserErrors.unknownedFunction(functionToken)
+        throw CSSParserErrors.unknownFunction(functionToken)
     }
     
     open func parseKeyword(stringToken: CSSToken) throws -> CSSValue {
