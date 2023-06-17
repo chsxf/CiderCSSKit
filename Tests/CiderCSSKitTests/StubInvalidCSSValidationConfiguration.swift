@@ -2,7 +2,7 @@ import CiderCSSKit
 
 class StubInvalidCSSValidationConfiguration: CSSValidationConfiguration {
     
-    override var valuesTypesByAttribute: [String : [CSSValueType]] { [
+    override var valueTypesByAttribute: [String : [CSSValueType]] { [
         "background": [.string],
         "background-color": [.color],
         "color": [.color],

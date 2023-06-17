@@ -7,7 +7,7 @@ struct StubCustomValueHolder: Equatable {
 
 class StubCSSValidationConfiguration: CSSValidationConfiguration {
     
-    override var valuesTypesByAttribute: [String : [CSSValueType]] { [
+    override var valueTypesByAttribute: [String : [CSSValueType]] { [
         "background": [.color],
         "background-color": [.color],
         "color": [.color],

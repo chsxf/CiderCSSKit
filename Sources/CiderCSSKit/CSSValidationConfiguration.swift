@@ -11,7 +11,7 @@ open class CSSValidationConfiguration {
     
     public init() { }
     
-    open var valuesTypesByAttribute: [String:[CSSValueType]] { [:] }
+    open var valueTypesByAttribute: [String:[CSSValueType]] { [:] }
     
     open func parseFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         throw CSSParserErrors.unknownFunction(functionToken)
@@ -30,7 +30,7 @@ open class CSSValidationConfiguration {
         }
         
         guard
-            let allowedValueTypes = valuesTypesByAttribute[attributeName],
+            let allowedValueTypes = valueTypesByAttribute[attributeName],
             !allowedValueTypes.isEmpty
         else {
             throw CSSParserErrors.invalidAttribute(attributeToken)
