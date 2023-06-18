@@ -52,7 +52,7 @@ final class CSSParserTests: XCTestCase {
         XCTAssertNil(value1)
         
         let stubParent = StubCSSConsumer(type: "dummy", classes: ["youpi"])
-        stubChild.parent = stubParent
+        stubChild.ancestor = stubParent
         let value2 = parsedRules.getValue(with: "color", for: stubChild)
         let unwrappedValue2 = try XCTUnwrap(value2)
         XCTAssertEqual(unwrappedValue2.count, 1)

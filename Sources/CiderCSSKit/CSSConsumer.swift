@@ -3,7 +3,7 @@ public protocol CSSConsumer {
     var type: String { get }
     var identifier: String? { get }
     var classes: [String]? { get }
-    var parent: CSSConsumer? { get }
+    var ancestor: CSSConsumer? { get }
     
 }
 
@@ -41,12 +41,12 @@ extension CSSConsumer {
     }
     
     func firstAncestorMatching(clause: CSSClauseMember) -> CSSConsumer? {
-        var consumer = self.parent
+        var consumer = self.ancestor
         while consumer != nil {
             if consumer!.isMatching(clause: clause) {
                 return consumer
             }
-            consumer = consumer!.parent
+            consumer = consumer!.ancestor
         }
         return nil
     }
