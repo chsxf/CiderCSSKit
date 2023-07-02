@@ -26,9 +26,10 @@ Here's the list of existing and missing features:
 
 Even if the ultimate goal is to support all syntax features, there is a long road ahead. Below is a list of short-term planned improvements:
 
-- [X] ~~Implement ways to extend the capaibilities of the parser, with a specific model for custom validation and functions~~
 - [ ] Add support for the "all" selector (`*`)
+- [ ] Add support for pseudo-classes (like :hover)
 - [ ] Provides basic validation configurations for most common attributes, functions and keywords
+- [X] ~~Implement ways to extend the capaibilities of the parser, with a specific model for custom validation and functions~~
 
 # 📦 Installation with Swift Package Manager
 
