@@ -3,6 +3,7 @@ enum CSSClauseMember {
     case identifier(String)
     case classIdentifier(String)
     case typeIdentifier(String)
+    case pseudoClassIdentifier(String)
     case combinedIdentifier([CSSClauseMember])
     
 }
@@ -17,6 +18,8 @@ extension CSSClauseMember {
             return 10000
         case .classIdentifier(_):
             return 1
+        case .pseudoClassIdentifier(_):
+            return 10
         case .combinedIdentifier(let members):
             return members.reduce(into: 0) { $0 += $1.score }
         }
@@ -56,6 +59,11 @@ struct CSSClause {
                 }
                 let nextToken = clauseTokens[i + 1]
                 tempMembers.append(.identifier(nextToken.value as! String))
+                i += 1
+                break
+            case .colon:
+                let nextToken = clauseTokens[i + 1]
+                tempMembers.append(.pseudoClassIdentifier(nextToken.value as! String))
                 i += 1
                 break
             case .dot:

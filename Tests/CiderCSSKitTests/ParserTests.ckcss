@@ -17,3 +17,11 @@ label#id.first.second {
     color: red;
     text-color: green;
 }
+
+button:hover {
+    color: red;
+}
+
+input {
+    color: green;
+}

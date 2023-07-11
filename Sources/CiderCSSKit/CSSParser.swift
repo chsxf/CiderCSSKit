@@ -99,7 +99,10 @@ public final class CSSParser {
                 eligibleTokenTypes = [.string]
             case .string:
                 currentRuleTokens.append(token)
-                eligibleTokenTypes = [.sharp, .dot, .comma, .string, .openingBrace, .whitespace]
+                eligibleTokenTypes = [.sharp, .dot, .comma, .colon, .string, .openingBrace, .whitespace]
+            case .colon:
+                currentRuleTokens.append(token)
+                eligibleTokenTypes = [.string]
             case .comma:
                 ruleTokens.append(currentRuleTokens)
                 currentRuleTokens.removeAll()

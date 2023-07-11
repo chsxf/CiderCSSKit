@@ -57,7 +57,20 @@ final class CSSTokenizerTests: XCTestCase {
             CSSToken(line: 7, type: .colon),
             CSSToken(line: 7, type: .string, value: "background", literalString: true),
             CSSToken(line: 7, type: .semiColon),
-            CSSToken(line: 8, type: .closingBrace)
+            CSSToken(line: 8, type: .string, value: "color"),
+            CSSToken(line: 8, type: .colon),
+            CSSToken(line: 8, type: .string, value: "black"),
+            CSSToken(line: 8, type: .semiColon),
+            CSSToken(line: 9, type: .closingBrace),
+            CSSToken(line: 11, type: .string, value: "button"),
+            CSSToken(line: 11, type: .colon),
+            CSSToken(line: 11, type: .string, value: "hover"),
+            CSSToken(line: 11, type: .openingBrace),
+            CSSToken(line: 12, type: .string, value: "color"),
+            CSSToken(line: 12, type: .colon),
+            CSSToken(line: 12, type: .string, value: "red"),
+            CSSToken(line: 12, type: .semiColon),
+            CSSToken(line: 13, type: .closingBrace)
         ]
         
         XCTAssertEqual(tokens.count, expectedTokens.count)

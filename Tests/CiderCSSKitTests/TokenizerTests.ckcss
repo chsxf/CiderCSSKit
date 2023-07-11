@@ -6,4 +6,9 @@
 
 button, .youpi img {
     background-image: "background";
+    color: black;
+}
+
+button:hover {
+    color: red;
 }
