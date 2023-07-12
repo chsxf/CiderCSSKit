@@ -1,5 +1,6 @@
 enum CSSClauseMember : Equatable {
     
+    case universalSelector
     case identifier(String)
     case classIdentifier(String)
     case typeIdentifier(String)
@@ -12,6 +13,8 @@ extension CSSClauseMember {
     
     var score: Int {
         switch (self) {
+        case .universalSelector:
+            return 0
         case .identifier(_):
             return 10000
         case .typeIdentifier(_):
@@ -40,6 +43,7 @@ struct CSSClause {
         
         var typeFound = false
         var identifierFound = false
+        var universalFound = false
         
         var tempMembers = [CSSClauseMember]()
         var i = 0
@@ -52,7 +56,12 @@ struct CSSClause {
                 }
                 tempMembers.append(.typeIdentifier(tokenAsString))
                 typeFound = true
-                break
+            case .star:
+                if universalFound {
+                    throw CSSParserErrors.invalidToken(token)
+                }
+                tempMembers.append(.universalSelector)
+                universalFound = true
             case .sharp:
                 if identifierFound {
                     throw CSSParserErrors.invalidToken(token)
@@ -60,17 +69,14 @@ struct CSSClause {
                 let nextToken = try Self.getTokenAsString(clauseTokens: clauseTokens, at: i + 1)
                 tempMembers.append(.identifier(nextToken))
                 i += 1
-                break
             case .colon:
                 let nextToken = try Self.getTokenAsString(clauseTokens: clauseTokens, at: i + 1)
                 tempMembers.append(.pseudoClassIdentifier(nextToken))
                 i += 1
-                break
             case .dot:
                 let nextToken = try Self.getTokenAsString(clauseTokens: clauseTokens, at: i + 1)
                 tempMembers.append(.classIdentifier(nextToken))
                 i += 1
-                break
             case .whitespace:
                 if tempMembers.count == 1 {
                     parsedMembers.append(tempMembers[0])
@@ -81,7 +87,6 @@ struct CSSClause {
                 typeFound = false
                 identifierFound = false
                 tempMembers.removeAll()
-                break
             default:
                 throw CSSParserErrors.invalidToken(token)
             }

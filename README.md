@@ -26,8 +26,8 @@ Here's the list of existing and missing features:
 
 Even if the ultimate goal is to support all syntax features, there is a long road ahead. Below is a list of short-term planned improvements:
 
-- [ ] Add support for the "all" selector (`*`)
 - [ ] Provides basic validation configurations for most common attributes, functions and keywords
+- [X] ~~Add support for the universal selector (`*`)~~
 - [X] ~~Add support for pseudo-classes (like `:hover`)~~
 - [X] ~~Implement ways to extend the capaibilities of the parser, with a specific model for custom validation and functions~~
 

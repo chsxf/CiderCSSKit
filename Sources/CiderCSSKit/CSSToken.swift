@@ -9,6 +9,7 @@ public enum CSSTokenType {
     case comma
     case sharp
     case dot
+    case star
     case string
     case number
     case whitespace

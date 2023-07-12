@@ -27,6 +27,8 @@ extension CSSConsumer {
     
     func isMatching(clause: CSSClauseMember) -> Bool {
         switch (clause) {
+        case .universalSelector:
+            return true
         case .typeIdentifier(let type):
             return self.type == type
         case .identifier(let identifier):

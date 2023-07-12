@@ -72,6 +72,8 @@ final class CSSTokenizer {
             return CSSToken(line: currentLine, type: .sharp)
         case ".":
             return CSSToken(line: currentLine, type: .dot)
+        case "*":
+            return CSSToken(line: currentLine, type: .star)
         case "\"":
             return try getLiteralString()
         default:

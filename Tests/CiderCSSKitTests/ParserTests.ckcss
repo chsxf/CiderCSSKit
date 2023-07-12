@@ -1,6 +1,5 @@
-#test {
+*, #test {
     background-color: rgba(1, 1, 1, 0.5);
-    color: #ff9900;
     name: "A \"super\" name";
 }
 
@@ -9,7 +8,7 @@ button, .youpi img {
     background: rgb(1.0, 0, 0), #ff0080, rgba(0.5, 0.5, 0.5, 1.0);
 }
 
-label#id.first.second {
+label#id.first.second, *:visited {
     color: black;
 }
 
