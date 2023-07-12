@@ -85,7 +85,7 @@ public final class CSSParser {
         var ruleTokens = [[CSSToken]]()
         var currentRuleTokens = [CSSToken]()
 
-        eligibleTokenTypes = [.sharp, .dot, .string]
+        eligibleTokenTypes = [.sharp, .dot, .colon, .string]
         stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][0-9a-z_-]*$", options: .caseInsensitive)
         
         var foundOpeningBrace = false
@@ -94,19 +94,16 @@ public final class CSSParser {
             let token = try getNextToken()
             
             switch token.type {
-            case .sharp, .dot:
+            case .sharp, .dot, .colon:
                 currentRuleTokens.append(token)
                 eligibleTokenTypes = [.string]
             case .string:
                 currentRuleTokens.append(token)
                 eligibleTokenTypes = [.sharp, .dot, .comma, .colon, .string, .openingBrace, .whitespace]
-            case .colon:
-                currentRuleTokens.append(token)
-                eligibleTokenTypes = [.string]
             case .comma:
                 ruleTokens.append(currentRuleTokens)
                 currentRuleTokens.removeAll()
-                eligibleTokenTypes = [.sharp, .dot, .string]
+                eligibleTokenTypes = [.sharp, .dot, .colon, .string]
             case .openingBrace:
                 ruleTokens.append(currentRuleTokens)
                 foundOpeningBrace = true

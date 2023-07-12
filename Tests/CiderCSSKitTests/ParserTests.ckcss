@@ -18,7 +18,7 @@ label#id.first.second {
     text-color: green;
 }
 
-button:hover {
+button:hover, :hover {
     color: red;
 }
 

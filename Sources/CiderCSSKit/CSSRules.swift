@@ -1,8 +1,8 @@
 public final class CSSRules {
     
-    private var rules = [CSSRule]()
-    private var attributes = [String]()
-    private var rulesByAttribute = [String: [CSSRule]]()
+    private(set) var rules = [CSSRule]()
+    private(set) var attributes = [String]()
+    private(set) var rulesByAttribute = [String: [CSSRule]]()
     
     public var count: Int { rules.count }
     

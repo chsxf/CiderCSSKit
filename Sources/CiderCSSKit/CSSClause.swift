@@ -1,4 +1,4 @@
-enum CSSClauseMember {
+enum CSSClauseMember : Equatable {
     
     case identifier(String)
     case classIdentifier(String)
@@ -13,13 +13,13 @@ extension CSSClauseMember {
     var score: Int {
         switch (self) {
         case .identifier(_):
-            return 100
-        case .typeIdentifier(_):
             return 10000
-        case .classIdentifier(_):
-            return 1
-        case .pseudoClassIdentifier(_):
+        case .typeIdentifier(_):
             return 10
+        case .classIdentifier(_):
+            return 100
+        case .pseudoClassIdentifier(_):
+            return 1000
         case .combinedIdentifier(let members):
             return members.reduce(into: 0) { $0 += $1.score }
         }

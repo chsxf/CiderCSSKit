@@ -29,7 +29,7 @@ final class CSSParserTests: XCTestCase {
 
     func testBasicParsing() throws {
         let parsedRules = try CSSParser.parse(buffer: Self.buffer)
-        XCTAssertEqual(parsedRules.count, 7)
+        XCTAssertEqual(parsedRules.count, 8)
     }
 
     func testAttributeRetrieval() throws {
@@ -148,7 +148,7 @@ final class CSSParserTests: XCTestCase {
             XCTFail("Value must a color");
             return
         }
-        XCTAssertEqual(unwrappedColor4[0], CSSValue.color(0, 0.502, 0, 1))
+        XCTAssertEqual(unwrappedColor4[0], CSSValue.color(1, 0, 0, 1))
     }
     
     func testStandaloneAttributeValueParsing() throws {
