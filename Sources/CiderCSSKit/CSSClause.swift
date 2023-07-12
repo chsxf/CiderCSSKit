@@ -47,28 +47,28 @@ struct CSSClause {
             let token = clauseTokens[i]
             switch token.type {
             case .string:
-                if typeFound {
+                guard !typeFound, let tokenAsString = token.value as? String else {
                     throw CSSParserErrors.invalidToken(token)
                 }
-                tempMembers.append(.typeIdentifier(token.value as! String))
+                tempMembers.append(.typeIdentifier(tokenAsString))
                 typeFound = true
                 break
             case .sharp:
                 if identifierFound {
                     throw CSSParserErrors.invalidToken(token)
                 }
-                let nextToken = clauseTokens[i + 1]
-                tempMembers.append(.identifier(nextToken.value as! String))
+                let nextToken = try Self.getTokenAsString(clauseTokens: clauseTokens, at: i + 1)
+                tempMembers.append(.identifier(nextToken))
                 i += 1
                 break
             case .colon:
-                let nextToken = clauseTokens[i + 1]
-                tempMembers.append(.pseudoClassIdentifier(nextToken.value as! String))
+                let nextToken = try Self.getTokenAsString(clauseTokens: clauseTokens, at: i + 1)
+                tempMembers.append(.pseudoClassIdentifier(nextToken))
                 i += 1
                 break
             case .dot:
-                let nextToken = clauseTokens[i + 1]
-                tempMembers.append(.classIdentifier(nextToken.value as! String))
+                let nextToken = try Self.getTokenAsString(clauseTokens: clauseTokens, at: i + 1)
+                tempMembers.append(.classIdentifier(nextToken))
                 i += 1
                 break
             case .whitespace:
@@ -99,6 +99,19 @@ struct CSSClause {
         }
         
         members = parsedMembers
+    }
+    
+    private static func getTokenAsString(clauseTokens: [CSSToken], at index: Int) throws -> String {
+        if index >= clauseTokens.count {
+            throw CSSParserErrors.unexpectedEnd
+        }
+        
+        let token = clauseTokens[index]
+        guard token.type == .string, let tokenAsString = token.value as? String else {
+            throw CSSParserErrors.invalidToken(token)
+        }
+        
+        return tokenAsString
     }
     
 }
