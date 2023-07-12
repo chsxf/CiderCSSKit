@@ -18,6 +18,7 @@ Here's the list of existing and missing features:
 - named colors are already implemented, but any other keyword will be interpreted as a string
 - complex CSS combinators (`>`, `+`, and `~`) are not implemented
 - no support pseudo-elements (like `::first-line` for example)
+- no support for parametric pseudo-classes (like `:nth-child()` for example)
 - no support for attribute selectors (like `a[target]` or `a[target="_blank"]`)
 - built-in functions are limited to `rgb` and `rgba`
 - short hexadecimal colors (`#fff` for example) are not supported (colors must use six hexadecimal digits)
@@ -27,6 +28,10 @@ Here's the list of existing and missing features:
 Even if the ultimate goal is to support all syntax features, there is a long road ahead. Below is a list of short-term planned improvements:
 
 - [ ] Provides basic validation configurations for most common attributes, functions and keywords
+- [ ] Add support for short hexadecimal colors (`#fff` for example)
+- [ ] Add support for the adjacent sibling combinator (`+`)
+- [ ] Add support for the child combinator (`>`)
+- [ ] Add support for the general sibling combinator (`~`)
 - [X] ~~Add support for the universal selector (`*`)~~
 - [X] ~~Add support for pseudo-classes (like `:hover`)~~
 - [X] ~~Implement ways to extend the capaibilities of the parser, with a specific model for custom validation and functions~~
