@@ -28,11 +28,11 @@ Here's the list of existing and missing features:
 
 Even if the ultimate goal is to support all syntax features, there is a long road ahead. Below is a list of short-term planned improvements:
 
-- [ ] Add support for short-hand properties (like `padding` or `border-radius`)
-- [ ] Add support for short hexadecimal colors (`#fff` for example)
-- [ ] Add support for the adjacent sibling combinator (`+`)
-- [ ] Add support for the child combinator (`>`)
-- [ ] Add support for the general sibling combinator (`~`)
+- [ ] Add support for short-hand properties (like `padding` or `border-radius`) (#4)
+- [ ] Add support for short hexadecimal colors (`#fff` for example) (#5)
+- [ ] Add support for the adjacent sibling combinator (`+`) (#6)
+- [ ] Add support for the child combinator (`>`) (#7)
+- [ ] Add support for the general sibling combinator (`~`) (#8)
 - [ ] Provides basic validation configurations for most common attributes, functions and keywords
 - [X] ~~Add support for the universal selector (`*`)~~
 - [X] ~~Add support for pseudo-classes (like `:hover`)~~
