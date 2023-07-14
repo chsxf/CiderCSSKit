@@ -87,7 +87,7 @@ final class CSSParserTests: XCTestCase {
         let value1 = parsedRules.getValue(with: "color", for: stub1)
         let unwrappedValue1 = try XCTUnwrap(value1)
         
-        guard case CSSValue.color(_, _, _, _) = unwrappedValue1[0] else {
+        guard case CSSValue.color = unwrappedValue1[0] else {
             XCTFail("Value must be a color");
             return
         }
@@ -97,7 +97,7 @@ final class CSSParserTests: XCTestCase {
         let value2 = parsedRules.getValue(with: "color", for: stub2)
         let unwrappedValue2 = try XCTUnwrap(value2)
         
-        guard case CSSValue.color(_, _, _, _) = unwrappedValue2[0] else {
+        guard case CSSValue.color = unwrappedValue2[0] else {
             XCTFail("Value must be a color");
             return
         }
@@ -112,14 +112,14 @@ final class CSSParserTests: XCTestCase {
         XCTAssertEqual(values.count, 4)
         
         let color = try XCTUnwrap(values["color"])[0]
-        guard case CSSValue.color(_, _, _, _) = color else {
+        guard case CSSValue.color = color else {
             XCTFail("Value must be a color")
             return
         }
         XCTAssertEqual(color, CSSValueKeywords.getValue(for: "black"))
         
         let textColor = try XCTUnwrap(values["text-color"])[0]
-        guard case CSSValue.color(_, _, _, _) = textColor else {
+        guard case CSSValue.color = textColor else {
             XCTFail("Value must be a color")
             return
         }
@@ -133,7 +133,7 @@ final class CSSParserTests: XCTestCase {
         let color = parsedRules.getValue(with: "color", for: stub1)
         let unwrappedColor = try XCTUnwrap(color)
         
-        guard case CSSValue.color(_, _, _, _) = unwrappedColor[0] else {
+        guard case CSSValue.color = unwrappedColor[0] else {
             XCTFail("Value must be a color")
             return
         }
@@ -143,7 +143,7 @@ final class CSSParserTests: XCTestCase {
         let bgColor = parsedRules.getValue(with: "background-color", for: stub2)
         let unwrappedBgColor = try XCTUnwrap(bgColor)
         
-        guard case CSSValue.color(_, _, _, _) = unwrappedBgColor[0] else {
+        guard case CSSValue.color = unwrappedBgColor[0] else {
             XCTFail("Value must be a color")
             return
         }
@@ -157,7 +157,7 @@ final class CSSParserTests: XCTestCase {
         let color1 = parsedRules.getValue(with: "color", for: stub1)
         let unwrappedColor1 = try XCTUnwrap(color1)
         
-        guard case CSSValue.color(_, _, _, _) = unwrappedColor1[0] else {
+        guard case CSSValue.color = unwrappedColor1[0] else {
             XCTFail("Value must be a color");
             return
         }
@@ -167,7 +167,7 @@ final class CSSParserTests: XCTestCase {
         let color2 = parsedRules.getValue(with: "color", for: stub2)
         let unwrappedColor2 = try XCTUnwrap(color2)
         
-        guard case CSSValue.color(_, _, _, _) = unwrappedColor2[0] else {
+        guard case CSSValue.color = unwrappedColor2[0] else {
             XCTFail("Value must be a color");
             return
         }
@@ -177,7 +177,7 @@ final class CSSParserTests: XCTestCase {
         let color3 = parsedRules.getValue(with: "color", for: stub3)
         let unwrappedColor3 = try XCTUnwrap(color3)
         
-        guard case CSSValue.color(_, _, _, _) = unwrappedColor3[0] else {
+        guard case CSSValue.color = unwrappedColor3[0] else {
             XCTFail("Value must be a color");
             return
         }
@@ -187,11 +187,32 @@ final class CSSParserTests: XCTestCase {
         let color4 = parsedRules.getValue(with: "color", for: stub4)
         let unwrappedColor4 = try XCTUnwrap(color4)
         
-        guard case CSSValue.color(_, _, _, _) = unwrappedColor4[0] else {
+        guard case CSSValue.color = unwrappedColor4[0] else {
             XCTFail("Value must be a color");
             return
         }
         XCTAssertEqual(unwrappedColor4[0], CSSValueKeywords.getValue(for: "red"))
+    }
+    
+    func testShorthandAttributes() throws {
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
+        
+        let stub = StubCSSConsumer(type: "button")
+        let allValues = parsedRules.getAllValues(for: stub)
+        XCTAssertEqual(allValues.count, 9)
+        
+        let expectedAttributes: [String: [CSSValue]] = [
+            "padding": [ .number(10, .px), .number(20, .px) ],
+            "padding-top": [ .number(10, .px) ],
+            "padding-right": [ .number(20, .px) ],
+            "padding-bottom": [ .number(10, .px) ],
+            "padding-left": [ .number(20, .px) ]
+        ]
+        for expectedAttribute in expectedAttributes {
+            let attributeValue = allValues[expectedAttribute.key]
+            XCTAssertNotNil(attributeValue)
+            XCTAssertEqual(attributeValue, expectedAttribute.value)
+        }
     }
     
     func testStandaloneAttributeValueParsing() throws {

@@ -12,8 +12,13 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         "background-color": [.color],
         "color": [.color],
         "name": [.string, .custom("CustomValueHolder")],
-        "text-color": [.color]
+        "text-color": [.color],
+        "padding": [.number]
     ] }
+    
+    override var shorthandAttributes: [String : ShorthandAttributeExpansion] {
+        [ "padding": StubCSSValidationConfigurationAttributeExpansion.expandPadding ]
+    }
     
     override func parseFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         guard let functionName = functionToken.value as? String else { throw CSSParserErrors.invalidToken(functionToken) }

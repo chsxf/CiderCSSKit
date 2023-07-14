@@ -11,6 +11,9 @@ public enum CSSParserErrors : Error {
     case invalidFunctionAttribute(CSSToken, CSSValue)
     case tooFewFunctionAttributes(CSSToken, [CSSValue])
     case tooManyFunctionAttributes(CSSToken, [CSSValue])
+    case invalidShorthandAttributeValue(CSSToken, CSSValue)
+    case tooFewShorthandAttributeValues(CSSToken, [CSSValue])
+    case tooManyShorthandAttributeValues(CSSToken, [CSSValue])
     case unexpectedEnd
     
 }
@@ -153,6 +156,12 @@ public final class CSSParser {
                 let attributeValues = try parseAttributeValue(level: 0)
                 if try validationConfiguration?.validateAttributeValues(attributeToken: currentAttributeNameToken!, values: attributeValues) ?? true {
                     attributes[currentAttributeName] = attributeValues
+                    
+                    if let expandedShorhand = try validationConfiguration?.expandShorthandAttribute(currentAttributeNameToken!, values: attributeValues) {
+                        for entry in expandedShorhand {
+                            attributes[entry.key] = entry.value
+                        }
+                    }
                 }
                 eligibleTokenTypes = [.closingBrace, .string]
                 stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][a-z-]*$", options: .caseInsensitive)

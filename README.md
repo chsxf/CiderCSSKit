@@ -20,18 +20,17 @@ Here's the list of existing and missing features:
 - no support pseudo-elements (like `::first-line` for example)
 - no support for parametric pseudo-classes (like `:nth-child()` for example)
 - no support for attribute selectors (like `a[target]` or `a[target="_blank"]`)
-- no support for short-hand properties (like `padding` or `border-radius`)
 - built-in functions are limited to `rgb` and `rgba`
 
 ## Planned improvements
 
 Even if the ultimate goal is to support all syntax features, there is a long road ahead. Below is a list of short-term planned improvements:
 
-- [ ] Add support for short-hand properties (like `padding` or `border-radius`) ([#4](https://github.com/chsxf/CiderCSSKit/issues/4))
 - [ ] Add support for the adjacent sibling combinator (`+`) ([#6](https://github.com/chsxf/CiderCSSKit/issues/6))
 - [ ] Add support for the child combinator (`>`) ([#7](https://github.com/chsxf/CiderCSSKit/issues/7))
 - [ ] Add support for the general sibling combinator (`~`) ([#8](https://github.com/chsxf/CiderCSSKit/issues/8))
 - [ ] Provides basic validation configurations for most common attributes, functions and keywords
+- [X] ~~Add support for shorthand properties (like `padding` or `border-radius`) ([#4](https://github.com/chsxf/CiderCSSKit/issues/4))~~
 - [X] ~~Add support for short hexadecimal colors (`#fff` for example) ([#5](https://github.com/chsxf/CiderCSSKit/issues/5))~~
 - [X] ~~Add support for the universal selector (`*`) ([#1](https://github.com/chsxf/CiderCSSKit/issues/1))~~
 - [X] ~~Add support for pseudo-classes (like `:hover`) ([#2](https://github.com/chsxf/CiderCSSKit/issues/2))~~

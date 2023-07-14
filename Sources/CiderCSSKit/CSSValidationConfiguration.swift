@@ -7,11 +7,14 @@ public enum CSSValueType {
     
 }
 
+public typealias ShorthandAttributeExpansion = (CSSToken, [CSSValue]) throws -> [String:[CSSValue]]
+
 open class CSSValidationConfiguration {
     
     public init() { }
     
     open var valueTypesByAttribute: [String:[CSSValueType]] { [:] }
+    open var shorthandAttributes: [String: ShorthandAttributeExpansion] { [:] }
     
     open func parseFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         throw CSSParserErrors.unknownFunction(functionToken)
@@ -19,6 +22,15 @@ open class CSSValidationConfiguration {
     
     open func parseKeyword(stringToken: CSSToken) throws -> CSSValue {
         throw CSSParserErrors.invalidKeyword(stringToken)
+    }
+    
+    func expandShorthandAttribute(_ token: CSSToken, values: [CSSValue]) throws -> [String:[CSSValue]]? {
+        guard let attributeName = token.value as? String else {
+            throw CSSParserErrors.invalidToken(token)
+        }
+        
+        guard let expansionMethod = shorthandAttributes[attributeName] else { return nil }
+        return try expansionMethod(token, values)
     }
     
     func validateAttributeValues(attributeToken: CSSToken, values: [CSSValue]) throws -> Bool {
