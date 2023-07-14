@@ -186,7 +186,7 @@ public final class CSSParser {
                 eligibleTokenTypes = [.comma, .semiColon]
                 
                 if inHexadecimalColor {
-                    values.append(try parseHexadecimalColor(token: token, hexadecimalString: token.value as! String))
+                    values.append(try CSSHexColorHelpers.parseHexadecimalColor(token: token, hexadecimalString: token.value as! String))
                     inHexadecimalColor = false
                 }
                 else if let unitNumberPart = numberPart {
@@ -215,7 +215,7 @@ public final class CSSParser {
                 }
             case .sharp:
                 eligibleTokenTypes = [.string]
-                stringTokenValidRE = try NSRegularExpression(pattern: "^[0-9a-f]{6}$", options: .caseInsensitive)
+                stringTokenValidRE = try NSRegularExpression(pattern: "^(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})$", options: .caseInsensitive)
                 inHexadecimalColor = true
             case .openingParenthesis:
                 let functionAttributes = try parseAttributeValue(level: level + 1)
@@ -253,24 +253,6 @@ public final class CSSParser {
         while !foundEnd
         
         return values
-    }
-    
-    private func parseHexadecimalColor(token: CSSToken, hexadecimalString: String) throws -> CSSValue {
-        let startIndex = hexadecimalString.startIndex
-        
-        let redRange = startIndex..<hexadecimalString.index(startIndex, offsetBy: 2)
-        let greenRange = hexadecimalString.index(startIndex, offsetBy: 2)..<hexadecimalString.index(startIndex, offsetBy: 4)
-        let blueRange = hexadecimalString.index(startIndex, offsetBy: 4)..<hexadecimalString.endIndex
-
-        guard
-            let red = UInt8(hexadecimalString[redRange], radix: 16),
-            let green = UInt8(hexadecimalString[greenRange], radix: 16),
-            let blue = UInt8(hexadecimalString[blueRange], radix: 16)
-        else {
-            throw CSSParserErrors.malformedToken(token)
-        }
-        
-        return .color(Float(red) / 255.0, Float(green) / 255.0, Float(blue) / 255.0, 1.0)
     }
     
     private func getNextToken() throws -> CSSToken {

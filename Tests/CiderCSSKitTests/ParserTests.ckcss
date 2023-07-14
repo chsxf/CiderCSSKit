@@ -5,7 +5,7 @@
 
 button, .youpi img {
     color: yellow;
-    background: rgb(1.0, 0, 0), #ff0080, rgba(0.5, 0.5, 0.5, 1.0);
+    background: rgb(1.0, 0, 0), #ff0080, rgba(0.5, 0.5, 0.5, 1.0), #a0b, #aaaa, #ff8000ff;
 }
 
 label#id.first.second, *:visited {
