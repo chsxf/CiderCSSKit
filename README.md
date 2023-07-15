@@ -3,6 +3,8 @@
 CiderCSSKit is lightweight CSS parser written as a pure Swift package.
 It was primarily designed to work with [CiderKit](https://github.com/chsxf/CiderKit), but the goal is to make it as agnostic as possible.
 
+![](https://github.com/chsxf/CiderCSSKit/actions/workflows/swift.yml/badge.svg)
+
 ## Conventions
 
 This project uses [gitmoji](https://gitmoji.dev) for its commit messages.
