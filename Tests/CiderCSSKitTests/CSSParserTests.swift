@@ -143,7 +143,7 @@ final class CSSParserTests: XCTestCase {
         XCTAssertEqual(allValues.count, 9)
         
         let expectedAttributes: [String: [CSSValue]] = [
-            "padding": [ .number(10, .px), .number(20, .px) ],
+            "padding": [ .number(10, .px), .number(20, .px), .number(10, .px), .number(20, .px) ],
             "padding-top": [ .number(10, .px) ],
             "padding-right": [ .number(20, .px) ],
             "padding-bottom": [ .number(10, .px) ],

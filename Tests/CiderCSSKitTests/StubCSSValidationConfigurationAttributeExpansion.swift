@@ -2,6 +2,7 @@ import CiderCSSKit
 
 final class StubCSSValidationConfigurationAttributeExpansion {
     
+    private static let padding = "padding"
     private static let paddingTop = "padding-top"
     private static let paddingRight = "padding-right"
     private static let paddingBottom = "padding-bottom"
@@ -24,6 +25,7 @@ final class StubCSSValidationConfigurationAttributeExpansion {
         switch values.count {
         case 2:
             return [
+                padding: [ values[0], values[1], values[0], values[1] ],
                 paddingTop: [ values[0] ],
                 paddingRight: [ values[1] ],
                 paddingBottom: [ values[0] ],
@@ -31,6 +33,7 @@ final class StubCSSValidationConfigurationAttributeExpansion {
             ]
         case 3:
             return [
+                padding: [ values[0], values[1], values[2], values[1] ],
                 paddingTop: [ values[0] ],
                 paddingRight: [ values[1] ],
                 paddingBottom: [ values[2] ],
@@ -38,6 +41,7 @@ final class StubCSSValidationConfigurationAttributeExpansion {
             ]
         case 4:
             return [
+                padding: [ values[0], values[1], values[2], values[3] ],
                 paddingTop: [ values[0] ],
                 paddingRight: [ values[1] ],
                 paddingBottom: [ values[2] ],
@@ -45,6 +49,7 @@ final class StubCSSValidationConfigurationAttributeExpansion {
             ]
         default:
             return [
+                padding: [ values[0], values[0], values[0], values[0] ],
                 paddingTop: [ values[0] ],
                 paddingRight: [ values[0] ],
                 paddingBottom: [ values[0] ],
