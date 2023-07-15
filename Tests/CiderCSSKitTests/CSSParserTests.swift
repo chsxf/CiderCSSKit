@@ -85,23 +85,11 @@ final class CSSParserTests: XCTestCase {
         
         let stub1 = StubCSSConsumer(type: "dummy", classes: ["first", "second"])
         let value1 = parsedRules.getValue(with: "color", for: stub1)
-        let unwrappedValue1 = try XCTUnwrap(value1)
-        
-        guard case CSSValue.color = unwrappedValue1[0] else {
-            XCTFail("Value must be a color");
-            return
-        }
-        XCTAssertEqual(unwrappedValue1[0], CSSValueKeywords.getValue(for: "red"))
+        try CSSTestHelpers.assertColorValue(values: value1, expectedValue: CSSValueKeywords.getValue(for: "red"))
         
         let stub2 = StubCSSConsumer(type: "label", identifier: "id", classes: ["first", "second"])
         let value2 = parsedRules.getValue(with: "color", for: stub2)
-        let unwrappedValue2 = try XCTUnwrap(value2)
-        
-        guard case CSSValue.color = unwrappedValue2[0] else {
-            XCTFail("Value must be a color");
-            return
-        }
-        XCTAssertEqual(unwrappedValue2[0], CSSValueKeywords.getValue(for: "black"))
+        try CSSTestHelpers.assertColorValue(values: value2, expectedValue: CSSValueKeywords.getValue(for: "black"))
     }
     
     func testAllValues() throws {
@@ -111,19 +99,8 @@ final class CSSParserTests: XCTestCase {
         let values = parsedRules.getAllValues(for: stub)
         XCTAssertEqual(values.count, 4)
         
-        let color = try XCTUnwrap(values["color"])[0]
-        guard case CSSValue.color = color else {
-            XCTFail("Value must be a color")
-            return
-        }
-        XCTAssertEqual(color, CSSValueKeywords.getValue(for: "black"))
-        
-        let textColor = try XCTUnwrap(values["text-color"])[0]
-        guard case CSSValue.color = textColor else {
-            XCTFail("Value must be a color")
-            return
-        }
-        XCTAssertEqual(textColor, CSSValueKeywords.getValue(for: "green"))
+        try CSSTestHelpers.assertColorValue(values: values["color"], expectedValue: CSSValueKeywords.getValue(for: "black"))
+        try CSSTestHelpers.assertColorValue(values: values["text-color"], expectedValue: CSSValueKeywords.getValue(for: "green"))
     }
     
     func testUniversalSelector() throws {
@@ -131,23 +108,11 @@ final class CSSParserTests: XCTestCase {
         
         let stub1 = StubCSSConsumer(type: "a", pseudoClasses: ["visited"])
         let color = parsedRules.getValue(with: "color", for: stub1)
-        let unwrappedColor = try XCTUnwrap(color)
-        
-        guard case CSSValue.color = unwrappedColor[0] else {
-            XCTFail("Value must be a color")
-            return
-        }
-        XCTAssertEqual(unwrappedColor[0], CSSValueKeywords.getValue(for: "black"))
+        try CSSTestHelpers.assertColorValue(values: color, expectedValue: CSSValueKeywords.getValue(for: "black"))
         
         let stub2 = StubCSSConsumer(type: "select", classes: ["custom"], pseudoClasses: ["selected"])
         let bgColor = parsedRules.getValue(with: "background-color", for: stub2)
-        let unwrappedBgColor = try XCTUnwrap(bgColor)
-        
-        guard case CSSValue.color = unwrappedBgColor[0] else {
-            XCTFail("Value must be a color")
-            return
-        }
-        XCTAssertEqual(unwrappedBgColor[0], CSSValue.color(1, 1, 1, 0.5))
+        try CSSTestHelpers.assertColorValue(values: bgColor, expectedValue:CSSValue.color(1, 1, 1, 0.5))
     }
     
     func testPseudoClasses() throws {
@@ -155,43 +120,19 @@ final class CSSParserTests: XCTestCase {
         
         let stub1 = StubCSSConsumer(type: "button")
         let color1 = parsedRules.getValue(with: "color", for: stub1)
-        let unwrappedColor1 = try XCTUnwrap(color1)
-        
-        guard case CSSValue.color = unwrappedColor1[0] else {
-            XCTFail("Value must be a color");
-            return
-        }
-        XCTAssertEqual(unwrappedColor1[0], CSSValueKeywords.getValue(for: "yellow"))
+        try CSSTestHelpers.assertColorValue(values: color1, expectedValue: CSSValueKeywords.getValue(for: "yellow"))
         
         let stub2 = StubCSSConsumer(type: "button", pseudoClasses: ["hover"])
         let color2 = parsedRules.getValue(with: "color", for: stub2)
-        let unwrappedColor2 = try XCTUnwrap(color2)
-        
-        guard case CSSValue.color = unwrappedColor2[0] else {
-            XCTFail("Value must be a color");
-            return
-        }
-        XCTAssertEqual(unwrappedColor2[0], CSSValueKeywords.getValue(for: "red"))
+        try CSSTestHelpers.assertColorValue(values: color2, expectedValue: CSSValueKeywords.getValue(for: "red"))
         
         let stub3 = StubCSSConsumer(type: "button", pseudoClasses: ["missing-pseudo-class"])
         let color3 = parsedRules.getValue(with: "color", for: stub3)
-        let unwrappedColor3 = try XCTUnwrap(color3)
-        
-        guard case CSSValue.color = unwrappedColor3[0] else {
-            XCTFail("Value must be a color");
-            return
-        }
-        XCTAssertEqual(unwrappedColor3[0], CSSValueKeywords.getValue(for: "yellow"))
+        try CSSTestHelpers.assertColorValue(values: color3, expectedValue: CSSValueKeywords.getValue(for: "yellow"))
         
         let stub4 = StubCSSConsumer(type: "input", pseudoClasses: ["hover"])
         let color4 = parsedRules.getValue(with: "color", for: stub4)
-        let unwrappedColor4 = try XCTUnwrap(color4)
-        
-        guard case CSSValue.color = unwrappedColor4[0] else {
-            XCTFail("Value must be a color");
-            return
-        }
-        XCTAssertEqual(unwrappedColor4[0], CSSValueKeywords.getValue(for: "red"))
+        try CSSTestHelpers.assertColorValue(values: color4, expectedValue: CSSValueKeywords.getValue(for: "red"))
     }
     
     func testShorthandAttributes() throws {
@@ -218,18 +159,13 @@ final class CSSParserTests: XCTestCase {
     func testStandaloneAttributeValueParsing() throws {
         let attributeValue = "green"
         let values = try CSSParser.parse(attributeValue: attributeValue)
-        XCTAssertEqual(values.count, 1)
-        
-        XCTAssertEqual(values[0], CSSValueKeywords.getValue(for: "green"))
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "green"))
     }
     
     func testStandaloneRuleBlockParsing() throws {
         let parsedRuleBlock = try CSSParser.parse(ruleBlock: Self.bufferRuleBlock, validationConfiguration: StubCSSValidationConfiguration())
         let colorValues = parsedRuleBlock["color"]
-        XCTAssertNotNil(colorValues)
-        
-        let colorValue = colorValues![0]
-        XCTAssertEqual(colorValue, CSSValueKeywords.getValue(for: "black"))
+        try CSSTestHelpers.assertColorValue(values: colorValues, expectedValue: CSSValueKeywords.getValue(for: "black"))
     }
     
     func testValuesValidation() throws {
