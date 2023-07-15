@@ -7,6 +7,7 @@ public enum CSSParserErrors : Error {
     case invalidKeyword(CSSToken)
     case invalidAttribute(CSSToken)
     case invalidAttributeValue(CSSToken, CSSValue)
+    case invalidUnit(CSSToken)
     case unknownFunction(CSSToken)
     case invalidFunctionAttribute(CSSToken, CSSValue)
     case tooFewFunctionAttributes(CSSToken, [CSSValue])
@@ -199,7 +200,10 @@ public final class CSSParser {
                     inHexadecimalColor = false
                 }
                 else if let unitNumberPart = numberPart {
-                    values.append(.number(unitNumberPart, CSSValueUnit(rawValue: token.value as! String)!))
+                    guard let unit = CSSValueUnit(rawValue: token.value as! String) else {
+                        throw CSSParserErrors.invalidUnit(token)
+                    }
+                    values.append(.number(unitNumberPart, unit))
                     numberPart = nil
                 }
                 else {
@@ -218,6 +222,7 @@ public final class CSSParser {
                 eligibleTokenTypes = [.string, .comma]
                 if level == 0 {
                     eligibleTokenTypes.append(.whitespace)
+                    eligibleTokenTypes.append(.semiColon)
                 }
                 else {
                     eligibleTokenTypes.append(.closingParenthesis)

@@ -197,4 +197,18 @@ final class CSSParserTests: XCTestCase {
         }
     }
     
+    func testUnits() throws {
+        do {
+            let _ = try CSSParser.parse(attributeValue: "10tt")
+        }
+        catch CSSParserErrors.invalidUnit(let unitToken) {
+            XCTAssertEqual(unitToken, CSSToken(line: 0, type: .string, value: "tt"))
+        }
+        
+        for unit in CSSValueUnit.allCases {
+            let values = try CSSParser.parse(attributeValue: "10\(unit.rawValue)")
+            XCTAssertEqual(values, [ CSSValue.number(10, unit) ])
+        }
+    }
+    
 }
