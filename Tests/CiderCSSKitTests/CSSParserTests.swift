@@ -69,7 +69,7 @@ final class CSSParserTests: XCTestCase {
         let expectedColors = [
             CSSValueKeywords.getValue(for: "red"),
             CSSValue.color(1, 0, 0.502, 1),
-            CSSValue.color(0.5, 0.5, 0.5, 1.0),
+            CSSValue.color(0.502, 0.502, 0.502, 1.0),
             CSSValue.color(0.6667, 0, 0.7333, 1),
             CSSValue.color(0.6667, 0.6667, 0.6667, 0.6667),
             CSSValue.color(1, 0.502, 0, 1)

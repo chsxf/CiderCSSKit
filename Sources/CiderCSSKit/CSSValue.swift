@@ -139,13 +139,16 @@ public enum CSSValue: Equatable {
     }
     
     private static func parseRGBFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
-        let components = try parseFloatComponents(numberOfComponents: 3, functionToken: functionToken, attributes: attributes, min: 0, max: 1, specificUnit: CSSValueUnit.none)
-        return .color(components[0], components[1], components[2], 1)
+        let components = try parseFloatComponents(numberOfComponents: 3, functionToken: functionToken, attributes: attributes, min: 0, max: 255, specificUnit: CSSValueUnit.none)
+        let roundedComponents = components.map { ($0 / 255.0).rounded(toPlaces: 4) }
+        return .color(roundedComponents[0], roundedComponents[1], roundedComponents[2], 1)
     }
     
     private static func parseRGBAFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
-        let components = try parseFloatComponents(numberOfComponents: 4, functionToken: functionToken, attributes: attributes, min: 0, max: 1, specificUnit: CSSValueUnit.none)
-        return .color(components[0], components[1], components[2], components[3])
+        let rgbComponents = try parseFloatComponents(numberOfComponents: 4, functionToken: functionToken, attributes: attributes, min: 0, max: 255, specificUnit: CSSValueUnit.none)
+        let roundedRGBComponents = rgbComponents.map { ($0 / 255.0).rounded(toPlaces: 4) }
+        let alphaComponent = try parseFloatComponents(numberOfComponents: 1, functionToken: functionToken, attributes: attributes, from: 3)
+        return .color(roundedRGBComponents[0], roundedRGBComponents[1], roundedRGBComponents[2], alphaComponent[0].rounded(toPlaces: 4))
     }
     
 }
