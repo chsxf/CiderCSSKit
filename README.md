@@ -30,6 +30,7 @@ Even if the ultimate goal is to support all syntax features, there is a long roa
 - [ ] Add support for the child combinator (`>`) ([#7](https://github.com/chsxf/CiderCSSKit/issues/7))
 - [ ] Add support for the general sibling combinator (`~`) ([#8](https://github.com/chsxf/CiderCSSKit/issues/8))
 - [ ] Provides basic validation configurations for most common attributes, functions and keywords
+- [X] ~~Add support for chained CSS rules ([#10](https://github.com/chsxf/CiderCSSKit/issues/10))~~)
 - [X] ~~Add support for shorthand properties (like `padding` or `border-radius`) ([#4](https://github.com/chsxf/CiderCSSKit/issues/4))~~
 - [X] ~~Add support for short hexadecimal colors (`#fff` for example) ([#5](https://github.com/chsxf/CiderCSSKit/issues/5))~~
 - [X] ~~Add support for the universal selector (`*`) ([#1](https://github.com/chsxf/CiderCSSKit/issues/1))~~

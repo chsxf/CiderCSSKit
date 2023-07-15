@@ -51,5 +51,57 @@ final class CSSRulesTests: XCTestCase {
         XCTAssertEqual(clauseMembers.count, 1)
         XCTAssertEqual(clauseMembers[0], .typeIdentifier("button"))
     }
+    
+    func testChaining() throws {
+        let lowerProrityRules = try CSSParser.parse(buffer: "button { color: red; background-color: yellow; }")
+        let higherProrityRules = try CSSParser.parse(buffer: "button { color: green; }")
+        
+        let stub = StubCSSConsumer(type: "button")
+        var allAttributes = lowerProrityRules.getAllValues(for: stub)
+        XCTAssertEqual(allAttributes.count, 2)
+        
+        var values = allAttributes["color"]
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "red"))
+        
+        values = allAttributes["background-color"]
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "yellow"))
+        
+        values = lowerProrityRules.getValue(with: "color", for: stub)
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "red"))
+        
+        values = lowerProrityRules.getValue(with: "background-color", for: stub)
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "yellow"))
+
+        allAttributes = higherProrityRules.getAllValues(for: stub)
+        XCTAssertEqual(allAttributes.count, 1)
+        
+        values = allAttributes["color"]
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "green"))
+
+        values = allAttributes["background-color"]
+        XCTAssertNil(values)
+        
+        values = higherProrityRules.getValue(with: "color", for: stub)
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "green"))
+        
+        values = higherProrityRules.getValue(with: "background-color", for: stub)
+        XCTAssertNil(values)
+        
+        higherProrityRules.chainedLowerPriorityRules = lowerProrityRules
+        allAttributes = higherProrityRules.getAllValues(for: stub)
+        XCTAssertEqual(allAttributes.count, 2)
+        
+        values = allAttributes["color"]
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "green"))
+        
+        values = allAttributes["background-color"]
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "yellow"))
+        
+        values = higherProrityRules.getValue(with: "color", for: stub)
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "green"))
+        
+        values = higherProrityRules.getValue(with: "background-color", for: stub)
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "yellow"))
+    }
 
 }

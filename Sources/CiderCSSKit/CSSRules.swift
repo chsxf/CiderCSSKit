@@ -6,6 +6,8 @@ public final class CSSRules {
     
     public var count: Int { rules.count }
     
+    public weak var chainedLowerPriorityRules: CSSRules? = nil
+    
     func addRule(_ rule: CSSRule) {
         rules.append(rule)
         
@@ -42,11 +44,12 @@ public final class CSSRules {
                 }
             }
         }
-        return nil
+        
+        return chainedLowerPriorityRules?.getValue(with: attribute, for: consumer)
     }
     
     public func getAllValues(for consumer: CSSConsumer) -> [String: [CSSValue]] {
-        var values = [String:[CSSValue]]()
+        var values: [String:[CSSValue]] = chainedLowerPriorityRules?.getAllValues(for: consumer) ?? [:]
         for attribute in attributes {
             if let value = getValue(with: attribute, for: consumer) {
                 values[attribute] = value
