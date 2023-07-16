@@ -16,7 +16,7 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         "padding": [.number]
     ] }
     
-    override var shorthandAttributes: [String : ShorthandAttributeExpansion] {
+    override var shorthandAttributes: [String : CSSShorthandAttributeExpansion] {
         [ "padding": StubCSSValidationConfigurationAttributeExpansion.expandPadding ]
     }
     

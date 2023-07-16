@@ -7,14 +7,14 @@ public enum CSSValueType {
     
 }
 
-public typealias ShorthandAttributeExpansion = (CSSToken, [CSSValue]) throws -> [String:[CSSValue]]
+public typealias CSSShorthandAttributeExpansion = (CSSToken, [CSSValue]) throws -> [String:[CSSValue]]
 
 open class CSSValidationConfiguration {
     
     public init() { }
     
     open var valueTypesByAttribute: [String:[CSSValueType]] { [:] }
-    open var shorthandAttributes: [String: ShorthandAttributeExpansion] { [:] }
+    open var shorthandAttributes: [String: CSSShorthandAttributeExpansion] { [:] }
     
     open func parseFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         throw CSSParserErrors.unknownFunction(functionToken)
