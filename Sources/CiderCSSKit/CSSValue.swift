@@ -27,11 +27,6 @@ public enum CSSValueUnit: String, CaseIterable {
     case vw
 }
 
-public enum CSSSpriteScalingMethod: String {
-    case sliced
-    case fill
-}
-
 public enum CSSValue: Equatable {
     
     case string(String)
