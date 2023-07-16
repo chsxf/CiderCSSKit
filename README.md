@@ -43,6 +43,10 @@ Even if the ultimate goal is to support all syntax features, there is a long roa
 - [X] ~~Add support for pseudo-classes (like `:hover`) ([#2](https://github.com/chsxf/CiderCSSKit/issues/2))~~
 - [X] ~~Implement ways to extend the capaibilities of the parser, with a specific model for custom validation and functions~~
 
+# 🚀 Getting Started
+
+The full documentation of the package is available [here](https://chsxf.github.io/CiderCSSKit/documentation/cidercsskit).
+
 # 📦 Installation with Swift Package Manager
 
 CiderCSSKit is available through [Swift Package Manager](https://github.com/apple/swift-package-manager).
