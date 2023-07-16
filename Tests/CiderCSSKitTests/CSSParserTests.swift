@@ -211,4 +211,12 @@ final class CSSParserTests: XCTestCase {
         }
     }
     
+    func testEmptySheet() throws {
+        let _ = try CSSParser.parse(buffer: "")
+    }
+    
+    func testEmptyRule() throws {
+        let _ = try CSSParser.parse(buffer: "* {}")
+    }
+    
 }

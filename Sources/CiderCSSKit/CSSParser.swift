@@ -100,7 +100,7 @@ public final class CSSParser {
             switch token.type {
             case .star:
                 currentRuleTokens.append(token)
-                eligibleTokenTypes = [.sharp, .dot, .colon, .comma]
+                eligibleTokenTypes = [.sharp, .dot, .colon, .comma, .openingBrace]
             case .sharp, .dot, .colon:
                 currentRuleTokens.append(token)
                 eligibleTokenTypes = [.string]
