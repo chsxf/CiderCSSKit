@@ -33,16 +33,16 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         }
     }
     
-    override func parseKeyword(stringToken: CSSToken) throws -> CSSValue {
-        guard stringToken.type == .string else { throw CSSParserErrors.invalidToken(stringToken) }
+    override func parseKeyword(attributeToken: CSSToken, potentialKeyword: CSSToken) throws -> CSSValue {
+        guard potentialKeyword.type == .string else { throw CSSParserErrors.invalidToken(potentialKeyword) }
         
-        let stringTokenValue = stringToken.value as! String
+        let stringTokenValue = potentialKeyword.value as! String
         
         if stringTokenValue == "invertedwhite", let black = CSSValueKeywords.getValue(for: "black") {
             return black
         }
         
-        throw CSSParserErrors.invalidKeyword(stringToken)
+        throw CSSParserErrors.invalidKeyword(keyword: attributeToken, potentialKeyword: potentialKeyword)
     }
     
     override func validateCustomAttributeValue(attributeToken: CSSToken, value: CSSValue, customTypeName: String) -> Bool {
@@ -54,14 +54,14 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
     
     private static func parseColorFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         if attributes.count < 1 {
-            throw CSSParserErrors.tooFewFunctionAttributes(functionToken, attributes)
+            throw CSSParserErrors.tooFewFunctionAttributes(functionToken: functionToken, values: attributes)
         }
         else if attributes.count > 1 {
-            throw CSSParserErrors.tooManyFunctionAttributes(functionToken, attributes)
+            throw CSSParserErrors.tooManyFunctionAttributes(functionToken: functionToken, values: attributes)
         }
 
         guard case let .string(colorName) = attributes[0], let color = CSSValueKeywords.colors[colorName] else {
-            throw CSSParserErrors.invalidFunctionAttribute(functionToken, attributes[0])
+            throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attributes[0])
         }
 
         return color
@@ -69,18 +69,18 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
     
     private static func parseCustomMethodFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         if attributes.count < 2 {
-            throw CSSParserErrors.tooFewFunctionAttributes(functionToken, attributes)
+            throw CSSParserErrors.tooFewFunctionAttributes(functionToken: functionToken, values: attributes)
         }
         else if attributes.count > 2 {
-            throw CSSParserErrors.tooManyFunctionAttributes(functionToken, attributes)
+            throw CSSParserErrors.tooManyFunctionAttributes(functionToken: functionToken, values: attributes)
         }
 
         guard case let .string(value1) = attributes[0] else {
-            throw CSSParserErrors.invalidFunctionAttribute(functionToken, attributes[0])
+            throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attributes[0])
         }
         
         guard case let .number(value2, _) = attributes[1] else {
-            throw CSSParserErrors.invalidAttributeValue(functionToken, attributes[1])
+            throw CSSParserErrors.invalidAttributeValue(attributonToken: functionToken, value: attributes[1])
         }
 
         return .custom(StubCustomValueHolder(value1: value1, value2: value2))

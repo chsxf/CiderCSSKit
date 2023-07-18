@@ -10,15 +10,15 @@ final class StubCSSValidationConfigurationAttributeExpansion {
 
     public class func expandPadding(attributeToken token: CSSToken, values: [CSSValue]) throws -> [String:[CSSValue]] {
         if values.count < 1 {
-            throw CSSParserErrors.tooFewShorthandAttributeValues(token, values)
+            throw CSSParserErrors.tooFewShorthandAttributeValues(attributeToken: token, values: values)
         }
         if values.count > 4 {
-            throw CSSParserErrors.tooManyShorthandAttributeValues(token, values)
+            throw CSSParserErrors.tooManyShorthandAttributeValues(attributeToken: token, values: values)
         }
         
         for value in values {
             guard case .number = value else {
-                throw CSSParserErrors.invalidShorthandAttributeValue(token, value)
+                throw CSSParserErrors.invalidShorthandAttributeValue(attributeToken: token, value: value)
             }
         }
 

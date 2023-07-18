@@ -20,8 +20,8 @@ open class CSSValidationConfiguration {
         throw CSSParserErrors.unknownFunction(functionToken)
     }
     
-    open func parseKeyword(stringToken: CSSToken) throws -> CSSValue {
-        throw CSSParserErrors.invalidKeyword(stringToken)
+    open func parseKeyword(attributeToken: CSSToken, potentialKeyword: CSSToken) throws -> CSSValue {
+        throw CSSParserErrors.invalidKeyword(keyword: attributeToken, potentialKeyword: potentialKeyword)
     }
     
     func expandShorthandAttribute(_ token: CSSToken, values: [CSSValue]) throws -> [String:[CSSValue]]? {
@@ -78,7 +78,7 @@ open class CSSValidationConfiguration {
             }
             
             if !matches {
-                throw CSSParserErrors.invalidAttributeValue(attributeToken, value)
+                throw CSSParserErrors.invalidAttributeValue(attributonToken: attributeToken, value: value)
             }
         }
         

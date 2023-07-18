@@ -62,7 +62,7 @@ public enum CSSValue: Equatable {
         }
     }
     
-    static func parseStringToken(_ token: CSSToken, validationConfiguration: CSSValidationConfiguration?) throws -> CSSValue {
+    static func parseStringToken(_ token: CSSToken, attributeToken: CSSToken, validationConfiguration: CSSValidationConfiguration?) throws -> CSSValue {
         guard token.type == .string else { throw CSSParserErrors.invalidToken(token) }
         
         let stringTokenValue = token.value as! String
@@ -73,10 +73,10 @@ public enum CSSValue: Equatable {
             }
             
             if let validationConfiguration {
-                return try validationConfiguration.parseKeyword(stringToken: token)
+                return try validationConfiguration.parseKeyword(attributeToken: attributeToken, potentialKeyword: token)
             }
             
-            throw CSSParserErrors.invalidKeyword(token)
+            throw CSSParserErrors.invalidKeyword(keyword: attributeToken, potentialKeyword: token)
         }
         
         return .string(stringTokenValue)
@@ -103,10 +103,10 @@ public enum CSSValue: Equatable {
     
     public static func parseFloatComponents(numberOfComponents: Int, functionToken: CSSToken, attributes: [CSSValue], from baseIndex: Int = 0, min: Float? = nil, max: Float? = nil, specificUnit: CSSValueUnit? = nil) throws -> [Float] {
         if attributes.count < numberOfComponents + baseIndex {
-            throw CSSParserErrors.tooFewFunctionAttributes(functionToken, attributes)
+            throw CSSParserErrors.tooFewFunctionAttributes(functionToken: functionToken, values: attributes)
         }
         else if attributes.count > numberOfComponents + baseIndex {
-            throw CSSParserErrors.tooManyFunctionAttributes(functionToken, attributes)
+            throw CSSParserErrors.tooManyFunctionAttributes(functionToken: functionToken, values: attributes)
         }
         
         var components = [Float]()
@@ -115,18 +115,18 @@ public enum CSSValue: Equatable {
             let attr = attributes[baseIndex + i]
             if case let .number(value, unit) = attr {
                 if let min, value < min {
-                    throw CSSParserErrors.invalidFunctionAttribute(functionToken, attr)
+                    throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attr)
                 }
                 if let max, value > max {
-                    throw CSSParserErrors.invalidFunctionAttribute(functionToken, attr)
+                    throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attr)
                 }
                 if let specificUnit, unit != specificUnit {
-                    throw CSSParserErrors.invalidFunctionAttribute(functionToken, attr)
+                    throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attr)
                 }
                 components.append(value)
             }
             else {
-                throw CSSParserErrors.invalidFunctionAttribute(functionToken, attr)
+                throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attr)
             }
         }
         
