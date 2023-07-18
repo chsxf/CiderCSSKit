@@ -68,21 +68,30 @@ final class CSSTokenizerTests: XCTestCase {
             CSSToken(line: 12, type: .colon),
             CSSToken(line: 12, type: .string, value: "black"),
             CSSToken(line: 12, type: .semiColon),
-            CSSToken(line: 13, type: .closingBrace),
-            CSSToken(line: 15, type: .string, value: "button"),
-            CSSToken(line: 15, type: .colon),
-            CSSToken(line: 15, type: .string, value: "hover"),
-            CSSToken(line: 15, type: .openingBrace),
-            CSSToken(line: 16, type: .string, value: "color"),
+            CSSToken(line: 13, type: .string, value: "transform-origin"),
+            CSSToken(line: 13, type: .colon),
+            CSSToken(line: 13, type: .number, value: Float(50)),
+            CSSToken(line: 13, type: .percent),
+            CSSToken(line: 13, type: .whitespace),
+            CSSToken(line: 13, type: .number, value: Float(50)),
+            CSSToken(line: 13, type: .percent),
+            CSSToken(line: 13, type: .semiColon),
+            CSSToken(line: 14, type: .closingBrace),
+            CSSToken(line: 16, type: .string, value: "button"),
             CSSToken(line: 16, type: .colon),
-            CSSToken(line: 16, type: .string, value: "red"),
-            CSSToken(line: 16, type: .semiColon),
-            CSSToken(line: 17, type: .closingBrace)
+            CSSToken(line: 16, type: .string, value: "hover"),
+            CSSToken(line: 16, type: .openingBrace),
+            CSSToken(line: 17, type: .string, value: "color"),
+            CSSToken(line: 17, type: .colon),
+            CSSToken(line: 17, type: .string, value: "red"),
+            CSSToken(line: 17, type: .semiColon),
+            CSSToken(line: 18, type: .closingBrace)
         ]
         
         XCTAssertEqual(tokens.count, expectedTokens.count)
 
         for i in 0..<expectedTokens.count {
+            print(tokens[i])
             XCTAssertEqual(tokens[i], expectedTokens[i])
         }
     }

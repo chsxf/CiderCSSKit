@@ -10,6 +10,7 @@ public enum CSSTokenType {
     case sharp
     case dot
     case star
+    case percent
     case string
     case number
     case whitespace

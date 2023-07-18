@@ -219,4 +219,12 @@ final class CSSParserTests: XCTestCase {
         let _ = try CSSParser.parse(buffer: "* {}")
     }
     
+    func testPercents() throws {
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        
+        let stub = StubCSSConsumer(type: "button", pseudoClasses: [ "hover" ])
+        let values = parsedRules.getValue(with: "transform-origin", for: stub)
+        XCTAssertEqual(values, [ .number(0.5, .none), .number(0.75, .none) ])
+    }
+    
 }

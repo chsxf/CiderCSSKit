@@ -12,8 +12,9 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         "background-color": [.color],
         "color": [.color],
         "name": [.string, .custom("CustomValueHolder")],
+        "padding": [.number],
         "text-color": [.color],
-        "padding": [.number]
+        "transform-origin": [.number]
     ] }
     
     override var shorthandAttributes: [String : CSSShorthandAttributeExpansion] {

@@ -219,7 +219,21 @@ public final class CSSParser {
                 }
             case .number:
                 numberPart = token.value as? Float
-                eligibleTokenTypes = [.string, .comma]
+                eligibleTokenTypes = [.string, .comma, .percent]
+                if level == 0 {
+                    eligibleTokenTypes.append(.whitespace)
+                    eligibleTokenTypes.append(.semiColon)
+                }
+                else {
+                    eligibleTokenTypes.append(.closingParenthesis)
+                }
+            case .percent:
+                eligibleTokenTypes = [.comma, .semiColon]
+                guard let percentNumberPart = numberPart else {
+                    throw CSSParserErrors.invalidToken(token)
+                }
+                values.append(.number(percentNumberPart / 100.0, .none))
+                numberPart = nil
                 if level == 0 {
                     eligibleTokenTypes.append(.whitespace)
                     eligibleTokenTypes.append(.semiColon)

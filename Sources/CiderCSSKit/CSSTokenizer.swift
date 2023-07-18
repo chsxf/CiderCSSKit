@@ -70,6 +70,8 @@ final class CSSTokenizer {
             return CSSToken(line: currentLine, type: .comma)
         case "#":
             return CSSToken(line: currentLine, type: .sharp)
+        case "%":
+            return CSSToken(line: currentLine, type: .percent)
         case ".":
             return CSSToken(line: currentLine, type: .dot)
         case "*":
