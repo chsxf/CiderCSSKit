@@ -76,7 +76,7 @@ public enum CSSValue: Equatable {
                 return try validationConfiguration.parseKeyword(attributeToken: attributeToken, potentialKeyword: token)
             }
             
-            throw CSSParserErrors.invalidKeyword(keyword: attributeToken, potentialKeyword: token)
+            throw CSSParserErrors.invalidKeyword(attributeToken: attributeToken, potentialKeyword: token)
         }
         
         return .string(stringTokenValue)

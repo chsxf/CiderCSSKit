@@ -4,7 +4,7 @@ public enum CSSParserErrors : Error {
     
     case invalidToken(CSSToken)
     case malformedToken(CSSToken)
-    case invalidKeyword(keyword: CSSToken, potentialKeyword: CSSToken)
+    case invalidKeyword(attributeToken: CSSToken, potentialKeyword: CSSToken)
     case invalidAttribute(CSSToken)
     case invalidAttributeValue(attributonToken: CSSToken, value: CSSValue)
     case invalidUnit(CSSToken)

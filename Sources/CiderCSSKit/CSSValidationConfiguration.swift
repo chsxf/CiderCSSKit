@@ -21,7 +21,7 @@ open class CSSValidationConfiguration {
     }
     
     open func parseKeyword(attributeToken: CSSToken, potentialKeyword: CSSToken) throws -> CSSValue {
-        throw CSSParserErrors.invalidKeyword(keyword: attributeToken, potentialKeyword: potentialKeyword)
+        throw CSSParserErrors.invalidKeyword(attributeToken: attributeToken, potentialKeyword: potentialKeyword)
     }
     
     func expandShorthandAttribute(_ token: CSSToken, values: [CSSValue]) throws -> [String:[CSSValue]]? {
