@@ -11,6 +11,7 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         "background": [.color],
         "background-color": [.color],
         "color": [.color],
+        "font-family": [.string],
         "name": [.string, .custom("CustomValueHolder")],
         "padding": [.number],
         "text-color": [.color],
@@ -43,7 +44,11 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
             return black
         }
         
-        throw CSSParserErrors.invalidKeyword(keyword: attributeToken, potentialKeyword: potentialKeyword)
+        if stringTokenValue == "sans-serif" {
+            return .string("SF Pro")
+        }
+        
+        throw CSSParserErrors.invalidKeyword(attributeToken: attributeToken, potentialKeyword: potentialKeyword)
     }
     
     override func validateCustomAttributeValue(attributeToken: CSSToken, value: CSSValue, customTypeName: String) -> Bool {

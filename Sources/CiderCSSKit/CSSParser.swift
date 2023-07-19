@@ -179,7 +179,7 @@ public final class CSSParser {
         var values = [CSSValue]()
         
         eligibleTokenTypes = [.string, .sharp, .number]
-        stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][0-9a-z]*$", options: .caseInsensitive)
+        stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][0-9a-z-]*$", options: .caseInsensitive)
         
         var currentStringToken: CSSToken? = nil
         var inHexadecimalColor = false
@@ -262,7 +262,7 @@ public final class CSSParser {
                 }
 
                 eligibleTokenTypes = [.string, .sharp, .number]
-                stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][0-9a-z]*$", options: .caseInsensitive)
+                stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][0-9a-z-]*$", options: .caseInsensitive)
             case .closingParenthesis, .semiColon:
                 if !inHexadecimalColor && currentStringToken != nil {
                     values.append(try CSSValue.parseStringToken(currentStringToken!, attributeToken: attributeToken, validationConfiguration: validationConfiguration))
