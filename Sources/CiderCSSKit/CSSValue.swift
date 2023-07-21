@@ -9,8 +9,18 @@ public enum CSSValue: Equatable {
     case length(Float, CSSLengthUnit)
     case number(Float)
     case percentage(Float)
+    case separator
     case string(String)
     case url(URL)
+    
+    public var isNumeric: Bool {
+        switch self {
+        case .angle, .length, .number, .percentage:
+            return true
+        default:
+            return false
+        }
+    }
     
     public static func == (lhs: CSSValue, rhs: CSSValue) -> Bool {
         switch lhs {
@@ -47,6 +57,11 @@ public enum CSSValue: Equatable {
         case let .percentage(leftPercent):
             if case let .percentage(rightPercent) = rhs {
                 return leftPercent == rightPercent
+            }
+            
+        case .separator:
+            if case .separator = rhs {
+                return true
             }
             
         case let .string(leftString):

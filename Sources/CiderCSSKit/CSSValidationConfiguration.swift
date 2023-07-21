@@ -1,11 +1,10 @@
-public typealias CSSShorthandAttributeExpansion = (CSSToken, [CSSValue]) throws -> [String:[CSSValue]]
+public typealias CSSShorthandAttributeExpansion = (String, [CSSValue]) -> [String:[CSSValue]]
 
 open class CSSValidationConfiguration {
     
     public init() { }
     
-    open var valueTypesByAttribute: [String:[CSSValueType]] { [:] }
-    open var shorthandAttributes: [String: CSSShorthandAttributeExpansion] { [:] }
+    open var valueGroupingTypeByAttribute: [String:CSSValueGroupingType] { [:] }
     
     open func parseFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         throw CSSParserErrors.unknownFunction(functionToken)
@@ -20,8 +19,13 @@ open class CSSValidationConfiguration {
             throw CSSParserErrors.invalidToken(token)
         }
         
-        guard let expansionMethod = shorthandAttributes[attributeName] else { return nil }
-        return try expansionMethod(token, values)
+        guard case let .shorthand(groups, customExpansionMethod) = valueGroupingTypeByAttribute[attributeName] else { return nil }
+        
+        if let customExpansionMethod {
+            return customExpansionMethod(attributeName, values)
+        }
+        
+        return CSSValueGroupingType.expand(shorthand: values, groups, token, self)
     }
     
     func validateAttributeValues(attributeToken: CSSToken, values: [CSSValue]) throws -> Bool {
@@ -32,48 +36,15 @@ open class CSSValidationConfiguration {
             throw CSSParserErrors.invalidToken(attributeToken)
         }
         
-        guard
-            let allowedValueTypes = valueTypesByAttribute[attributeName],
-            !allowedValueTypes.isEmpty
-        else {
+        guard let allowedValueGroupingType = valueGroupingTypeByAttribute[attributeName] else {
             throw CSSParserErrors.invalidAttribute(attributeToken)
         }
         
-        for value in values {
-            var matches = false
-            for allowedValueType in allowedValueTypes {
-                switch allowedValueType {
-                case .string:
-                    if case .string = value {
-                        matches = true
-                    }
-                    break
-                case .number:
-                    if case .number = value {
-                        matches = true
-                    }
-                    break
-                case .color:
-                    if case .color = value {
-                        matches = true
-                    }
-                    break
-                case let .custom(typeName):
-                    matches = validateCustomAttributeValue(attributeToken: attributeToken, value: value, customTypeName: typeName)
-                    break
-                }
-                
-                if matches {
-                    break
-                }
-            }
-            
-            if !matches {
-                throw CSSParserErrors.invalidAttributeValue(attributonToken: attributeToken, value: value)
-            }
+        if !values.isEmpty && allowedValueGroupingType.matches(values: values, for: attributeToken, validationConfiguration: self) {
+            return true
         }
         
-        return true
+        throw CSSParserErrors.invalidAttributeValues(attributeToken: attributeToken, values: values)
     }
     
     open func validateCustomAttributeValue(attributeToken: CSSToken, value: CSSValue, customTypeName: String) -> Bool {

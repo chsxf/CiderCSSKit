@@ -76,6 +76,8 @@ final class CSSTokenizer {
             return CSSToken(line: currentLine, type: .dot)
         case "*":
             return CSSToken(line: currentLine, type: .star)
+        case "/":
+            return CSSToken(line: currentLine, type: .forwardSlash)
         case "\"":
             return try getLiteralString()
         default:
@@ -197,8 +199,8 @@ final class CSSTokenizer {
     private static func filterWhitespaceTokens(_ unfilteredTokens: [CSSToken]) -> [CSSToken] {
         var filteredTokens = [CSSToken]()
         
-        let discardableWhitespaceFollowers: [CSSTokenType] = [.openingBrace, .closingBrace, .comma, .closingParenthesis, .colon, .semiColon]
-        let discardableWhitespacePredecessors: [CSSTokenType] = [.openingBrace, .closingBrace, .comma, .openingParenthesis, .closingParenthesis, .colon, .semiColon]
+        let discardableWhitespaceFollowers: [CSSTokenType] = [.openingBrace, .closingBrace, .comma, .closingParenthesis, .colon, .semiColon, .forwardSlash]
+        let discardableWhitespacePredecessors: [CSSTokenType] = [.openingBrace, .closingBrace, .comma, .openingParenthesis, .closingParenthesis, .colon, .semiColon, .forwardSlash]
         
         for i in 0..<unfilteredTokens.count {
             let token = unfilteredTokens[i]

@@ -7,58 +7,18 @@ final class StubCSSValidationConfigurationAttributeExpansion {
     private static let paddingRight = "padding-right"
     private static let paddingBottom = "padding-bottom"
     private static let paddingLeft = "padding-left"
+    
+    private static let font = "font"
+    private static let fontSize = "font-size"
+    private static let fontFamily = "font-family"
+    private static let lineHeight = "line-height"
 
-    public class func expandPadding(attributeToken token: CSSToken, values: [CSSValue]) throws -> [String:[CSSValue]] {
-        if values.count < 1 {
-            throw CSSParserErrors.tooFewShorthandAttributeValues(attributeToken: token, values: values)
-        }
-        if values.count > 4 {
-            throw CSSParserErrors.tooManyShorthandAttributeValues(attributeToken: token, values: values)
-        }
-        
-        for value in values {
-            switch value {
-            case .number, .length:
-                break
-            default:
-                throw CSSParserErrors.invalidShorthandAttributeValue(attributeToken: token, value: value)
-            }
-        }
-
-        switch values.count {
-        case 2:
-            return [
-                padding: [ values[0], values[1], values[0], values[1] ],
-                paddingTop: [ values[0] ],
-                paddingRight: [ values[1] ],
-                paddingBottom: [ values[0] ],
-                paddingLeft: [ values[1] ]
-            ]
-        case 3:
-            return [
-                padding: [ values[0], values[1], values[2], values[1] ],
-                paddingTop: [ values[0] ],
-                paddingRight: [ values[1] ],
-                paddingBottom: [ values[2] ],
-                paddingLeft: [ values[1] ]
-            ]
-        case 4:
-            return [
-                padding: [ values[0], values[1], values[2], values[3] ],
-                paddingTop: [ values[0] ],
-                paddingRight: [ values[1] ],
-                paddingBottom: [ values[2] ],
-                paddingLeft: [ values[3] ]
-            ]
-        default:
-            return [
-                padding: [ values[0], values[0], values[0], values[0] ],
-                paddingTop: [ values[0] ],
-                paddingRight: [ values[0] ],
-                paddingBottom: [ values[0] ],
-                paddingLeft: [ values[0] ]
-            ]
-        }
+    public class func expandPadding(attributeName: String, values: [CSSValue]) -> [String:[CSSValue]] {
+        return CSSBuiltinAttributeExpanders.fourValuesExpander(shorthandAttributeName: padding, expandedAttributeNames: [paddingTop, paddingRight, paddingBottom, paddingLeft], values: values)
+    }
+    
+    public static func expandFont(attributeName: String, values: [CSSValue]) -> [String:[CSSValue]] {
+        return [:]
     }
     
 }

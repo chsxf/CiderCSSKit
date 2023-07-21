@@ -141,18 +141,30 @@ final class CSSParserTests: XCTestCase {
     }
     
     func testShorthandAttributes() throws {
-        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
+        let parsedRules = try CSSParser.parse(buffer: Self.bufferCustom, validationConfiguration: StubCSSValidationConfiguration())
         
-        let stub = StubCSSConsumer(type: "button")
+        let stub = StubCSSConsumer(type: "button", identifier: "test")
         let allValues = parsedRules.getAllValues(for: stub)
-        XCTAssertEqual(allValues.count, 9)
+        XCTAssertEqual(allValues.count, 18)
         
         let expectedAttributes: [String: [CSSValue]] = [
             "padding": [ .length(10, .px), .length(20, .px), .length(10, .px), .length(20, .px) ],
             "padding-top": [ .length(10, .px) ],
             "padding-right": [ .length(20, .px) ],
             "padding-bottom": [ .length(10, .px) ],
-            "padding-left": [ .length(20, .px) ]
+            "padding-left": [ .length(20, .px) ],
+            
+            "font": [ .length(12, .px), .separator, .length(18, .px), .string("Arial") ],
+            "font-size": [ .length(12, .px) ],
+            "line-height": [ .length(18, .px) ],
+            "font-family": [ .string("Arial") ],
+            
+            "border-image": [ .url(URL(string: "https://example.com/image.png")!), .number(27), .number(23), .separator, .length(50, .px), .length(30, .px), .separator, .length(1, .rem), .keyword("stretch") ],
+            "border-image-source": [ .url(URL(string: "https://example.com/image.png")!) ],
+            "border-image-slice": [ .number(27), .number(23) ],
+            "border-image-width": [ .length(50, .px), .length(30, .px) ],
+            "border-image-outset": [ .length(1, .rem) ],
+            "border-image-repeat": [ .keyword("stretch") ]
         ]
         for expectedAttribute in expectedAttributes {
             let attributeValue = allValues[expectedAttribute.key]
@@ -186,9 +198,9 @@ final class CSSParserTests: XCTestCase {
             let _ = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubInvalidCSSValidationConfiguration())
             XCTFail("Error should be raised")
         }
-        catch CSSParserErrors.invalidAttributeValue(let token, let value) {
+        catch CSSParserErrors.invalidAttributeValues(let token, let values) {
             XCTAssertEqual(token, CSSToken(line: 7, type: .string, value: "background"))
-            XCTAssertEqual(value, CSSColorKeywords.getValue(for: "red"))
+            XCTAssertEqual(values[0], CSSColorKeywords.getValue(for: "red"))
         }
     }
     

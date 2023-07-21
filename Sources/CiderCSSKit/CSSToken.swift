@@ -1,18 +1,19 @@
 public enum CSSTokenType {
     
-    case openingBrace
     case closingBrace
-    case openingParenthesis
     case closingParenthesis
-    case semiColon
     case colon
     case comma
-    case sharp
     case dot
-    case star
-    case percent
-    case string
+    case forwardSlash
     case number
+    case openingBrace
+    case openingParenthesis
+    case percent
+    case semiColon
+    case sharp
+    case star
+    case string
     case whitespace
     
 }

@@ -6,7 +6,8 @@ public enum CSSParserErrors : Error {
     case malformedToken(CSSToken)
     case invalidKeyword(attributeToken: CSSToken, potentialKeyword: CSSToken)
     case invalidAttribute(CSSToken)
-    case invalidAttributeValue(attributonToken: CSSToken, value: CSSValue)
+    case invalidAttributeValue(attributeToken: CSSToken, value: CSSValue)
+    case invalidAttributeValues(attributeToken: CSSToken, values: [CSSValue])
     case invalidUnit(CSSToken)
     case unknownFunction(CSSToken)
     case invalidFunctionAttribute(functionToken: CSSToken, value: CSSValue)
@@ -158,8 +159,8 @@ public final class CSSParser {
                 if try validationConfiguration?.validateAttributeValues(attributeToken: currentAttributeNameToken!, values: attributeValues) ?? true {
                     attributes[currentAttributeName] = attributeValues
                     
-                    if let expandedShorhand = try validationConfiguration?.expandShorthandAttribute(currentAttributeNameToken!, values: attributeValues) {
-                        for entry in expandedShorhand {
+                    if let expandedShorthand = try validationConfiguration?.expandShorthandAttribute(currentAttributeNameToken!, values: attributeValues) {
+                        for entry in expandedShorthand {
                             attributes[entry.key] = entry.value
                         }
                     }
@@ -203,15 +204,15 @@ public final class CSSParser {
                     let unitString = token.value as! String
                     if let unit = CSSLengthUnit(rawValue: unitString) {
                         values.append(.length(unitNumberPart, unit))
-                        numberPart = nil
                     }
                     else if let unit = CSSAngleUnit(rawValue: unitString) {
                         values.append(.angle(unitNumberPart, unit))
-                    numberPart = nil
-                }
+                    }
                     else {
                         throw CSSParserErrors.invalidUnit(token)
                     }
+                    numberPart = nil
+                    eligibleTokenTypes.append(.forwardSlash)
                 }
                 else {
                     currentStringToken = token
@@ -226,7 +227,7 @@ public final class CSSParser {
                 }
             case .number:
                 numberPart = token.value as? Float
-                eligibleTokenTypes = [.string, .comma, .percent]
+                eligibleTokenTypes = [.string, .comma, .percent, .forwardSlash]
                 if level == 0 {
                     eligibleTokenTypes.append(.whitespace)
                     eligibleTokenTypes.append(.semiColon)
@@ -235,7 +236,7 @@ public final class CSSParser {
                     eligibleTokenTypes.append(.closingParenthesis)
                 }
             case .percent:
-                eligibleTokenTypes = [.comma, .semiColon]
+                eligibleTokenTypes = [.comma, .semiColon, .forwardSlash]
                 guard let percentNumberPart = numberPart else {
                     throw CSSParserErrors.invalidToken(token)
                 }
@@ -257,8 +258,11 @@ public final class CSSParser {
                 let parsedFunctionValue = try CSSValue.parseFunction(functionToken: currentStringToken!, attributes: functionAttributes, validationConfiguration: validationConfiguration)
                 values.append(parsedFunctionValue)
                 currentStringToken = nil
-                eligibleTokenTypes = [.closingParenthesis, .semiColon, .whitespace, .comma]
+                eligibleTokenTypes = [.closingParenthesis, .semiColon, .whitespace, .comma, .number, .string, .forwardSlash]
             case .comma, .whitespace:
+                eligibleTokenTypes = [.string, .sharp, .number]
+                stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][0-9a-z-]*$", options: .caseInsensitive)
+
                 if !inHexadecimalColor && currentStringToken != nil {
                     values.append(try CSSValue.parseStringToken(currentStringToken!, attributeToken: attributeToken, validationConfiguration: validationConfiguration))
                     currentStringToken = nil
@@ -266,10 +270,11 @@ public final class CSSParser {
                 else if let number = numberPart {
                     values.append(.number(number))
                     numberPart = nil
+                    
+                    if token.type == .whitespace {
+                        eligibleTokenTypes.append(.forwardSlash)
+                    }
                 }
-
-                eligibleTokenTypes = [.string, .sharp, .number]
-                stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][0-9a-z-]*$", options: .caseInsensitive)
             case .closingParenthesis, .semiColon:
                 if !inHexadecimalColor && currentStringToken != nil {
                     values.append(try CSSValue.parseStringToken(currentStringToken!, attributeToken: attributeToken, validationConfiguration: validationConfiguration))
@@ -281,6 +286,14 @@ public final class CSSParser {
                 }
                 
                 foundEnd = true
+            case .forwardSlash:
+                if let number = numberPart {
+                    values.append(.number(number))
+                    numberPart = nil
+                }
+                
+                values.append(.separator)
+                eligibleTokenTypes = [.number, .string]
             default:
                 break
             }

@@ -2,13 +2,12 @@ import CiderCSSKit
 
 class StubInvalidCSSValidationConfiguration: CSSValidationConfiguration {
     
-    override var valueTypesByAttribute: [String : [CSSValueType]] { [
-        "background": [.string],
-        "background-color": [.color],
-        "color": [.color],
-        "name": [.string],
-        "text-color": [.color]
+    override var valueGroupingTypeByAttribute: [String : CSSValueGroupingType] { [
+        "background": .multiple([.string]),
+        "background-color": .single([.color]),
+        "color": .single([.color]),
+        "name": .single([.string]),
+        "text-color": .single([.color])
     ] }
     
 }
-
