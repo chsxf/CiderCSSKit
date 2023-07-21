@@ -28,10 +28,12 @@ Here's the list of existing and missing features:
 
 Even if the ultimate goal is to support all syntax features, there is a long road ahead. Below is a list of short-term planned improvements:
 
+- [ ] Add support for `hsl()` color function ([#12](https://github.com/chsxf/CiderCSSKit/issues/12))
 - [ ] Add support for the adjacent sibling combinator (`+`) ([#6](https://github.com/chsxf/CiderCSSKit/issues/6))
 - [ ] Add support for the child combinator (`>`) ([#7](https://github.com/chsxf/CiderCSSKit/issues/7))
 - [ ] Add support for the general sibling combinator (`~`) ([#8](https://github.com/chsxf/CiderCSSKit/issues/8))
 - [ ] Provides basic validation configurations for most common attributes, functions and keywords
+- [X] ~~Add support for shorthand attributes with multiple types ([#13](https://github.com/chsxf/CiderCSSKit/issues/13))~~
 - [X] ~~Fix rgb() and rbga() methods ([#11](https://github.com/chsxf/CiderCSSKit/issues/11))~~
 - [X] ~~Add support for all units ([#9](https://github.com/chsxf/CiderCSSKit/issues/9))~~
 - [X] ~~Add support for chained CSS rules ([#10](https://github.com/chsxf/CiderCSSKit/issues/10))~~)

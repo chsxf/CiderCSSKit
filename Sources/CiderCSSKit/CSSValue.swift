@@ -1,65 +1,66 @@
-public enum CSSValueUnit: String, CaseIterable {
-    case none = ""
-    case ch
-    case cm
-    case dvh
-    case dvw
-    case em
-    case ex
-    case `in`
-    case lh
-    case lvh
-    case lvw
-    case mm
-    case pc
-    case pt
-    case px
-    case Q
-    case rem
-    case rlh
-    case svh
-    case svw
-    case vb
-    case vh
-    case vi
-    case vmax
-    case vmin
-    case vw
-}
+import Foundation
 
 public enum CSSValue: Equatable {
     
-    case string(String)
-    case number(Float, CSSValueUnit)
+    case angle(Float, CSSAngleUnit)
     case color(Float, Float, Float, Float)
     case custom(any Equatable)
+    case keyword(String)
+    case length(Float, CSSLengthUnit)
+    case number(Float)
+    case percentage(Float)
+    case string(String)
+    case url(URL)
     
     public static func == (lhs: CSSValue, rhs: CSSValue) -> Bool {
         switch lhs {
-        case let .string(leftString):
-            if case let .string(rightString) = rhs {
-                return leftString == rightString
+        case let angle(leftValue, leftUnit):
+            if case let .angle(rightValue, rightUnit) = rhs {
+                return leftValue == rightValue && leftUnit == rightUnit
             }
-            return false
-            
-        case let .number(leftNumber, leftUnit):
-            if case let .number(rightNumber, rightUnit) = rhs {
-                return leftNumber == rightNumber && leftUnit == rightUnit
-            }
-            return false
             
         case let .color(leftR, leftG, leftB, leftA):
             if case let .color(rightR, rightG, rightB, rightA) = rhs {
                 return leftR == rightR && leftG == rightG && leftB == rightB && leftA == rightA
             }
-            return false
             
         case let .custom(leftEquatable):
             if case let .custom(rightEquatable) = rhs {
                 return leftEquatable.isEqual(rightEquatable)
             }
-            return false
+
+        case let .keyword(leftKeyword):
+            if case let .keyword(rightKeyword) = rhs {
+                return leftKeyword == rightKeyword
+            }
+            
+        case let length(leftValue, leftUnit):
+            if case let .length(rightValue, rightUnit) = rhs {
+                return leftValue == rightValue && leftUnit == rightUnit
+            }
+            
+        case let .number(leftNumber):
+            if case let .number(rightNumber) = rhs {
+                return leftNumber == rightNumber
+            }
+
+        case let .percentage(leftPercent):
+            if case let .percentage(rightPercent) = rhs {
+                return leftPercent == rightPercent
+            }
+            
+        case let .string(leftString):
+            if case let .string(rightString) = rhs {
+                return leftString == rightString
+            }
+            
+        case let .url(leftURL):
+            if case let .url(rightURL) = rhs {
+                return leftURL == rightURL
+            }
         }
+        
+        return false
     }
     
     static func parseStringToken(_ token: CSSToken, attributeToken: CSSToken, validationConfiguration: CSSValidationConfiguration?) throws -> CSSValue {
@@ -68,8 +69,8 @@ public enum CSSValue: Equatable {
         let stringTokenValue = token.value as! String
         
         if !token.literalString {
-            if let builtinKeywordValue = CSSValueKeywords.getValue(for: stringTokenValue.lowercased()) {
-                return builtinKeywordValue
+            if let builtinColorValue = CSSColorKeywords.getValue(for: stringTokenValue.lowercased()) {
+                return builtinColorValue
             }
             
             if let validationConfiguration {
@@ -87,9 +88,11 @@ public enum CSSValue: Equatable {
         
         switch functionName {
         case "rgb":
-            return try Self.parseRGBFunction(functionToken: functionToken, attributes: attributes)
+            return try Self.parseRGBFunction(functionToken, attributes)
         case "rgba":
-            return try Self.parseRGBAFunction(functionToken: functionToken, attributes: attributes)
+            return try Self.parseRGBAFunction(functionToken, attributes)
+        case "url":
+            return try Self.parseURL(functionToken, attributes)
         default:
             break
         }
@@ -101,26 +104,27 @@ public enum CSSValue: Equatable {
         throw CSSParserErrors.unknownFunction(functionToken)
     }
     
-    public static func parseFloatComponents(numberOfComponents: Int, functionToken: CSSToken, attributes: [CSSValue], from baseIndex: Int = 0, min: Float? = nil, max: Float? = nil, specificUnit: CSSValueUnit? = nil) throws -> [Float] {
-        if attributes.count < numberOfComponents + baseIndex {
+    private static func validatesArgumentCount(numberOfArguments: Int, _ functionToken: CSSToken, _ attributes: [CSSValue]) throws {
+        if attributes.count < numberOfArguments {
             throw CSSParserErrors.tooFewFunctionAttributes(functionToken: functionToken, values: attributes)
         }
-        else if attributes.count > numberOfComponents + baseIndex {
+        else if attributes.count > numberOfArguments {
             throw CSSParserErrors.tooManyFunctionAttributes(functionToken: functionToken, values: attributes)
         }
+    }
+    
+    private static func parseFloatComponents(numberOfComponents: Int, _ functionToken: CSSToken, _ attributes: [CSSValue], from baseIndex: Int = 0, min: Float? = nil, max: Float? = nil) throws -> [Float] {
+        try validatesArgumentCount(numberOfArguments: numberOfComponents + baseIndex, functionToken, attributes)
         
         var components = [Float]()
         
         for i in 0..<numberOfComponents {
             let attr = attributes[baseIndex + i]
-            if case let .number(value, unit) = attr {
+            if case let .number(value) = attr {
                 if let min, value < min {
                     throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attr)
                 }
                 if let max, value > max {
-                    throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attr)
-                }
-                if let specificUnit, unit != specificUnit {
                     throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attr)
                 }
                 components.append(value)
@@ -133,17 +137,25 @@ public enum CSSValue: Equatable {
         return components
     }
     
-    private static func parseRGBFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
-        let components = try parseFloatComponents(numberOfComponents: 3, functionToken: functionToken, attributes: attributes, min: 0, max: 255, specificUnit: CSSValueUnit.none)
+    private static func parseRGBFunction(_ functionToken: CSSToken, _ attributes: [CSSValue]) throws -> CSSValue {
+        let components = try parseFloatComponents(numberOfComponents: 3, functionToken, attributes, min: 0, max: 255)
         let roundedComponents = components.map { ($0 / 255.0).rounded(toPlaces: 4) }
         return .color(roundedComponents[0], roundedComponents[1], roundedComponents[2], 1)
     }
     
-    private static func parseRGBAFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
-        let rgbComponents = try parseFloatComponents(numberOfComponents: 4, functionToken: functionToken, attributes: attributes, min: 0, max: 255, specificUnit: CSSValueUnit.none)
+    private static func parseRGBAFunction(_ functionToken: CSSToken, _ attributes: [CSSValue]) throws -> CSSValue {
+        let rgbComponents = try parseFloatComponents(numberOfComponents: 4, functionToken, attributes, min: 0, max: 255)
         let roundedRGBComponents = rgbComponents.map { ($0 / 255.0).rounded(toPlaces: 4) }
-        let alphaComponent = try parseFloatComponents(numberOfComponents: 1, functionToken: functionToken, attributes: attributes, from: 3)
+        let alphaComponent = try parseFloatComponents(numberOfComponents: 1, functionToken, attributes, from: 3)
         return .color(roundedRGBComponents[0], roundedRGBComponents[1], roundedRGBComponents[2], alphaComponent[0].rounded(toPlaces: 4))
+    }
+    
+    private static func parseURL(_ functionToken: CSSToken, _ attributes: [CSSValue]) throws -> CSSValue {
+        try validatesArgumentCount(numberOfArguments: 1, functionToken, attributes)
+        guard case let .string(urlString) = attributes[0], let url = URL(string: urlString) else {
+            throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attributes[0])
+        }
+        return .url(url)
     }
     
 }

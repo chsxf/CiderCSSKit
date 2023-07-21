@@ -17,7 +17,10 @@ final class StubCSSValidationConfigurationAttributeExpansion {
         }
         
         for value in values {
-            guard case .number = value else {
+            switch value {
+            case .number, .length:
+                break
+            default:
                 throw CSSParserErrors.invalidShorthandAttributeValue(attributeToken: token, value: value)
             }
         }

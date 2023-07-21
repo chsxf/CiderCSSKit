@@ -40,7 +40,7 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         
         let stringTokenValue = potentialKeyword.value as! String
         
-        if stringTokenValue == "invertedwhite", let black = CSSValueKeywords.getValue(for: "black") {
+        if stringTokenValue == "invertedwhite", let black = CSSColorKeywords.getValue(for: "black") {
             return black
         }
         
@@ -66,7 +66,7 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
             throw CSSParserErrors.tooManyFunctionAttributes(functionToken: functionToken, values: attributes)
         }
 
-        guard case let .string(colorName) = attributes[0], let color = CSSValueKeywords.colors[colorName] else {
+        guard case let .string(colorName) = attributes[0], let color = CSSColorKeywords.colors[colorName] else {
             throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attributes[0])
         }
 
@@ -85,8 +85,8 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
             throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attributes[0])
         }
         
-        guard case let .number(value2, _) = attributes[1] else {
-            throw CSSParserErrors.invalidAttributeValue(attributonToken: functionToken, value: attributes[1])
+        guard case let .number(value2) = attributes[1] else {
+            throw CSSParserErrors.invalidAttributeValue(attributeToken: functionToken, value: attributes[1])
         }
 
         return .custom(StubCustomValueHolder(value1: value1, value2: value2))

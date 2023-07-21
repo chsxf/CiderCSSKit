@@ -200,11 +200,18 @@ public final class CSSParser {
                     inHexadecimalColor = false
                 }
                 else if let unitNumberPart = numberPart {
-                    guard let unit = CSSValueUnit(rawValue: token.value as! String) else {
+                    let unitString = token.value as! String
+                    if let unit = CSSLengthUnit(rawValue: unitString) {
+                        values.append(.length(unitNumberPart, unit))
+                        numberPart = nil
+                    }
+                    else if let unit = CSSAngleUnit(rawValue: unitString) {
+                        values.append(.angle(unitNumberPart, unit))
+                    numberPart = nil
+                }
+                    else {
                         throw CSSParserErrors.invalidUnit(token)
                     }
-                    values.append(.number(unitNumberPart, unit))
-                    numberPart = nil
                 }
                 else {
                     currentStringToken = token
@@ -232,7 +239,7 @@ public final class CSSParser {
                 guard let percentNumberPart = numberPart else {
                     throw CSSParserErrors.invalidToken(token)
                 }
-                values.append(.number(percentNumberPart / 100.0, .none))
+                values.append(.percentage(percentNumberPart))
                 numberPart = nil
                 if level == 0 {
                     eligibleTokenTypes.append(.whitespace)
@@ -256,8 +263,8 @@ public final class CSSParser {
                     values.append(try CSSValue.parseStringToken(currentStringToken!, attributeToken: attributeToken, validationConfiguration: validationConfiguration))
                     currentStringToken = nil
                 }
-                else if let unitNumberPart = numberPart {
-                    values.append(.number(unitNumberPart, .none))
+                else if let number = numberPart {
+                    values.append(.number(number))
                     numberPart = nil
                 }
 
@@ -268,8 +275,8 @@ public final class CSSParser {
                     values.append(try CSSValue.parseStringToken(currentStringToken!, attributeToken: attributeToken, validationConfiguration: validationConfiguration))
                     currentStringToken = nil
                 }
-                else if let unitNumberPart = numberPart {
-                    values.append(.number(unitNumberPart, .none))
+                else if let number = numberPart {
+                    values.append(.number(number))
                     numberPart = nil
                 }
                 

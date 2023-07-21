@@ -1,5 +1,5 @@
 #test {
-    background-color: yellow;
+    background-color: foo("yellow");
     name: custommethod("test1", 1.0);
     color: invertedwhite;
     font-family: sans-serif;

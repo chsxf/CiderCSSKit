@@ -28,6 +28,7 @@ let package = Package(
                 .copy("TokenizerTests.ckcss"),
                 .copy("ParserTests.ckcss"),
                 .copy("ParserCustomTests.ckcss"),
+                .copy("ParserInvalidCustomTests.ckcss"),
                 .copy("ParserRuleBlockTests.ckcss")
             ]),
     ]

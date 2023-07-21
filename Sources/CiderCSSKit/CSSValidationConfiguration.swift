@@ -1,12 +1,3 @@
-public enum CSSValueType {
-    
-    case string
-    case number
-    case color
-    case custom(String)
-    
-}
-
 public typealias CSSShorthandAttributeExpansion = (CSSToken, [CSSValue]) throws -> [String:[CSSValue]]
 
 open class CSSValidationConfiguration {

@@ -5,6 +5,7 @@ final class CSSParserTests: XCTestCase {
 
     private static var buffer: String!
     private static var bufferCustom: String!
+    private static var bufferInvalidCustom: String!
     private static var bufferRuleBlock: String!
     
     override class func setUp() {
@@ -15,6 +16,10 @@ final class CSSParserTests: XCTestCase {
         let customDataURL = Bundle.module.url(forResource: "ParserCustomTests", withExtension: "ckcss")
         XCTAssertNotNil(customDataURL)
         Self.bufferCustom = try! String(contentsOf: customDataURL!)
+        
+        let invalidCustomDataURL = Bundle.module.url(forResource: "ParserInvalidCustomTests", withExtension: "ckcss")
+        XCTAssertNotNil(invalidCustomDataURL)
+        Self.bufferInvalidCustom = try! String(contentsOf: invalidCustomDataURL!)
         
         let ruleBlockDataURL = Bundle.module.url(forResource: "ParserRuleBlockTests", withExtension: "ckcss")
         XCTAssertNotNil(ruleBlockDataURL)
@@ -40,7 +45,7 @@ final class CSSParserTests: XCTestCase {
         let unwrappedValue = try XCTUnwrap(value)
         XCTAssertEqual(unwrappedValue.count, 1)
         
-        XCTAssertEqual(unwrappedValue[0], CSSValueKeywords.getValue(for: "yellow"))
+        XCTAssertEqual(unwrappedValue[0], CSSColorKeywords.getValue(for: "yellow"))
     }
     
     func testHierarchicalAttributeRetrieval() throws {
@@ -56,7 +61,7 @@ final class CSSParserTests: XCTestCase {
         let unwrappedValue2 = try XCTUnwrap(value2)
         XCTAssertEqual(unwrappedValue2.count, 1)
         
-        XCTAssertEqual(unwrappedValue2[0], CSSValueKeywords.getValue(for: "yellow"))
+        XCTAssertEqual(unwrappedValue2[0], CSSColorKeywords.getValue(for: "yellow"))
     }
     
     func testColors() throws {
@@ -67,7 +72,7 @@ final class CSSParserTests: XCTestCase {
         let unwrappedColors = try XCTUnwrap(colors)
         
         let expectedColors = [
-            CSSValueKeywords.getValue(for: "red"),
+            CSSColorKeywords.getValue(for: "red"),
             CSSValue.color(1, 0, 0.502, 1),
             CSSValue.color(0.502, 0.502, 0.502, 1.0),
             CSSValue.color(0.6667, 0, 0.7333, 1),
@@ -85,11 +90,11 @@ final class CSSParserTests: XCTestCase {
         
         let stub1 = StubCSSConsumer(type: "dummy", classes: ["first", "second"])
         let value1 = parsedRules.getValue(with: "color", for: stub1)
-        try CSSTestHelpers.assertColorValue(values: value1, expectedValue: CSSValueKeywords.getValue(for: "red"))
+        try CSSTestHelpers.assertColorValue(values: value1, expectedValue: CSSColorKeywords.getValue(for: "red"))
         
         let stub2 = StubCSSConsumer(type: "label", identifier: "id", classes: ["first", "second"])
         let value2 = parsedRules.getValue(with: "color", for: stub2)
-        try CSSTestHelpers.assertColorValue(values: value2, expectedValue: CSSValueKeywords.getValue(for: "black"))
+        try CSSTestHelpers.assertColorValue(values: value2, expectedValue: CSSColorKeywords.getValue(for: "black"))
     }
     
     func testAllValues() throws {
@@ -99,8 +104,8 @@ final class CSSParserTests: XCTestCase {
         let values = parsedRules.getAllValues(for: stub)
         XCTAssertEqual(values.count, 4)
         
-        try CSSTestHelpers.assertColorValue(values: values["color"], expectedValue: CSSValueKeywords.getValue(for: "black"))
-        try CSSTestHelpers.assertColorValue(values: values["text-color"], expectedValue: CSSValueKeywords.getValue(for: "green"))
+        try CSSTestHelpers.assertColorValue(values: values["color"], expectedValue: CSSColorKeywords.getValue(for: "black"))
+        try CSSTestHelpers.assertColorValue(values: values["text-color"], expectedValue: CSSColorKeywords.getValue(for: "green"))
     }
     
     func testUniversalSelector() throws {
@@ -108,7 +113,7 @@ final class CSSParserTests: XCTestCase {
         
         let stub1 = StubCSSConsumer(type: "a", pseudoClasses: ["visited"])
         let color = parsedRules.getValue(with: "color", for: stub1)
-        try CSSTestHelpers.assertColorValue(values: color, expectedValue: CSSValueKeywords.getValue(for: "black"))
+        try CSSTestHelpers.assertColorValue(values: color, expectedValue: CSSColorKeywords.getValue(for: "black"))
         
         let stub2 = StubCSSConsumer(type: "select", classes: ["custom"], pseudoClasses: ["selected"])
         let bgColor = parsedRules.getValue(with: "background-color", for: stub2)
@@ -120,19 +125,19 @@ final class CSSParserTests: XCTestCase {
         
         let stub1 = StubCSSConsumer(type: "button")
         let color1 = parsedRules.getValue(with: "color", for: stub1)
-        try CSSTestHelpers.assertColorValue(values: color1, expectedValue: CSSValueKeywords.getValue(for: "yellow"))
+        try CSSTestHelpers.assertColorValue(values: color1, expectedValue: CSSColorKeywords.getValue(for: "yellow"))
         
         let stub2 = StubCSSConsumer(type: "button", pseudoClasses: ["hover"])
         let color2 = parsedRules.getValue(with: "color", for: stub2)
-        try CSSTestHelpers.assertColorValue(values: color2, expectedValue: CSSValueKeywords.getValue(for: "red"))
+        try CSSTestHelpers.assertColorValue(values: color2, expectedValue: CSSColorKeywords.getValue(for: "red"))
         
         let stub3 = StubCSSConsumer(type: "button", pseudoClasses: ["missing-pseudo-class"])
         let color3 = parsedRules.getValue(with: "color", for: stub3)
-        try CSSTestHelpers.assertColorValue(values: color3, expectedValue: CSSValueKeywords.getValue(for: "yellow"))
+        try CSSTestHelpers.assertColorValue(values: color3, expectedValue: CSSColorKeywords.getValue(for: "yellow"))
         
         let stub4 = StubCSSConsumer(type: "input", pseudoClasses: ["hover"])
         let color4 = parsedRules.getValue(with: "color", for: stub4)
-        try CSSTestHelpers.assertColorValue(values: color4, expectedValue: CSSValueKeywords.getValue(for: "red"))
+        try CSSTestHelpers.assertColorValue(values: color4, expectedValue: CSSColorKeywords.getValue(for: "red"))
     }
     
     func testShorthandAttributes() throws {
@@ -143,11 +148,11 @@ final class CSSParserTests: XCTestCase {
         XCTAssertEqual(allValues.count, 9)
         
         let expectedAttributes: [String: [CSSValue]] = [
-            "padding": [ .number(10, .px), .number(20, .px), .number(10, .px), .number(20, .px) ],
-            "padding-top": [ .number(10, .px) ],
-            "padding-right": [ .number(20, .px) ],
-            "padding-bottom": [ .number(10, .px) ],
-            "padding-left": [ .number(20, .px) ]
+            "padding": [ .length(10, .px), .length(20, .px), .length(10, .px), .length(20, .px) ],
+            "padding-top": [ .length(10, .px) ],
+            "padding-right": [ .length(20, .px) ],
+            "padding-bottom": [ .length(10, .px) ],
+            "padding-left": [ .length(20, .px) ]
         ]
         for expectedAttribute in expectedAttributes {
             let attributeValue = allValues[expectedAttribute.key]
@@ -159,13 +164,13 @@ final class CSSParserTests: XCTestCase {
     func testStandaloneAttributeValueParsing() throws {
         let attributeValue = "green"
         let values = try CSSParser.parse(attributeValue: attributeValue)
-        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSValueKeywords.getValue(for: "green"))
+        try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSColorKeywords.getValue(for: "green"))
     }
     
     func testStandaloneRuleBlockParsing() throws {
         let parsedRuleBlock = try CSSParser.parse(ruleBlock: Self.bufferRuleBlock, validationConfiguration: StubCSSValidationConfiguration())
         let colorValues = parsedRuleBlock["color"]
-        try CSSTestHelpers.assertColorValue(values: colorValues, expectedValue: CSSValueKeywords.getValue(for: "black"))
+        try CSSTestHelpers.assertColorValue(values: colorValues, expectedValue: CSSColorKeywords.getValue(for: "black"))
     }
     
     func testValuesValidation() throws {
@@ -183,17 +188,17 @@ final class CSSParserTests: XCTestCase {
         }
         catch CSSParserErrors.invalidAttributeValue(let token, let value) {
             XCTAssertEqual(token, CSSToken(line: 7, type: .string, value: "background"))
-            XCTAssertEqual(value, CSSValueKeywords.getValue(for: "red"))
+            XCTAssertEqual(value, CSSColorKeywords.getValue(for: "red"))
         }
     }
     
     func testCustomValidationFailing() throws {
         do {
-            let _ = try CSSParser.parse(buffer: Self.bufferCustom, validationConfiguration: StubInvalidCSSValidationConfiguration())
+            let _ = try CSSParser.parse(buffer: Self.bufferInvalidCustom, validationConfiguration: StubInvalidCSSValidationConfiguration())
             XCTFail("Error should be raised")
         }
         catch CSSParserErrors.unknownFunction(let functionToken) {
-            XCTAssertEqual(functionToken, CSSToken(line: 1, type: .string, value: "color"))
+            XCTAssertEqual(functionToken, CSSToken(line: 1, type: .string, value: "foo"))
         }
     }
     
@@ -205,9 +210,14 @@ final class CSSParserTests: XCTestCase {
             XCTAssertEqual(unitToken, CSSToken(line: 0, type: .string, value: "tt"))
         }
         
-        for unit in CSSValueUnit.allCases {
+        for unit in CSSLengthUnit.allCases {
             let values = try CSSParser.parse(attributeValue: "10\(unit.rawValue)")
-            XCTAssertEqual(values, [ CSSValue.number(10, unit) ])
+            XCTAssertEqual(values, [ CSSValue.length(10, unit) ])
+        }
+        
+        for unit in CSSAngleUnit.allCases {
+            let values = try CSSParser.parse(attributeValue: "10\(unit.rawValue)")
+            XCTAssertEqual(values, [ CSSValue.angle(10, unit) ])
         }
     }
     
@@ -224,7 +234,7 @@ final class CSSParserTests: XCTestCase {
         
         let stub = StubCSSConsumer(type: "button", pseudoClasses: [ "hover" ])
         let values = parsedRules.getValue(with: "transform-origin", for: stub)
-        XCTAssertEqual(values, [ .number(0.5, .none), .number(0.75, .none) ])
+        XCTAssertEqual(values, [ .percentage(50), .percentage(75) ])
     }
     
 }
