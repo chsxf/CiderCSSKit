@@ -1,6 +1,5 @@
 #test {
     background-color: yellow;
-    name: custommethod("test1", 1.0);
     color: invertedwhite;
     font-family: sans-serif;
     font: 12px / 18px "Arial";

@@ -1,9 +1,9 @@
-public enum CSSValueType {
+public enum CSSValueType: Equatable {
     
     case angle
     case color
     case custom(String)
-    case keyword([String] = [])
+    case keyword(String)
     case length(CSSLengthUnit? = nil)
     case number
     case percentage
@@ -11,6 +11,27 @@ public enum CSSValueType {
     case string
     case url
 
+    func isEqual(to other: CSSValueType, fully: Bool) -> Bool {
+        switch self {
+        case .angle, .color, .number, .percentage, .separator, .string, .url:
+            return self == other
+        case let .custom(expectedCustomClassName):
+            if case let .custom(testedCustomClassName) = other {
+                return !fully || expectedCustomClassName == testedCustomClassName
+            }
+        case let .keyword(expectedKeyword):
+            if case let .keyword(testedKeyword) = other {
+                return !fully || expectedKeyword == testedKeyword
+            }
+        case let .length(expectedUnit):
+            if case let .length(testedUnit) = other {
+                return !fully || expectedUnit == testedUnit
+            }
+        }
+        
+        return false
+    }
+    
     func matches(value: CSSValue, for attributeToken: CSSToken, validationConfiguration: CSSValidationConfiguration) -> Bool {
         switch self {
         case .angle:

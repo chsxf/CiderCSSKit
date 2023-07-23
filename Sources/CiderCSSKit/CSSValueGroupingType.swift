@@ -1,9 +1,32 @@
 public enum CSSValueGroupingType {
     
     case single([CSSValueType])
-    case multiple([CSSValueType], min: Int? = nil, max: Int? = nil)
+    case multiple([CSSValueType], min: Int? = nil, max: Int? = nil, customExpansionMethod: CSSShorthandAttributeExpansion? = nil)
     case sequence([CSSValueType])
     case shorthand([CSSValueShorthandGroupDescriptor], customExpansionMethod: CSSShorthandAttributeExpansion? = nil)
+    
+    func accepts(valueType: CSSValueType, exactMatch: Bool = false, validationConfiguration: CSSValidationConfiguration) -> Bool {
+        switch self {
+        case .single(let types), .multiple(let types, _, _, _), .sequence(let types):
+            for type in types {
+                if type.isEqual(to: valueType, fully: exactMatch) {
+                    return true
+                }
+            }
+        case .shorthand(let groups, _):
+            for group in groups {
+                guard let groupingType = validationConfiguration.valueGroupingTypeByAttribute[group.subAttributeName] else {
+                    return false
+                }
+                
+                if groupingType.accepts(valueType: valueType, exactMatch: exactMatch, validationConfiguration: validationConfiguration) {
+                    return true
+                }
+            }
+        }
+        
+        return false
+    }
     
     func matches(values: [CSSValue], for attributeToken: CSSToken, validationConfiguration: CSSValidationConfiguration) -> Bool {
         switch self {
@@ -13,7 +36,7 @@ public enum CSSValueGroupingType {
             }
             return Self.matches(single: values[0], types, attributeToken, validationConfiguration)
             
-        case let .multiple(types, min, max):
+        case let .multiple(types, min, max, _):
             var ignoredMatchingCount = 0
             return Self.matches(multiple: values, types, min, max, attributeToken, validationConfiguration, matchingCount: &ignoredMatchingCount, loose: false)
             
@@ -108,7 +131,10 @@ public enum CSSValueGroupingType {
         var lastValidatedGroupIndex: Int = 0
         var lastValidatedValueIndex: Int = 0
         
-        var subAttributeValues = [String: [CSSValue]]()
+        let attributeName = attributeToken.value as! String
+        var expandedValues:[String: [CSSValue]] = [
+            attributeName: values
+        ]
         
         while lastValidatedGroupIndex < groups.count {
             let group = groups[lastValidatedGroupIndex]
@@ -116,11 +142,9 @@ public enum CSSValueGroupingType {
             if group.matches(values: values, from: &currentValueIndex, attributeToken, validationConfiguration) || group.optional {
                 lastValidatedGroupIndex += 1
                 
-                if let subAttributeName = group.subAttributeName {
-                    let start = group.afterSeparator ? lastValidatedValueIndex + 1 : lastValidatedValueIndex
-                    let subValues = [CSSValue](values[start..<currentValueIndex])
-                    subAttributeValues[subAttributeName] = subValues
-                }
+                let start = group.afterSeparator ? lastValidatedValueIndex + 1 : lastValidatedValueIndex
+                let subValues = [CSSValue](values[start..<currentValueIndex])
+                expandedValues[group.subAttributeName] = subValues
                 
                 lastValidatedValueIndex = currentValueIndex
             }
@@ -129,7 +153,7 @@ public enum CSSValueGroupingType {
             }
         }
         
-        return subAttributeValues
+        return expandedValues
     }
     
 }

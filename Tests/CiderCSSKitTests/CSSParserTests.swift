@@ -33,12 +33,12 @@ final class CSSParserTests: XCTestCase {
     }
 
     func testBasicParsing() throws {
-        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         XCTAssertEqual(parsedRules.count, 10)
     }
 
     func testAttributeRetrieval() throws {
-        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub1 = StubCSSConsumer(type: "button")
         let value = parsedRules.getValue(with: "color", for: stub1)
@@ -49,7 +49,7 @@ final class CSSParserTests: XCTestCase {
     }
     
     func testHierarchicalAttributeRetrieval() throws {
-        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         var stubChild = StubCSSConsumer(type: "img")
         let value1 = parsedRules.getValue(with: "color", for: stubChild)
@@ -65,7 +65,7 @@ final class CSSParserTests: XCTestCase {
     }
     
     func testColors() throws {
-        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stubChild = StubCSSConsumer(type: "button")
         let colors = parsedRules.getValue(with: "background", for: stubChild)
@@ -86,7 +86,7 @@ final class CSSParserTests: XCTestCase {
     }
     
     func testClauseScore() throws {
-        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub1 = StubCSSConsumer(type: "dummy", classes: ["first", "second"])
         let value1 = parsedRules.getValue(with: "color", for: stub1)
@@ -98,7 +98,7 @@ final class CSSParserTests: XCTestCase {
     }
     
     func testAllValues() throws {
-        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub = StubCSSConsumer(type: "label", identifier: "id", classes: ["first", "second"])
         let values = parsedRules.getAllValues(for: stub)
@@ -109,7 +109,7 @@ final class CSSParserTests: XCTestCase {
     }
     
     func testUniversalSelector() throws {
-        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub1 = StubCSSConsumer(type: "a", pseudoClasses: ["visited"])
         let color = parsedRules.getValue(with: "color", for: stub1)
@@ -121,7 +121,7 @@ final class CSSParserTests: XCTestCase {
     }
     
     func testPseudoClasses() throws {
-        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub1 = StubCSSConsumer(type: "button")
         let color1 = parsedRules.getValue(with: "color", for: stub1)
@@ -145,7 +145,7 @@ final class CSSParserTests: XCTestCase {
         
         let stub = StubCSSConsumer(type: "button", identifier: "test")
         let allValues = parsedRules.getAllValues(for: stub)
-        XCTAssertEqual(allValues.count, 18)
+        XCTAssertEqual(allValues.count, 17)
         
         let expectedAttributes: [String: [CSSValue]] = [
             "padding": [ .length(10, .px), .length(20, .px), .length(10, .px), .length(20, .px) ],
@@ -175,12 +175,13 @@ final class CSSParserTests: XCTestCase {
     
     func testStandaloneAttributeValueParsing() throws {
         let attributeValue = "green"
-        let values = try CSSParser.parse(attributeValue: attributeValue)
+        let values = try CSSParser.parse(attributeName: "color", attributeValue: attributeValue)
         try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSColorKeywords.getValue(for: "green"))
     }
     
     func testStandaloneRuleBlockParsing() throws {
         let parsedRuleBlock = try CSSParser.parse(ruleBlock: Self.bufferRuleBlock, validationConfiguration: StubCSSValidationConfiguration())
+        XCTAssertEqual(parsedRuleBlock.count, 2)
         let colorValues = parsedRuleBlock["color"]
         try CSSTestHelpers.assertColorValue(values: colorValues, expectedValue: CSSColorKeywords.getValue(for: "black"))
     }
@@ -216,19 +217,19 @@ final class CSSParserTests: XCTestCase {
     
     func testUnits() throws {
         do {
-            let _ = try CSSParser.parse(attributeValue: "10tt")
+            let _ = try CSSParser.parse(attributeName: "unit-tester", attributeValue: "10tt", validationConfiguration: StubCSSValidationConfiguration())
         }
         catch CSSParserErrors.invalidUnit(let unitToken) {
             XCTAssertEqual(unitToken, CSSToken(line: 0, type: .string, value: "tt"))
         }
         
         for unit in CSSLengthUnit.allCases {
-            let values = try CSSParser.parse(attributeValue: "10\(unit.rawValue)")
+            let values = try CSSParser.parse(attributeName: "unit-tester", attributeValue: "10\(unit.rawValue)", validationConfiguration: StubCSSValidationConfiguration())
             XCTAssertEqual(values, [ CSSValue.length(10, unit) ])
         }
         
         for unit in CSSAngleUnit.allCases {
-            let values = try CSSParser.parse(attributeValue: "10\(unit.rawValue)")
+            let values = try CSSParser.parse(attributeName: "unit-tester", attributeValue: "10\(unit.rawValue)", validationConfiguration: StubCSSValidationConfiguration())
             XCTAssertEqual(values, [ CSSValue.angle(10, unit) ])
         }
     }
@@ -242,7 +243,7 @@ final class CSSParserTests: XCTestCase {
     }
     
     func testPercents() throws {
-        let parsedRules = try CSSParser.parse(buffer: Self.buffer)
+        let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub = StubCSSConsumer(type: "button", pseudoClasses: [ "hover" ])
         let values = parsedRules.getValue(with: "transform-origin", for: stub)

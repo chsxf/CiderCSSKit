@@ -7,30 +7,12 @@ struct StubCustomValueHolder: Equatable {
 
 class StubCSSValidationConfiguration: CSSValidationConfiguration {
     
-    override var valueGroupingTypeByAttribute: [String : CSSValueGroupingType] { [
-        "background": .multiple([.color]),
-        "background-color": .single([.color]),
-        "border-image": .shorthand([
-            CSSValueShorthandGroupDescriptor(subAttributeName: "border-image-source", groupingType: .single([.url])),
-            CSSValueShorthandGroupDescriptor(subAttributeName: "border-image-slice", groupingType: .multiple([.number, .percentage, .keyword(["fill"])], min: 1, max: 4)),
-            CSSValueShorthandGroupDescriptor(subAttributeName: "border-image-width", groupingType: .multiple([.number, .length(), .percentage, .keyword(["auto"])], min: 1, max: 4), optional: true, afterSeparator: true),
-            CSSValueShorthandGroupDescriptor(subAttributeName: "border-image-outset", groupingType: .multiple([.number, .length()], min: 1, max: 4), optional: true, afterSeparator: true),
-            CSSValueShorthandGroupDescriptor(subAttributeName: "border-image-repeat", groupingType: .multiple([.keyword(["stretch"])], min: 1, max: 2))
-        ]),
-        "color": .single([.color]),
-        "font": .shorthand([
-            CSSValueShorthandGroupDescriptor(subAttributeName: "font-size", groupingType: .single([.length()])),
-            CSSValueShorthandGroupDescriptor(subAttributeName: "line-height", groupingType: .single([.length()]), optional: true, afterSeparator: true),
-            CSSValueShorthandGroupDescriptor(subAttributeName: "font-family", groupingType: .multiple([.string], min: 1))
-        ]),
-        "font-family": .single([.string]),
-        "name": .single([.string, .custom("CustomValueHolder")]),
-        "padding": .shorthand([
-            CSSValueShorthandGroupDescriptor(groupingType: .multiple([.number, .length()], min: 1, max: 4))
-        ], customExpansionMethod: StubCSSValidationConfigurationAttributeExpansion.expandPadding(attributeName:values:)),
-        "text-color": .single([.color]),
-        "transform-origin": .multiple([.percentage], min: 2, max: 2)
-    ] }
+    override var valueGroupingTypeByAttribute: [String : CSSValueGroupingType] {
+        var base = super.valueGroupingTypeByAttribute
+        base["background"] = .multiple([.color], min: 1)
+        base["unit-tester"] = .single([.angle, .length()])
+        return base
+    }
     
     override func parseFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         guard let functionName = functionToken.value as? String else { throw CSSParserErrors.invalidToken(functionToken) }
@@ -41,7 +23,7 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         case "custommethod":
             return try Self.parseCustomMethodFunction(functionToken: functionToken, attributes: attributes)
         default:
-            throw CSSParserErrors.unknownFunction(functionToken)
+            return try super.parseFunction(functionToken: functionToken, attributes: attributes)
         }
     }
     
@@ -62,7 +44,7 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
             return .keyword("stretch")
         }
         
-        throw CSSParserErrors.invalidKeyword(attributeToken: attributeToken, potentialKeyword: potentialKeyword)
+        return try super.parseKeyword(attributeToken: attributeToken, potentialKeyword: potentialKeyword)
     }
     
     override func validateCustomAttributeValue(attributeToken: CSSToken, value: CSSValue, customTypeName: String) -> Bool {

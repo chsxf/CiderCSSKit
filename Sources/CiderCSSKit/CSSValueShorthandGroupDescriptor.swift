@@ -1,13 +1,11 @@
 public struct CSSValueShorthandGroupDescriptor {
     
-    public let subAttributeName: String?
-    public let groupingType: CSSValueGroupingType
+    public let subAttributeName: String
     public let optional: Bool
     public let afterSeparator: Bool
     
-    public init(subAttributeName: String? = nil, groupingType: CSSValueGroupingType, optional: Bool = false, afterSeparator: Bool = false) {
+    public init(subAttributeName: String, optional: Bool = false, afterSeparator: Bool = false) {
         self.subAttributeName = subAttributeName
-        self.groupingType = groupingType
         self.optional = optional
         self.afterSeparator = afterSeparator
     }
@@ -20,6 +18,10 @@ public struct CSSValueShorthandGroupDescriptor {
             index += 1
         }
         
+        guard let groupingType = validationConfiguration.valueGroupingTypeByAttribute[subAttributeName] else {
+            return false
+        }
+        
         switch groupingType {
         case let .single(types):
             if CSSValueGroupingType.matches(single: values[index], types, attributeToken, validationConfiguration) {
@@ -27,7 +29,7 @@ public struct CSSValueShorthandGroupDescriptor {
                 return true
             }
             
-        case let .multiple(types, minValueCount, maxValueCount):
+        case let .multiple(types, minValueCount, maxValueCount, _):
             var testValues: [CSSValue]
             if let maxValueCount {
                 let valueCount = min(maxValueCount, values.count - index)
