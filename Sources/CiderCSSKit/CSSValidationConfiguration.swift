@@ -87,7 +87,7 @@ open class CSSValidationConfiguration {
                 return customExpansionMethod(attributeName, values)
             }
             
-            if let expandedValues = CSSValueGroupingType.expand(shorthand: values, groups, token, self) {
+            if let expandedValues = CSSValueGroupingType.expand(shorthand: values, groups, attributeToken: token, validationConfiguration: self) {
                 return expandedValues
             }
             
@@ -115,15 +115,11 @@ open class CSSValidationConfiguration {
             throw CSSParserErrors.invalidAttribute(attributeToken)
         }
         
-        if !values.isEmpty && allowedValueGroupingType.matches(values: values, for: attributeToken, validationConfiguration: self) {
+        if !values.isEmpty && allowedValueGroupingType.matches(values: values, validationConfiguration: self) {
             return true
         }
         
         throw CSSParserErrors.invalidAttributeValues(attributeToken: attributeToken, values: values)
-    }
-    
-    open func validateCustomAttributeValue(attributeToken: CSSToken, value: CSSValue, customTypeName: String) -> Bool {
-        return false
     }
     
 }

@@ -4,7 +4,6 @@ public enum CSSValue: Equatable {
     
     case angle(Float, CSSAngleUnit)
     case color(Float, Float, Float, Float)
-    case custom(any Equatable)
     case keyword(String)
     case length(Float, CSSLengthUnit)
     case number(Float)
@@ -12,15 +11,6 @@ public enum CSSValue: Equatable {
     case separator
     case string(String)
     case url(URL)
-    
-    public var isNumeric: Bool {
-        switch self {
-        case .angle, .length, .number, .percentage:
-            return true
-        default:
-            return false
-        }
-    }
     
     public static func == (lhs: CSSValue, rhs: CSSValue) -> Bool {
         switch lhs {
@@ -34,11 +24,6 @@ public enum CSSValue: Equatable {
                 return leftR == rightR && leftG == rightG && leftB == rightB && leftA == rightA
             }
             
-        case let .custom(leftEquatable):
-            if case let .custom(rightEquatable) = rhs {
-                return leftEquatable.isEqual(rightEquatable)
-            }
-
         case let .keyword(leftKeyword):
             if case let .keyword(rightKeyword) = rhs {
                 return leftKeyword == rightKeyword

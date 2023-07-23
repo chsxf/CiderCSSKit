@@ -2,7 +2,6 @@ public enum CSSValueType: Equatable {
     
     case angle
     case color
-    case custom(String)
     case keyword(String)
     case length(CSSLengthUnit? = nil)
     case number
@@ -15,10 +14,6 @@ public enum CSSValueType: Equatable {
         switch self {
         case .angle, .color, .number, .percentage, .separator, .string, .url:
             return self == other
-        case let .custom(expectedCustomClassName):
-            if case let .custom(testedCustomClassName) = other {
-                return !fully || expectedCustomClassName == testedCustomClassName
-            }
         case let .keyword(expectedKeyword):
             if case let .keyword(testedKeyword) = other {
                 return !fully || expectedKeyword == testedKeyword
@@ -32,7 +27,7 @@ public enum CSSValueType: Equatable {
         return false
     }
     
-    func matches(value: CSSValue, for attributeToken: CSSToken, validationConfiguration: CSSValidationConfiguration) -> Bool {
+    func matches(value: CSSValue) -> Bool {
         switch self {
         case .angle:
             if case .angle = value {
@@ -43,9 +38,6 @@ public enum CSSValueType: Equatable {
             if case .color = value {
                 return true
             }
-            
-        case let .custom(typeName):
-            return validationConfiguration.validateCustomAttributeValue(attributeToken: attributeToken, value: value, customTypeName: typeName)
             
         case let .keyword(expectedKeywords):
             if case let .keyword(valueKeyword) = value, expectedKeywords.contains(valueKeyword) {

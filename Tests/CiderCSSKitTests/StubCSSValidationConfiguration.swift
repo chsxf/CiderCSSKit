@@ -20,8 +20,6 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         switch functionName {
         case "color":
             return try Self.parseColorFunction(functionToken: functionToken, attributes: attributes)
-        case "custommethod":
-            return try Self.parseCustomMethodFunction(functionToken: functionToken, attributes: attributes)
         default:
             return try super.parseFunction(functionToken: functionToken, attributes: attributes)
         }
@@ -47,13 +45,6 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         return try super.parseKeyword(attributeToken: attributeToken, potentialKeyword: potentialKeyword)
     }
     
-    override func validateCustomAttributeValue(attributeToken: CSSToken, value: CSSValue, customTypeName: String) -> Bool {
-        if case let .custom(equatable) = value, customTypeName == "CustomValueHolder", equatable is StubCustomValueHolder {
-            return true
-        }
-        return false
-    }
-    
     private static func parseColorFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         if attributes.count < 1 {
             throw CSSParserErrors.tooFewFunctionAttributes(functionToken: functionToken, values: attributes)
@@ -67,25 +58,6 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         }
 
         return color
-    }
-    
-    private static func parseCustomMethodFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
-        if attributes.count < 2 {
-            throw CSSParserErrors.tooFewFunctionAttributes(functionToken: functionToken, values: attributes)
-        }
-        else if attributes.count > 2 {
-            throw CSSParserErrors.tooManyFunctionAttributes(functionToken: functionToken, values: attributes)
-        }
-
-        guard case let .string(value1) = attributes[0] else {
-            throw CSSParserErrors.invalidFunctionAttribute(functionToken: functionToken, value: attributes[0])
-        }
-        
-        guard case let .number(value2) = attributes[1] else {
-            throw CSSParserErrors.invalidAttributeValue(attributeToken: functionToken, value: attributes[1])
-        }
-
-        return .custom(StubCustomValueHolder(value1: value1, value2: value2))
     }
     
 }

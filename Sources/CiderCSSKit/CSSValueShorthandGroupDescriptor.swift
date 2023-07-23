@@ -10,7 +10,7 @@ public struct CSSValueShorthandGroupDescriptor {
         self.afterSeparator = afterSeparator
     }
     
-    func matches(values: [CSSValue], from index: inout Int, _ attributeToken: CSSToken, _ validationConfiguration: CSSValidationConfiguration) -> Bool {
+    func matches(values: [CSSValue], from index: inout Int, _ validationConfiguration: CSSValidationConfiguration) -> Bool {
         if afterSeparator {
             if values[index] != .separator {
                 return false
@@ -24,7 +24,7 @@ public struct CSSValueShorthandGroupDescriptor {
         
         switch groupingType {
         case let .single(types):
-            if CSSValueGroupingType.matches(single: values[index], types, attributeToken, validationConfiguration) {
+            if CSSValueGroupingType.matches(single: values[index], types) {
                 index += 1
                 return true
             }
@@ -39,7 +39,7 @@ public struct CSSValueShorthandGroupDescriptor {
                 testValues = [CSSValue](values[index..<values.count])
             }
             var matchingCount: Int = 0
-            if CSSValueGroupingType.matches(multiple: testValues, types, minValueCount, maxValueCount, attributeToken, validationConfiguration, matchingCount: &matchingCount, loose: true) {
+            if CSSValueGroupingType.matches(multiple: testValues, types, minValueCount, maxValueCount, matchingCount: &matchingCount, loose: true) {
                 index += matchingCount
                 return true
             }
@@ -47,7 +47,7 @@ public struct CSSValueShorthandGroupDescriptor {
         case let .sequence(types):
             let valueCount = min(types.count, values.count - index)
             let testValues = [CSSValue](values[index..<index + valueCount])
-            if CSSValueGroupingType.matches(sequence: testValues, types, attributeToken, validationConfiguration) {
+            if CSSValueGroupingType.matches(sequence: testValues, types) {
                 index += types.count
                 return true
             }
