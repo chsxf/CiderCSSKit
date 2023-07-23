@@ -1,4 +1,4 @@
-public typealias CSSShorthandAttributeExpansion = (String, [CSSValue]) -> [String:[CSSValue]]
+public typealias CSSAttributeExpansion = (String, [CSSValue]) -> [String:[CSSValue]]
 
 open class CSSValidationConfiguration {
     
@@ -29,7 +29,7 @@ open class CSSValidationConfiguration {
         CSSAttributes.fontFamily: .multiple([.string], min: 1),
         CSSAttributes.fontSize: .single([.length()]),
         CSSAttributes.lineHeight: .single([.length()]),
-        CSSAttributes.padding: .multiple([.number, .length()], min: 1, max: 4, customExpansionMethod: CSSShorthandAttributeExpanders.expandPadding(attributeName:values:)),
+        CSSAttributes.padding: .multiple([.number, .length()], min: 1, max: 4, customExpansionMethod: CSSAttributeExpanders.expandPadding(attributeName:values:)),
         CSSAttributes.paddingBottom: .single([.number, .length()]),
         CSSAttributes.paddingLeft: .single([.number, .length()]),
         CSSAttributes.paddingRight: .single([.number, .length()]),

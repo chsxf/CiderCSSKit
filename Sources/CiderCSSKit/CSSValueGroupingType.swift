@@ -1,9 +1,9 @@
 public enum CSSValueGroupingType {
     
     case single([CSSValueType])
-    case multiple([CSSValueType], min: Int? = nil, max: Int? = nil, customExpansionMethod: CSSShorthandAttributeExpansion? = nil)
+    case multiple([CSSValueType], min: Int? = nil, max: Int? = nil, customExpansionMethod: CSSAttributeExpansion? = nil)
     case sequence([CSSValueType])
-    case shorthand([CSSValueShorthandGroupDescriptor], customExpansionMethod: CSSShorthandAttributeExpansion? = nil)
+    case shorthand([CSSValueShorthandGroupDescriptor], customExpansionMethod: CSSAttributeExpansion? = nil)
     
     func accepts(valueType: CSSValueType, exactMatch: Bool = false, validationConfiguration: CSSValidationConfiguration) -> Bool {
         switch self {
