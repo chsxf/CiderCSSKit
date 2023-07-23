@@ -127,7 +127,7 @@ public enum CSSValueGroupingType {
         return true
     }
     
-    static func expand(shorthand values: [CSSValue], _ groups: [CSSValueShorthandGroupDescriptor], attributeToken: CSSToken, validationConfiguration: CSSValidationConfiguration) -> [String: [CSSValue]]? {
+    static func expand(shorthand values: [CSSValue], _ groups: [CSSValueShorthandGroupDescriptor], attributeToken: CSSToken, validationConfiguration: CSSValidationConfiguration) throws -> [String: [CSSValue]] {
         var lastValidatedGroupIndex: Int = 0
         var lastValidatedValueIndex: Int = 0
         
@@ -149,7 +149,7 @@ public enum CSSValueGroupingType {
                 lastValidatedValueIndex = currentValueIndex
             }
             else if !group.optional {
-                return nil
+                throw CSSParserErrors.invalidAttributeValues(attributeToken: attributeToken, values: values)
             }
         }
         

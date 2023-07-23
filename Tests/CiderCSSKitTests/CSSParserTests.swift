@@ -247,7 +247,7 @@ final class CSSParserTests: XCTestCase {
         
         let stub = StubCSSConsumer(type: "button", pseudoClasses: [ "hover" ])
         let values = parsedRules.getValue(with: "transform-origin", for: stub)
-        XCTAssertEqual(values, [ .percentage(50), .percentage(75) ])
+        XCTAssertEqual(values, [ .percentage(50), .percentage(75), .length(0, .px) ])
     }
     
 }

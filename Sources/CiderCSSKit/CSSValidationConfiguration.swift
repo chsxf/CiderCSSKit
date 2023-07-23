@@ -1,4 +1,4 @@
-public typealias CSSAttributeExpansion = (String, [CSSValue]) -> [String:[CSSValue]]
+public typealias CSSAttributeExpansion = (CSSToken, [CSSValue]) throws -> [String:[CSSValue]]
 
 open class CSSValidationConfiguration {
     
@@ -29,13 +29,13 @@ open class CSSValidationConfiguration {
         CSSAttributes.fontFamily: .multiple([.string], min: 1),
         CSSAttributes.fontSize: .single([.length()]),
         CSSAttributes.lineHeight: .single([.length()]),
-        CSSAttributes.padding: .multiple([.number, .length()], min: 1, max: 4, customExpansionMethod: CSSAttributeExpanders.expandPadding(attributeName:values:)),
+        CSSAttributes.padding: .multiple([.number, .length()], min: 1, max: 4, customExpansionMethod: CSSAttributeExpanders.expandPadding(attributeToken:values:)),
         CSSAttributes.paddingBottom: .single([.number, .length()]),
         CSSAttributes.paddingLeft: .single([.number, .length()]),
         CSSAttributes.paddingRight: .single([.number, .length()]),
         CSSAttributes.paddingTop: .single([.number, .length()]),
         CSSAttributes.textColor: .single([.color]),
-        CSSAttributes.transformOrigin: .multiple([.percentage], min: 1, max: 2)
+        CSSAttributes.transformOrigin: .multiple([.percentage, .length(), .keyword("bottom"), .keyword("center"), .keyword("left"), .keyword("right"), .keyword("top")], min: 1, max: 3, customExpansionMethod: CSSAttributeExpanders.expandTransformOrigin(attributeToken:values:))
     ] }
     
     open func parseFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
@@ -84,19 +84,15 @@ open class CSSValidationConfiguration {
         
         if case let .shorthand(groups, customExpansionMethod) = valueGroupingTypeByAttribute[attributeName] {
             if let customExpansionMethod {
-                return customExpansionMethod(attributeName, values)
+                return try customExpansionMethod(token, values)
             }
             
-            if let expandedValues = CSSValueGroupingType.expand(shorthand: values, groups, attributeToken: token, validationConfiguration: self) {
-                return expandedValues
-            }
-            
-            throw CSSParserErrors.invalidAttributeValues(attributeToken: token, values: values)
+            return try CSSValueGroupingType.expand(shorthand: values, groups, attributeToken: token, validationConfiguration: self)
         }
         
         if case let .multiple(_, _, _, customExpansionMethod) = valueGroupingTypeByAttribute[attributeName] {
             if let customExpansionMethod {
-                return customExpansionMethod(attributeName, values)
+                return try customExpansionMethod(token, values)
             }
         }
 
