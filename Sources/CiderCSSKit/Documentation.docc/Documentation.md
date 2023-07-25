@@ -14,7 +14,7 @@ CiderCSSKit is available through [Swift Package Manager](https://github.com/appl
 
 ### As a Package Dependency
 
-To install it, simply add the dependency to your Package.Swift file:
+To install it, simply add the dependency to your `Package.swift` file:
 
 ```swift
 dependencies: [
