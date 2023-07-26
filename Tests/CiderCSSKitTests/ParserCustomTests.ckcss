@@ -8,5 +8,5 @@
 }
 
 #test2 {
-    font: italic small-caps bold condensed 12px / 18px "Times New Roman";
+    font: italic small-caps bold condensed 12px / 18px "Times New Roman", serif;
 }

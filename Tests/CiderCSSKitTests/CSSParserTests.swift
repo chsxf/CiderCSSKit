@@ -181,8 +181,8 @@ final class CSSParserTests: XCTestCase {
         XCTAssertEqual(allValues.count, 8)
         
          expectedAttributes = [
-            "font": [ .keyword("italic"), .keyword("small-caps"), .number(700), .percentage(75), .length(12, .px), .separator, .length(18, .px), .string("Times New Roman") ],
-            "font-family": [ .string("Times New Roman") ],
+            "font": [ .keyword("italic"), .keyword("small-caps"), .number(700), .percentage(75), .length(12, .px), .separator, .length(18, .px), .string("Times New Roman"), .keyword("serif") ],
+            "font-family": [ .string("Times New Roman"), .keyword("serif") ],
             "font-size": [ .length(12, .px) ],
             "font-stretch": [ .percentage(75) ],
             "font-style": [ .keyword("italic") ],
