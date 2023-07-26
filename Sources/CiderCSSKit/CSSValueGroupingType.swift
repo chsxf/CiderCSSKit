@@ -131,29 +131,64 @@ public enum CSSValueGroupingType {
         var lastValidatedGroupIndex: Int = 0
         var lastValidatedValueIndex: Int = 0
         
-        let attributeName = attributeToken.value as! String
-        var expandedValues:[String: [CSSValue]] = [
-            attributeName: values
-        ]
+        let mainAttributeName = attributeToken.value as! String
+        var mainAttributeValues = [CSSValue]()
+        var expandedValues:[String: [CSSValue]] = [:]
         
         while lastValidatedGroupIndex < groups.count {
             let group = groups[lastValidatedGroupIndex]
             var currentValueIndex = lastValidatedValueIndex
-            if group.matches(values: values, from: &currentValueIndex, validationConfiguration) || group.optional {
+            if group.matches(values: values, from: &currentValueIndex, validationConfiguration) {
                 lastValidatedGroupIndex += 1
-                
+            
                 let start = group.afterSeparator ? lastValidatedValueIndex + 1 : lastValidatedValueIndex
-                let subValues = [CSSValue](values[start..<currentValueIndex])
+                var subValues = [CSSValue](values[start..<currentValueIndex])
+                subValues = replaceKeywordsWithAssociatedValues(group.subAttributeName, subValues, validationConfiguration)
                 expandedValues[group.subAttributeName] = subValues
+                if group.afterSeparator {
+                    mainAttributeValues.append(.separator)
+                }
+                mainAttributeValues.append(contentsOf: subValues)
                 
                 lastValidatedValueIndex = currentValueIndex
+            }
+            else if group.optional {
+                lastValidatedGroupIndex += 1
+                expandedValues[group.subAttributeName] = [ group.defaultValue! ]
             }
             else if !group.optional {
                 throw CSSParserErrors.invalidAttributeValues(attributeToken: attributeToken, values: values)
             }
         }
         
+        expandedValues[mainAttributeName] = mainAttributeValues
+        
         return expandedValues
+    }
+    
+    private static func replaceKeywordsWithAssociatedValues(_ attributeName: String, _ values: [CSSValue], _ validationConfiguration: CSSValidationConfiguration) -> [CSSValue] {
+        var newValues = [CSSValue]()
+        for value in values {
+            if case let .keyword(keyword) = value, let groupingType = validationConfiguration.valueGroupingTypeByAttribute[attributeName] {
+                var associatedValue: CSSValue = value
+                switch groupingType {
+                case .single(let types), .multiple(let types, _, _, _), .sequence(let types):
+                    for type in types {
+                        if case let .keyword(typeKeyword, typeAssociatedValue) = type, typeKeyword == keyword, typeAssociatedValue != nil {
+                            associatedValue = typeAssociatedValue!
+                        }
+                    }
+                    break
+                default:
+                    break
+                }
+                newValues.append(associatedValue)
+            }
+            else {
+                newValues.append(value)
+            }
+        }
+        return newValues
     }
     
 }

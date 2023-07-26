@@ -2,7 +2,7 @@ public enum CSSValueType: Equatable {
     
     case angle
     case color
-    case keyword(String)
+    case keyword(String, associatedValue: CSSValue? = nil)
     case length(CSSLengthUnit? = nil)
     case number
     case percentage
@@ -14,8 +14,8 @@ public enum CSSValueType: Equatable {
         switch self {
         case .angle, .color, .number, .percentage, .separator, .string, .url:
             return self == other
-        case let .keyword(expectedKeyword):
-            if case let .keyword(testedKeyword) = other {
+        case let .keyword(expectedKeyword, _):
+            if case let .keyword(testedKeyword, _) = other {
                 return !fully || expectedKeyword == testedKeyword
             }
         case let .length(expectedUnit):
@@ -39,8 +39,8 @@ public enum CSSValueType: Equatable {
                 return true
             }
             
-        case let .keyword(expectedKeywords):
-            if case let .keyword(valueKeyword) = value, expectedKeywords.contains(valueKeyword) {
+        case .keyword(let expectedKeywords, _):
+            if case CSSValue.keyword(let valueKeyword) = value, expectedKeywords.contains(valueKeyword) {
                 return true
             }
 

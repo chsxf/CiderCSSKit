@@ -144,10 +144,10 @@ final class CSSParserTests: XCTestCase {
         let parsedRules = try CSSParser.parse(buffer: Self.bufferCustom, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub = StubCSSConsumer(type: "button", identifier: "test")
-        let allValues = parsedRules.getAllValues(for: stub)
-        XCTAssertEqual(allValues.count, 17)
+        var allValues = parsedRules.getAllValues(for: stub)
+        XCTAssertEqual(allValues.count, 21)
         
-        let expectedAttributes: [String: [CSSValue]] = [
+        var expectedAttributes: [String: [CSSValue]] = [
             "padding": [ .length(10, .px), .length(20, .px), .length(10, .px), .length(20, .px) ],
             "padding-top": [ .length(10, .px) ],
             "padding-right": [ .length(20, .px) ],
@@ -155,9 +155,13 @@ final class CSSParserTests: XCTestCase {
             "padding-left": [ .length(20, .px) ],
             
             "font": [ .length(12, .px), .separator, .length(18, .px), .string("Arial") ],
-            "font-size": [ .length(12, .px) ],
-            "line-height": [ .length(18, .px) ],
             "font-family": [ .string("Arial") ],
+            "font-size": [ .length(12, .px) ],
+            "font-stretch": [ .percentage(100) ],
+            "font-style": [ .keyword("normal") ],
+            "font-variant": [ .keyword("normal") ],
+            "font-weight": [ .number(400) ],
+            "line-height": [ .length(18, .px) ],
             
             "border-image": [ .url(URL(string: "https://example.com/image.png")!), .number(27), .number(23), .separator, .length(50, .px), .length(30, .px), .separator, .length(1, .rem), .keyword("stretch") ],
             "border-image-source": [ .url(URL(string: "https://example.com/image.png")!) ],
@@ -165,6 +169,26 @@ final class CSSParserTests: XCTestCase {
             "border-image-width": [ .length(50, .px), .length(30, .px) ],
             "border-image-outset": [ .length(1, .rem) ],
             "border-image-repeat": [ .keyword("stretch") ]
+        ]
+        for expectedAttribute in expectedAttributes {
+            let attributeValue = allValues[expectedAttribute.key]
+            XCTAssertNotNil(attributeValue)
+            XCTAssertEqual(attributeValue, expectedAttribute.value)
+        }
+        
+        let stub2 = StubCSSConsumer(type: "button", identifier: "test2")
+        allValues = parsedRules.getAllValues(for: stub2)
+        XCTAssertEqual(allValues.count, 8)
+        
+         expectedAttributes = [
+            "font": [ .keyword("italic"), .keyword("small-caps"), .number(700), .percentage(75), .length(12, .px), .separator, .length(18, .px), .string("Times New Roman") ],
+            "font-family": [ .string("Times New Roman") ],
+            "font-size": [ .length(12, .px) ],
+            "font-stretch": [ .percentage(75) ],
+            "font-style": [ .keyword("italic") ],
+            "font-variant": [ .keyword("small-caps") ],
+            "font-weight": [ .number(700) ],
+            "line-height": [ .length(18, .px) ]
         ]
         for expectedAttribute in expectedAttributes {
             let attributeValue = allValues[expectedAttribute.key]

@@ -3,11 +3,13 @@ public struct CSSValueShorthandGroupDescriptor {
     public let subAttributeName: String
     public let optional: Bool
     public let afterSeparator: Bool
+    public let defaultValue: CSSValue?
     
-    public init(subAttributeName: String, optional: Bool = false, afterSeparator: Bool = false) {
+    public init(subAttributeName: String, optional: Bool = false, afterSeparator: Bool = false, defaultValue: CSSValue? = nil) {
         self.subAttributeName = subAttributeName
         self.optional = optional
         self.afterSeparator = afterSeparator
+        self.defaultValue = defaultValue
     }
     
     func matches(values: [CSSValue], from index: inout Int, _ validationConfiguration: CSSValidationConfiguration) -> Bool {

@@ -6,3 +6,7 @@
     padding: 10px 20px;
     border-image: url("https://example.com/image.png") 27 23 / 50px 30px / 1rem stretch;
 }
+
+#test2 {
+    font: italic small-caps bold condensed 12px / 18px "Times New Roman";
+}

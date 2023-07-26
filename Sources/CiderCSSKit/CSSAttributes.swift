@@ -12,8 +12,12 @@ public final class CSSAttributes {
     public static let color = "color"
     
     public static let font = "font"
-    public static let fontSize = "font-size"
     public static let fontFamily = "font-family"
+    public static let fontSize = "font-size"
+    public static let fontStretch = "font-stretch"
+    public static let fontStyle = "font-style"
+    public static let fontVariant = "font-variant"
+    public static let fontWeight = "font-weight"
     
     public static let lineHeight = "line-height"
     
