@@ -20,7 +20,7 @@ label#id.first.second, *:visited {
 
 button:hover, :hover {
     color: red;
-    transform-origin: 50% 75%;
+    transform-origin: center 75%;
 }
 
 input {

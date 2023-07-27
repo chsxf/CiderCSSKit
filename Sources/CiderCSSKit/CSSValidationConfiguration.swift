@@ -6,56 +6,7 @@ open class CSSValidationConfiguration {
     
     public init() { }
     
-    open var valueGroupingTypeByAttribute: [String:CSSValueGroupingType] { [
-        CSSAttributes.backgroundColor: .single([.color]),
-        CSSAttributes.borderImage: .shorthand([
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageSource),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageSlice),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageWidth, optional: true, afterSeparator: true, defaultValue: .number(1)),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageOutset, optional: true, afterSeparator: true, defaultValue: .number(0)),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageRepeat)
-        ]),
-        CSSAttributes.borderImageOutset: .multiple([.number, .length()], min: 1, max: 4),
-        CSSAttributes.borderImageRepeat: .multiple([.keyword("stretch")], min: 1, max: 2),
-        CSSAttributes.borderImageSlice: .multiple([.number, .percentage, .keyword("fill")], min: 1, max: 4),
-        CSSAttributes.borderImageSource: .single([.url]),
-        CSSAttributes.borderImageWidth: .multiple([.number, .length(), .percentage, .keyword("auto")], min: 1, max: 4),
-        CSSAttributes.color: .single([.color]),
-        CSSAttributes.font: .shorthand([
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.fontStyle, optional: true, defaultValue: .keyword("normal")),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.fontVariant, optional: true, defaultValue: .keyword("normal")),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.fontWeight, optional: true, defaultValue: .number(400)),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.fontStretch, optional: true, defaultValue: .percentage(100)),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.fontSize),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.lineHeight, optional: true, afterSeparator: true, defaultValue: .number(1.2)),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.fontFamily)
-        ]),
-        CSSAttributes.fontFamily: .multiple([.string, .keyword("sans-serif"), .keyword("serif"), .keyword("monospace")], min: 1),
-        CSSAttributes.fontSize: .single([.length(), .percentage]),
-        CSSAttributes.fontStretch: .single([
-            .percentage,
-            .keyword("ultra-condensed", associatedValue: .percentage(50)),
-            .keyword("extra-condensed", associatedValue: .percentage(62.5)),
-            .keyword("condensed", associatedValue: .percentage(75)),
-            .keyword("semi-condensed", associatedValue: .percentage(87.5)),
-            .keyword("normal", associatedValue: .percentage(100)),
-            .keyword("semi-expanded", associatedValue: .percentage(112.5)),
-            .keyword("expanded", associatedValue: .percentage(125)),
-            .keyword("extra-expanded", associatedValue: .percentage(150)),
-            .keyword("ultra-expanded", associatedValue: .percentage(200))
-        ]),
-        CSSAttributes.fontStyle: .single([.keyword("normal"), .keyword("italic")]),
-        CSSAttributes.fontVariant: .single([.keyword("normal"), .keyword("small-caps")]),
-        CSSAttributes.fontWeight: .single([.number, .keyword("normal", associatedValue: .number(400)), .keyword("bold", associatedValue: .number(700))]),
-        CSSAttributes.lineHeight: .single([.length(), .number, .percentage, .keyword("normal", associatedValue: .number(1.2))]),
-        CSSAttributes.padding: .multiple([.number, .length()], min: 1, max: 4, customExpansionMethod: CSSAttributeExpanders.expandPadding(attributeToken:values:)),
-        CSSAttributes.paddingBottom: .single([.number, .length()]),
-        CSSAttributes.paddingLeft: .single([.number, .length()]),
-        CSSAttributes.paddingRight: .single([.number, .length()]),
-        CSSAttributes.paddingTop: .single([.number, .length()]),
-        CSSAttributes.textColor: .single([.color]),
-        CSSAttributes.transformOrigin: .multiple([.percentage, .length(), .keyword("bottom"), .keyword("center"), .keyword("left"), .keyword("right"), .keyword("top")], min: 1, max: 3, customExpansionMethod: CSSAttributeExpanders.expandTransformOrigin(attributeToken:values:))
-    ] }
+    open var valueGroupingTypeByAttribute: [String:CSSValueGroupingType] { CSSValidationConfigurationConstants.valueGroupingTypeByAttribute }
     
     open func parseFunction(functionToken: CSSToken, attributes: [CSSValue]) throws -> CSSValue {
         guard let functionName = functionToken.value as? String else { throw CSSParserErrors.invalidToken(functionToken) }
@@ -135,6 +86,31 @@ open class CSSValidationConfiguration {
         }
         
         throw CSSParserErrors.invalidAttributeValues(attributeToken: attributeToken, values: values)
+    }
+    
+    func replaceKeywordsWithAssociatedValues(_ attributeName: String, _ values: [CSSValue]) -> [CSSValue] {
+        var newValues = [CSSValue]()
+        for value in values {
+            if case let .keyword(keyword) = value, let groupingType = valueGroupingTypeByAttribute[attributeName] {
+                var associatedValue: CSSValue = value
+                switch groupingType {
+                case .single(let types), .multiple(let types, _, _, _), .sequence(let types):
+                    for type in types {
+                        if case let .keyword(typeKeyword, typeAssociatedValue) = type, typeKeyword == keyword, typeAssociatedValue != nil {
+                            associatedValue = typeAssociatedValue!
+                        }
+                    }
+                    break
+                default:
+                    break
+                }
+                newValues.append(associatedValue)
+            }
+            else {
+                newValues.append(value)
+            }
+        }
+        return newValues
     }
     
 }

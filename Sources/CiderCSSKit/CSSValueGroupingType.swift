@@ -143,7 +143,7 @@ public enum CSSValueGroupingType {
             
                 let start = group.afterSeparator ? lastValidatedValueIndex + 1 : lastValidatedValueIndex
                 var subValues = [CSSValue](values[start..<currentValueIndex])
-                subValues = replaceKeywordsWithAssociatedValues(group.subAttributeName, subValues, validationConfiguration)
+                subValues = validationConfiguration.replaceKeywordsWithAssociatedValues(group.subAttributeName, subValues)
                 expandedValues[group.subAttributeName] = subValues
                 if group.afterSeparator {
                     mainAttributeValues.append(.separator)
@@ -164,31 +164,6 @@ public enum CSSValueGroupingType {
         expandedValues[mainAttributeName] = mainAttributeValues
         
         return expandedValues
-    }
-    
-    private static func replaceKeywordsWithAssociatedValues(_ attributeName: String, _ values: [CSSValue], _ validationConfiguration: CSSValidationConfiguration) -> [CSSValue] {
-        var newValues = [CSSValue]()
-        for value in values {
-            if case let .keyword(keyword) = value, let groupingType = validationConfiguration.valueGroupingTypeByAttribute[attributeName] {
-                var associatedValue: CSSValue = value
-                switch groupingType {
-                case .single(let types), .multiple(let types, _, _, _), .sequence(let types):
-                    for type in types {
-                        if case let .keyword(typeKeyword, typeAssociatedValue) = type, typeKeyword == keyword, typeAssociatedValue != nil {
-                            associatedValue = typeAssociatedValue!
-                        }
-                    }
-                    break
-                default:
-                    break
-                }
-                newValues.append(associatedValue)
-            }
-            else {
-                newValues.append(value)
-            }
-        }
-        return newValues
     }
     
 }

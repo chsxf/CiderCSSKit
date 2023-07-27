@@ -295,7 +295,7 @@ public final class CSSParser {
         }
         while !foundEnd
         
-        return values
+        return validationConfiguration.replaceKeywordsWithAssociatedValues(attributeToken.value as! String, values)
     }
     
     private func getNextToken() throws -> CSSToken {
