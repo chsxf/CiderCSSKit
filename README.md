@@ -6,10 +6,6 @@ It was primarily designed to work with [CiderKit](https://github.com/chsxf/Cider
 ![](https://github.com/chsxf/CiderCSSKit/actions/workflows/swift.yml/badge.svg)
 [![](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg)](https://gitmoji.dev/)
 
-## Conventions
-
-This project uses [gitmoji](https://gitmoji.dev) for its commit messages.
-
 # 🪄 Features
 
 CiderCSSKit is still a work-in-progress. So many CSS features are not currenlty supported.
