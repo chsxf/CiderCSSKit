@@ -13,7 +13,7 @@ CiderCSSKit is still a work-in-progress. So many CSS features are not currenlty 
 Here's the list of existing and missing features:
 
 - provides easy access to style properties, in bulk or individually
-- named colors are already implemented, but any other keyword will be interpreted as a string
+- named colors are already implemented
 - complex CSS combinators (`>`, `+`, and `~`) are not implemented
 - no support pseudo-elements (like `::first-line` for example)
 - no support for parametric pseudo-classes (like `:nth-child()` for example)
