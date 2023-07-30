@@ -1,0 +1,47 @@
+/* First comment */
+*, #test {
+    background-color: rgba(255, 255, 255, 0.5);
+    font-family: "Arial";
+}
+
+/*
+ Second comment
+ */
+/* Single comment following */
+button, .youpi img {
+    color: yellow;
+    background: rgb(255, 0, 0), #ff0080, rgba(128, 128, 128, 1.0), #a0b, #aaaa, #ff8000ff;
+    padding: 10px 20px;
+}
+
+/* Third comment */
+/*
+ Multi
+ line
+ comment
+ */
+label#id.first.second, *:visited {
+    color: black;
+}
+
+.first.second {
+    color: red;
+    
+    /* Comment inside a rule */
+    text-color: green;
+}
+
+button:hover, :hover {
+    color: red;
+    transform-origin: center 75%;
+    font-family: "Times /* False comment */ New Roman";
+}
+
+input {
+    color: green;
+}
+
+/*
+ Unfinished
+ comment
+ at the end

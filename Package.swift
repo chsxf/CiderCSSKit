@@ -28,6 +28,8 @@ let package = Package(
             resources: [
                 .copy("TokenizerTests.ckcss"),
                 .copy("ParserTests.ckcss"),
+                .copy("ParserTestsWithComments.ckcss"),
+                .copy("ParserTestsWithInvalidComment.ckcss"),
                 .copy("ParserCustomTests.ckcss"),
                 .copy("ParserInvalidCustomTests.ckcss"),
                 .copy("ParserRuleBlockTests.ckcss")

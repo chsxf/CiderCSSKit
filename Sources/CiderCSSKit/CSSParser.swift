@@ -44,19 +44,22 @@ public final class CSSParser {
     }
     
     public static func parse(contentsOf: URL, validationConfiguration: CSSValidationConfiguration? = nil) throws -> CSSRules {
-        let buffer = try String(contentsOf: contentsOf)
+        var buffer = try String(contentsOf: contentsOf)
+        buffer = try filterOutComments(buffer: buffer)
         return try Self.parse(buffer: buffer, validationConfiguration: validationConfiguration)
     }
     
     public static func parse(buffer: String, validationConfiguration: CSSValidationConfiguration? = nil) throws -> CSSRules {
-        let tokens = try CSSTokenizer.tokenize(buffer: buffer)
+        let filteredBuffer = try filterOutComments(buffer: buffer)
+        let tokens = try CSSTokenizer.tokenize(buffer: filteredBuffer)
         let parser = CSSParser(tokens: tokens, validationConfiguration: validationConfiguration ?? CSSValidationConfiguration.default)
         try parser.parse()
         return parser.rules
     }
     
     public static func parse(ruleBlock: String, validationConfiguration: CSSValidationConfiguration? = nil) throws -> [String:[CSSValue]] {
-        var tokens = try CSSTokenizer.tokenize(buffer: ruleBlock)
+        let filteredRuleBlock = try filterOutComments(buffer: ruleBlock)
+        var tokens = try CSSTokenizer.tokenize(buffer: filteredRuleBlock)
         guard let lastToken = tokens.last else {
             throw CSSParserErrors.unexpectedEnd
         }
@@ -68,7 +71,8 @@ public final class CSSParser {
     }
     
     public static func parse(attributeName: String, attributeValue: String, validationConfiguration: CSSValidationConfiguration? = nil) throws -> [CSSValue] {
-        var tokens = try CSSTokenizer.tokenize(buffer: attributeValue)
+        let filteredAttributeValue = try filterOutComments(buffer: attributeValue)
+        var tokens = try CSSTokenizer.tokenize(buffer: filteredAttributeValue)
         guard let lastToken = tokens.last else {
             throw CSSParserErrors.unexpectedEnd
         }
@@ -78,6 +82,80 @@ public final class CSSParser {
         
         let parser = CSSParser(tokens: tokens, validationConfiguration: validationConfiguration ?? CSSValidationConfiguration.default)
         return try parser.parseAttributeValue(attributeToken: CSSToken(line: 0, type: .string, value: attributeName), level: 0)
+    }
+    
+    private static func filterOutComments(buffer: String) throws -> String {
+        var filteredBuffer: String = ""
+        
+        var inComment = false
+        var inLiteralString = false
+        var previousCharacter: Character? = nil
+        for char in buffer {
+            if char == "/" {
+                if inLiteralString {
+                    filteredBuffer.append(char)
+                }
+                else if previousCharacter == "*" && inComment {
+                    inComment = false
+                    previousCharacter = nil
+                }
+                else if !inComment {
+                    previousCharacter = char
+                }
+            }
+            else if char == "*" {
+                if inLiteralString {
+                    filteredBuffer.append(char)
+                }
+                else if previousCharacter == "/" && !inComment {
+                    inComment = true
+                    previousCharacter = nil
+                }
+                else if inComment {
+                    previousCharacter = char
+                }
+                else {
+                    filteredBuffer.append(char)
+                }
+            }
+            else if char == "\"" {
+                if !inLiteralString {
+                    inLiteralString = true
+                    filteredBuffer.append(char)
+                }
+                else if inLiteralString {
+                    if previousCharacter == "\\" {
+                        filteredBuffer.append("\\\"")
+                        previousCharacter = nil
+                    }
+                    else {
+                        inLiteralString = false
+                        filteredBuffer.append(char)
+                    }
+                }
+            }
+            else if char == "\\" {
+                if inLiteralString {
+                    previousCharacter = char
+                }
+                else {
+                    filteredBuffer.append(char)
+                }
+            }
+            else if !inComment {
+                if previousCharacter != nil {
+                    filteredBuffer.append(previousCharacter!)
+                    previousCharacter = nil
+                }
+                filteredBuffer.append(char)
+            }
+        }
+        
+        if inComment || inLiteralString || previousCharacter != nil {
+            throw CSSParserErrors.unexpectedEnd
+        }
+        
+        return filteredBuffer
     }
     
     private func parse() throws {

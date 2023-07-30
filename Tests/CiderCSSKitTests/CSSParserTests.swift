@@ -4,6 +4,8 @@ import XCTest
 final class CSSParserTests: XCTestCase {
 
     private static var buffer: String!
+    private static var bufferWithComments: String!
+    private static var bufferWithInvalidComment: String!
     private static var bufferCustom: String!
     private static var bufferInvalidCustom: String!
     private static var bufferRuleBlock: String!
@@ -12,6 +14,14 @@ final class CSSParserTests: XCTestCase {
         let dataURL = Bundle.module.url(forResource: "ParserTests", withExtension: "ckcss")
         XCTAssertNotNil(dataURL)
         Self.buffer = try! String(contentsOf: dataURL!)
+        
+        let commentsDataURL = Bundle.module.url(forResource: "ParserTestsWithComments", withExtension: "ckcss")
+        XCTAssertNotNil(commentsDataURL)
+        Self.bufferWithComments = try! String(contentsOf: commentsDataURL!)
+        
+        let invalidCommentsDataURL = Bundle.module.url(forResource: "ParserTestsWithInvalidComment", withExtension: "ckcss")
+        XCTAssertNotNil(invalidCommentsDataURL)
+        Self.bufferWithInvalidComment = try! String(contentsOf: invalidCommentsDataURL!)
         
         let customDataURL = Bundle.module.url(forResource: "ParserCustomTests", withExtension: "ckcss")
         XCTAssertNotNil(customDataURL)
@@ -272,6 +282,22 @@ final class CSSParserTests: XCTestCase {
         let stub = StubCSSConsumer(type: "button", pseudoClasses: [ "hover" ])
         let values = parsedRules.getValue(with: "transform-origin", for: stub)
         XCTAssertEqual(values, [ .percentage(50), .percentage(75), .length(0, .px) ])
+    }
+    
+    func testComments() throws {
+        let parsedRules = try CSSParser.parse(buffer: Self.bufferWithComments, validationConfiguration: StubCSSValidationConfiguration())
+        
+        let stub = StubCSSConsumer(type: "button", pseudoClasses: [ "hover" ])
+        let values = parsedRules.getValue(with: "font-family", for: stub)
+        XCTAssertEqual(values, [ .string("Times /* False comment */ New Roman") ] )
+    }
+    
+    func testInvalidComment() throws {
+        do {
+            let _ = try CSSParser.parse(buffer: Self.bufferWithInvalidComment, validationConfiguration: StubCSSValidationConfiguration())
+            XCTFail("Error should be raised")
+        }
+        catch CSSParserErrors.unexpectedEnd { }
     }
     
 }
