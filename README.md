@@ -4,6 +4,7 @@ CiderCSSKit is lightweight CSS parser written as a pure Swift package.
 It was primarily designed to work with [CiderKit](https://github.com/chsxf/CiderKit), but the goal is to make it as agnostic as possible.
 
 ![](https://github.com/chsxf/CiderCSSKit/actions/workflows/swift.yml/badge.svg)
+[![](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg)](https://gitmoji.dev/)
 
 ## Conventions
 
@@ -33,15 +34,8 @@ Even if the ultimate goal is to support all syntax features, there is a long roa
 - [ ] Add support for the child combinator (`>`) ([#7](https://github.com/chsxf/CiderCSSKit/issues/7))
 - [ ] Add support for the general sibling combinator (`~`) ([#8](https://github.com/chsxf/CiderCSSKit/issues/8))
 - [ ] Provides basic validation configurations for most common attributes, functions and keywords
-- [X] ~~Add support for shorthand attributes with multiple types ([#13](https://github.com/chsxf/CiderCSSKit/issues/13))~~
-- [X] ~~Fix rgb() and rbga() methods ([#11](https://github.com/chsxf/CiderCSSKit/issues/11))~~
-- [X] ~~Add support for all units ([#9](https://github.com/chsxf/CiderCSSKit/issues/9))~~
-- [X] ~~Add support for chained CSS rules ([#10](https://github.com/chsxf/CiderCSSKit/issues/10))~~)
-- [X] ~~Add support for shorthand properties (like `padding` or `border-radius`) ([#4](https://github.com/chsxf/CiderCSSKit/issues/4))~~
-- [X] ~~Add support for short hexadecimal colors (`#fff` for example) ([#5](https://github.com/chsxf/CiderCSSKit/issues/5))~~
-- [X] ~~Add support for the universal selector (`*`) ([#1](https://github.com/chsxf/CiderCSSKit/issues/1))~~
-- [X] ~~Add support for pseudo-classes (like `:hover`) ([#2](https://github.com/chsxf/CiderCSSKit/issues/2))~~
-- [X] ~~Implement ways to extend the capaibilities of the parser, with a specific model for custom validation and functions~~
+
+[Previously Closed Issues](https://github.com/chsxf/CiderCSSKit/issues?q=is%3Aissue+is%3Aclosed)
 
 # 🚀 Getting Started
 
