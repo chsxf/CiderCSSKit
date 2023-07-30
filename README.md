@@ -14,11 +14,11 @@ Here's the list of existing and missing features:
 
 - provides easy access to style properties, in bulk or individually
 - named colors are already implemented
+- built-in functions are limited to `rgb` and `rgba`
 - complex CSS combinators (`>`, `+`, and `~`) are not implemented
 - no support pseudo-elements (like `::first-line` for example)
 - no support for parametric pseudo-classes (like `:nth-child()` for example)
 - no support for attribute selectors (like `a[target]` or `a[target="_blank"]`)
-- built-in functions are limited to `rgb` and `rgba`
 
 ## Supported Attributes
 
