@@ -12,7 +12,6 @@ CiderCSSKit is still a work-in-progress. So many CSS features are not currenlty 
 
 Here's the list of existing and missing features:
 
-- syntax validation is implemented, but you can create any property with any value you like, without control (`background-image: 10px` for example)
 - provides easy access to style properties, in bulk or individually
 - named colors are already implemented, but any other keyword will be interpreted as a string
 - complex CSS combinators (`>`, `+`, and `~`) are not implemented
@@ -20,6 +19,34 @@ Here's the list of existing and missing features:
 - no support for parametric pseudo-classes (like `:nth-child()` for example)
 - no support for attribute selectors (like `a[target]` or `a[target="_blank"]`)
 - built-in functions are limited to `rgb` and `rgba`
+
+## Supported Attributes
+
+The list of supported attributes is fairly limited for now but will expand over time.
+
+- `background-color`
+- `border-image` and its sub-attributes
+    - `border-image-outset`
+    - `border-image-repeat`
+    - `border-image-slice`
+    - `border-image-source`
+    - `border-image-width`
+- `color`
+- `font` and its sub-attributes
+    - `font-family`
+    - `font-size`
+    - `font-stretch`
+    - `font-style`
+    - `font-variant`
+    - `font-weight`
+    - `line-height`
+- `padding` and its sub-attributes
+    - `padding-bottom`
+    - `padding-left`
+    - `padding-right`
+    - `padding-top`
+- `text-color`
+- `transform-origin`
 
 ## Planned improvements
 
