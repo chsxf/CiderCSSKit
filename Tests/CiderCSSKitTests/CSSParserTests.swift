@@ -205,6 +205,11 @@ final class CSSParserTests: XCTestCase {
             XCTAssertNotNil(attributeValue)
             XCTAssertEqual(attributeValue, expectedAttribute.value)
         }
+        
+        let parsedRules2 = try CSSParser.parse(buffer: "button { border-image: url(\"sprite://border-diamonds.png\") 30; }")
+        let stub3 = StubCSSConsumer(type: "button")
+        let borderImageValues = parsedRules2.getValue(with: CSSAttributes.borderImage, for: stub3)
+        XCTAssertEqual(borderImageValues, [ .url(URL(string: "sprite://border-diamonds.png")!), .number(30) ])
     }
     
     func testStandaloneAttributeValueParsing() throws {

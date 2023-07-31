@@ -115,6 +115,12 @@ public enum CSSValueGroupingType {
         while lastValidatedGroupIndex < groups.count {
             let group = groups[lastValidatedGroupIndex]
             var from = lastValidatedValueIndex
+            
+            if from >= values.count && group.optional {
+                lastValidatedGroupIndex += 1
+                continue
+            }
+            
             if group.matches(values: values, from: &from, validationConfiguration) || group.optional {
                 lastValidatedGroupIndex += 1
                 lastValidatedValueIndex = from
@@ -138,6 +144,12 @@ public enum CSSValueGroupingType {
         while lastValidatedGroupIndex < groups.count {
             let group = groups[lastValidatedGroupIndex]
             var currentValueIndex = lastValidatedValueIndex
+            
+            if currentValueIndex >= values.count && group.optional {
+                lastValidatedGroupIndex += 1
+                continue
+            }
+            
             if group.matches(values: values, from: &currentValueIndex, validationConfiguration) {
                 lastValidatedGroupIndex += 1
             
