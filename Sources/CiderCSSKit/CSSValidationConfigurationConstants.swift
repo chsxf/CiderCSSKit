@@ -4,10 +4,10 @@ final class CSSValidationConfigurationConstants {
         CSSAttributes.backgroundColor: .single([.color]),
         CSSAttributes.borderImage: .shorthand([
             CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageSource),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageSlice, optional: true),
+            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageSlice, optional: true, defaultValue: .percentage(100)),
             CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageWidth, optional: true, afterSeparator: true, defaultValue: .number(1)),
             CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageOutset, optional: true, afterSeparator: true, defaultValue: .number(0)),
-            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageRepeat, optional: true)
+            CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageRepeat, optional: true, defaultValue: .keyword("stretch"))
         ]),
         CSSAttributes.borderImageOutset: .multiple([.number, .length()], min: 1, max: 4),
         CSSAttributes.borderImageRepeat: .multiple([.keyword("stretch")], min: 1, max: 2),
