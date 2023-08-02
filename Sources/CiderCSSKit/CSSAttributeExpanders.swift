@@ -1,5 +1,16 @@
 public final class CSSAttributeExpanders {
     
+    public class func twoValuesExpander(attributeToken: CSSToken, values: [CSSValue]) throws -> [String: [CSSValue]] {
+        var expandedValues = [CSSValue](values)
+        
+        if expandedValues.count == 1 {
+            expandedValues.append(expandedValues[0])
+        }
+                
+        let attributeName = attributeToken.value as! String
+        return [ attributeName: expandedValues ]
+    }
+    
     public class func fourValuesExpander(attributeToken: CSSToken, values: [CSSValue]) throws -> [String: [CSSValue]] {
         var expandedValues = [CSSValue](values)
         

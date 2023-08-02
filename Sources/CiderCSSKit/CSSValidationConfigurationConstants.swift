@@ -9,11 +9,11 @@ final class CSSValidationConfigurationConstants {
             CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageOutset, optional: true, afterSeparator: true, defaultValue: .number(0)),
             CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageRepeat, optional: true, defaultValue: .keyword("stretch"))
         ]),
-        CSSAttributes.borderImageOutset: .multiple([.number, .length()], min: 1, max: 4),
-        CSSAttributes.borderImageRepeat: .multiple([.keyword("stretch")], min: 1, max: 2),
-        CSSAttributes.borderImageSlice: .multiple([.number, .percentage, .keyword("fill")], min: 1, max: 4),
+        CSSAttributes.borderImageOutset: .multiple([.number, .length()], min: 1, max: 4, customExpansionMethod: CSSAttributeExpanders.fourValuesExpander(attributeToken:values:)),
+        CSSAttributes.borderImageRepeat: .multiple([.keyword("stretch")], min: 1, max: 2, customExpansionMethod: CSSAttributeExpanders.twoValuesExpander(attributeToken:values:)),
+        CSSAttributes.borderImageSlice: .multiple([.number, .percentage, .keyword("fill")], min: 1, max: 4, customExpansionMethod: CSSAttributeExpanders.fourValuesExpander(attributeToken:values:)),
         CSSAttributes.borderImageSource: .single([.url]),
-        CSSAttributes.borderImageWidth: .multiple([.number, .length(), .percentage, .keyword("auto")], min: 1, max: 4),
+        CSSAttributes.borderImageWidth: .multiple([.number, .length(), .percentage, .keyword("auto")], min: 1, max: 4, customExpansionMethod: CSSAttributeExpanders.fourValuesExpander(attributeToken:values:)),
         CSSAttributes.color: .single([.color]),
         CSSAttributes.font: .shorthand([
             CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.fontStyle, optional: true, defaultValue: .keyword("normal")),

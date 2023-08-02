@@ -175,10 +175,10 @@ final class CSSParserTests: XCTestCase {
             
             "border-image": [ .url(URL(string: "https://example.com/image.png")!), .number(27), .number(23), .separator, .length(50, .px), .length(30, .px), .separator, .length(1, .rem), .keyword("stretch") ],
             "border-image-source": [ .url(URL(string: "https://example.com/image.png")!) ],
-            "border-image-slice": [ .number(27), .number(23) ],
-            "border-image-width": [ .length(50, .px), .length(30, .px) ],
-            "border-image-outset": [ .length(1, .rem) ],
-            "border-image-repeat": [ .keyword("stretch") ]
+            "border-image-slice": [ .number(27), .number(23), .number(27), .number(23) ],
+            "border-image-width": [ .length(50, .px), .length(30, .px), .length(50, .px), .length(30, .px) ],
+            "border-image-outset": [ .length(1, .rem), .length(1, .rem), .length(1, .rem), .length(1, .rem) ],
+            "border-image-repeat": [ .keyword("stretch"), .keyword("stretch") ]
         ]
         for expectedAttribute in expectedAttributes {
             let attributeValue = allValues[expectedAttribute.key]

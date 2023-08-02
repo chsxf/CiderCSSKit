@@ -156,7 +156,18 @@ public enum CSSValueGroupingType {
                 let start = group.afterSeparator ? lastValidatedValueIndex + 1 : lastValidatedValueIndex
                 var subValues = [CSSValue](values[start..<currentValueIndex])
                 subValues = validationConfiguration.replaceKeywordsWithAssociatedValues(group.subAttributeName, subValues)
-                expandedValues[group.subAttributeName] = subValues
+                
+                if case let .multiple(_, _, _, groupCustomExpansionMethod) = validationConfiguration.valueGroupingTypeByAttribute[group.subAttributeName], groupCustomExpansionMethod != nil {
+                    let subAttributeToken = CSSToken(line: attributeToken.line, type: .string, value: group.subAttributeName)
+                    let expandedSubAttribute = try groupCustomExpansionMethod!(subAttributeToken, subValues)
+                    for entry in expandedSubAttribute {
+                        expandedValues[entry.key] = entry.value
+                    }
+                }
+                else {
+                    expandedValues[group.subAttributeName] = subValues
+                }
+                                
                 if group.afterSeparator {
                     mainAttributeValues.append(.separator)
                 }
@@ -166,7 +177,19 @@ public enum CSSValueGroupingType {
             }
             else if group.optional {
                 lastValidatedGroupIndex += 1
-                expandedValues[group.subAttributeName] = [ group.defaultValue! ]
+                
+                let subValues = [ group.defaultValue! ]
+                
+                if case let .multiple(_, _, _, groupCustomExpansionMethod) = validationConfiguration.valueGroupingTypeByAttribute[group.subAttributeName], groupCustomExpansionMethod != nil {
+                    let subAttributeToken = CSSToken(line: attributeToken.line, type: .string, value: group.subAttributeName)
+                    let expandedSubAttribute = try groupCustomExpansionMethod!(subAttributeToken, subValues)
+                    for entry in expandedSubAttribute {
+                        expandedValues[entry.key] = entry.value
+                    }
+                }
+                else {
+                    expandedValues[group.subAttributeName] = subValues
+                }
             }
             else if !group.optional {
                 throw CSSParserErrors.invalidAttributeValues(attributeToken: attributeToken, values: values)
