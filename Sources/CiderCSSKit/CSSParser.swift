@@ -118,7 +118,7 @@ public final class CSSParser {
                     filteredBuffer.append(char)
                 }
             }
-            else if char == "\"" {
+            else if char == "\"" && !inComment {
                 if !inLiteralString {
                     inLiteralString = true
                     filteredBuffer.append(char)
@@ -134,7 +134,7 @@ public final class CSSParser {
                     }
                 }
             }
-            else if char == "\\" {
+            else if char == "\\" && !inComment {
                 if inLiteralString {
                     previousCharacter = char
                 }

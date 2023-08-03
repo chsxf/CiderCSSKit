@@ -303,6 +303,9 @@ final class CSSParserTests: XCTestCase {
             XCTFail("Error should be raised")
         }
         catch CSSParserErrors.unexpectedEnd { }
+        
+        let ruleBlock = try CSSParser.parse(ruleBlock: "transform-origin: right bottom; background-color: black; /* border-image: url(\"sprite:///border-diamonds.png\") 30; */")
+        XCTAssertEqual(ruleBlock.count, 2)
     }
     
 }
