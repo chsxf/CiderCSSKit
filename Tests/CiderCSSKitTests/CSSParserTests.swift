@@ -115,7 +115,7 @@ final class CSSParserTests: XCTestCase {
         XCTAssertEqual(values.count, 4)
         
         try CSSTestHelpers.assertColorValue(values: values["color"], expectedValue: CSSColorKeywords.getValue(for: "black"))
-        try CSSTestHelpers.assertColorValue(values: values["text-color"], expectedValue: CSSColorKeywords.getValue(for: "green"))
+        XCTAssertEqual(values["text-align"], [.keyword("center")])
     }
     
     func testUniversalSelector() throws {

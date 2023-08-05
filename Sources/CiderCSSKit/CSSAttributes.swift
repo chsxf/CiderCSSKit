@@ -27,7 +27,7 @@ public final class CSSAttributes {
     public static let paddingRight = "padding-right"
     public static let paddingTop = "padding-top"
     
-    public static let textColor = "text-color"
+    public static let textAlign = "text-align";
     
     public static let transformOrigin = "transform-origin"
     

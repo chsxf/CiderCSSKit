@@ -28,7 +28,7 @@ label#id.first.second, *:visited {
     color: red;
     
     /* Comment inside a rule */
-    text-color: green;
+    background-color: green;
 }
 
 button:hover, :hover {

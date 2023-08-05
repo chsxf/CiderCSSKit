@@ -15,7 +15,7 @@ label#id.first.second, *:visited {
 
 .first.second {
     color: red;
-    text-color: green;
+    text-align: center;
 }
 
 button:hover, :hover {

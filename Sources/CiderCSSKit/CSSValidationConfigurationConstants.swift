@@ -47,7 +47,7 @@ final class CSSValidationConfigurationConstants {
         CSSAttributes.paddingLeft: .single([.number, .length()]),
         CSSAttributes.paddingRight: .single([.number, .length()]),
         CSSAttributes.paddingTop: .single([.number, .length()]),
-        CSSAttributes.textColor: .single([.color]),
+        CSSAttributes.textAlign: .single([.keyword("start"), .keyword("end"), .keyword("left"), .keyword("right"), .keyword("center"), .keyword("justify"), .keyword("match-parent")]),
         CSSAttributes.transformOrigin: .multiple([
             .percentage,
             .length(),
