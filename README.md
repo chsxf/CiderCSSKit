@@ -45,7 +45,7 @@ The list of supported attributes is fairly limited for now but will expand over 
     - `padding-left`
     - `padding-right`
     - `padding-top`
-- `text-color`
+- `text-align`
 - `transform-origin`
 
 ## Planned improvements
