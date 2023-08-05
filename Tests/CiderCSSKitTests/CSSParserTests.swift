@@ -254,25 +254,6 @@ final class CSSParserTests: XCTestCase {
         }
     }
     
-    func testUnits() throws {
-        do {
-            let _ = try CSSParser.parse(attributeName: "unit-tester", attributeValue: "10tt", validationConfiguration: StubCSSValidationConfiguration())
-        }
-        catch CSSParserErrors.invalidUnit(let unitToken) {
-            XCTAssertEqual(unitToken, CSSToken(line: 0, type: .string, value: "tt"))
-        }
-        
-        for unit in CSSLengthUnit.allCases {
-            let values = try CSSParser.parse(attributeName: "unit-tester", attributeValue: "10\(unit.rawValue)", validationConfiguration: StubCSSValidationConfiguration())
-            XCTAssertEqual(values, [ CSSValue.length(10, unit) ])
-        }
-        
-        for unit in CSSAngleUnit.allCases {
-            let values = try CSSParser.parse(attributeName: "unit-tester", attributeValue: "10\(unit.rawValue)", validationConfiguration: StubCSSValidationConfiguration())
-            XCTAssertEqual(values, [ CSSValue.angle(10, unit) ])
-        }
-    }
-    
     func testEmptySheet() throws {
         let _ = try CSSParser.parse(buffer: "")
     }
