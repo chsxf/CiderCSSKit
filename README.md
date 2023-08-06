@@ -5,6 +5,7 @@ It was primarily designed to work with [CiderKit](https://github.com/chsxf/Cider
 
 ![](https://github.com/chsxf/CiderCSSKit/actions/workflows/swift.yml/badge.svg)
 [![](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg)](https://gitmoji.dev/)
+![](https://analytics.chsxf.dev/GitHubStats.badge/CiderCSSKit/README.md)
 
 # 🪄 Features
 
