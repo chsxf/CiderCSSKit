@@ -23,17 +23,33 @@ final class CSSUnitTests: XCTestCase {
     }
     
     func testLengthUnitConversion() throws {
-        let inchesInPixels = CSSLengthUnit.in.convert(to: .px)
+        let inchesInPixels = try CSSLengthUnit.in.convert(to: .px)
         XCTAssertEqual(inchesInPixels, 96)
         
-        let inchesInCentimeters = CSSLengthUnit.in.convert(to: .cm)
+        let inchesInCentimeters = try CSSLengthUnit.in.convert(to: .cm)
         XCTAssertEqual(inchesInCentimeters, 2.54)
         
-        let centimetersInInches = CSSLengthUnit.cm.convert(to: .in)
+        let centimetersInInches = try CSSLengthUnit.cm.convert(to: .in)
         XCTAssertEqual(centimetersInInches, 1.0 / 2.54)
         
-        let millimetersToCentimers = CSSLengthUnit.mm.convert(amount: 10, to: .cm)
+        let millimetersToCentimers = try CSSLengthUnit.mm.convert(amount: 10, to: .cm)
         XCTAssertEqual(millimetersToCentimers, 1)
+        
+        do {
+            let _ = try CSSLengthUnit.ch.convert(amount: 1, to: .cm)
+            XCTFail("Test should fail")
+        }
+        catch CSSLengthUnitErrors.notAbsoluteLength(let unit) {
+            XCTAssertEqual(unit, .ch)
+        }
+        
+        do {
+            let _ = try CSSLengthUnit.cm.convert(amount: 1, to: .ch)
+            XCTFail("Test should fail")
+        }
+        catch CSSLengthUnitErrors.notAbsoluteLength(let unit) {
+            XCTAssertEqual(unit, .ch)
+        }
     }
     
     func testAngleUnitConversion() throws {

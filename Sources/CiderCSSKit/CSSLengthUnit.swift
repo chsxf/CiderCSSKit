@@ -1,3 +1,7 @@
+public enum CSSLengthUnitErrors: Error {
+    case notAbsoluteLength(CSSLengthUnit)
+}
+
 public enum CSSLengthUnit: String, CaseIterable {
     case ch
     case cm
@@ -25,7 +29,20 @@ public enum CSSLengthUnit: String, CaseIterable {
     case vmin
     case vw
     
-    func convert(amount: Float = 1, to destinationUnit: CSSLengthUnit) -> Float {
+    public var isAbsolute: Bool {
+        switch self {
+        case .cm, .mm, .Q, .in, .pc, .pt, .px:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    public func convert(amount: Float = 1, to destinationUnit: CSSLengthUnit) throws -> Float {
+        guard self.isAbsolute else { throw CSSLengthUnitErrors.notAbsoluteLength(self) }
+        
+        guard destinationUnit.isAbsolute else { throw CSSLengthUnitErrors.notAbsoluteLength(destinationUnit) }
+        
         let selfInCentimeters = self.toCentimetersRatio()
         let destinationFromCentimeters = 1.0 / destinationUnit.toCentimetersRatio()
         return selfInCentimeters * destinationFromCentimeters * amount
