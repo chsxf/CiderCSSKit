@@ -48,6 +48,7 @@ The list of supported attributes is fairly limited for now but will expand over 
     - `padding-top`
 - `text-align`
 - `transform-origin`
+- `vertical-align`
 
 ## Planned improvements
 

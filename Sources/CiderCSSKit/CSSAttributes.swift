@@ -31,4 +31,6 @@ public final class CSSAttributes {
     
     public static let transformOrigin = "transform-origin"
     
+    public static let verticalAlign = "vertical-align"
+    
 }

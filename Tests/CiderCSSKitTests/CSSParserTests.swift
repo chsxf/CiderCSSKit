@@ -51,7 +51,7 @@ final class CSSParserTests: XCTestCase {
         let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub1 = StubCSSConsumer(type: "button")
-        let value = parsedRules.getValue(with: "color", for: stub1)
+        let value = parsedRules.getValue(with: CSSAttributes.color, for: stub1)
         let unwrappedValue = try XCTUnwrap(value)
         XCTAssertEqual(unwrappedValue.count, 1)
         
@@ -62,12 +62,12 @@ final class CSSParserTests: XCTestCase {
         let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         var stubChild = StubCSSConsumer(type: "img")
-        let value1 = parsedRules.getValue(with: "color", for: stubChild)
+        let value1 = parsedRules.getValue(with: CSSAttributes.color, for: stubChild)
         XCTAssertNil(value1)
         
         let stubParent = StubCSSConsumer(type: "dummy", classes: ["youpi"])
         stubChild.ancestor = stubParent
-        let value2 = parsedRules.getValue(with: "color", for: stubChild)
+        let value2 = parsedRules.getValue(with: CSSAttributes.color, for: stubChild)
         let unwrappedValue2 = try XCTUnwrap(value2)
         XCTAssertEqual(unwrappedValue2.count, 1)
         
@@ -99,11 +99,11 @@ final class CSSParserTests: XCTestCase {
         let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub1 = StubCSSConsumer(type: "dummy", classes: ["first", "second"])
-        let value1 = parsedRules.getValue(with: "color", for: stub1)
+        let value1 = parsedRules.getValue(with: CSSAttributes.color, for: stub1)
         try CSSTestHelpers.assertColorValue(values: value1, expectedValue: CSSColorKeywords.getValue(for: "red"))
         
         let stub2 = StubCSSConsumer(type: "label", identifier: "id", classes: ["first", "second"])
-        let value2 = parsedRules.getValue(with: "color", for: stub2)
+        let value2 = parsedRules.getValue(with: CSSAttributes.color, for: stub2)
         try CSSTestHelpers.assertColorValue(values: value2, expectedValue: CSSColorKeywords.getValue(for: "black"))
     }
     
@@ -114,19 +114,19 @@ final class CSSParserTests: XCTestCase {
         let values = parsedRules.getAllValues(for: stub)
         XCTAssertEqual(values.count, 4)
         
-        try CSSTestHelpers.assertColorValue(values: values["color"], expectedValue: CSSColorKeywords.getValue(for: "black"))
-        XCTAssertEqual(values["text-align"], [.keyword("center")])
+        try CSSTestHelpers.assertColorValue(values: values[CSSAttributes.color], expectedValue: CSSColorKeywords.getValue(for: "black"))
+        XCTAssertEqual(values[CSSAttributes.textAlign], [.keyword("center")])
     }
     
     func testUniversalSelector() throws {
         let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub1 = StubCSSConsumer(type: "a", pseudoClasses: ["visited"])
-        let color = parsedRules.getValue(with: "color", for: stub1)
+        let color = parsedRules.getValue(with: CSSAttributes.color, for: stub1)
         try CSSTestHelpers.assertColorValue(values: color, expectedValue: CSSColorKeywords.getValue(for: "black"))
         
         let stub2 = StubCSSConsumer(type: "select", classes: ["custom"], pseudoClasses: ["selected"])
-        let bgColor = parsedRules.getValue(with: "background-color", for: stub2)
+        let bgColor = parsedRules.getValue(with: CSSAttributes.backgroundColor, for: stub2)
         try CSSTestHelpers.assertColorValue(values: bgColor, expectedValue:CSSValue.color(1, 1, 1, 0.5))
     }
     
@@ -134,19 +134,19 @@ final class CSSParserTests: XCTestCase {
         let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub1 = StubCSSConsumer(type: "button")
-        let color1 = parsedRules.getValue(with: "color", for: stub1)
+        let color1 = parsedRules.getValue(with: CSSAttributes.color, for: stub1)
         try CSSTestHelpers.assertColorValue(values: color1, expectedValue: CSSColorKeywords.getValue(for: "yellow"))
         
         let stub2 = StubCSSConsumer(type: "button", pseudoClasses: ["hover"])
-        let color2 = parsedRules.getValue(with: "color", for: stub2)
+        let color2 = parsedRules.getValue(with: CSSAttributes.color, for: stub2)
         try CSSTestHelpers.assertColorValue(values: color2, expectedValue: CSSColorKeywords.getValue(for: "red"))
         
         let stub3 = StubCSSConsumer(type: "button", pseudoClasses: ["missing-pseudo-class"])
-        let color3 = parsedRules.getValue(with: "color", for: stub3)
+        let color3 = parsedRules.getValue(with: CSSAttributes.color, for: stub3)
         try CSSTestHelpers.assertColorValue(values: color3, expectedValue: CSSColorKeywords.getValue(for: "yellow"))
         
         let stub4 = StubCSSConsumer(type: "input", pseudoClasses: ["hover"])
-        let color4 = parsedRules.getValue(with: "color", for: stub4)
+        let color4 = parsedRules.getValue(with: CSSAttributes.color, for: stub4)
         try CSSTestHelpers.assertColorValue(values: color4, expectedValue: CSSColorKeywords.getValue(for: "red"))
     }
     
@@ -158,27 +158,27 @@ final class CSSParserTests: XCTestCase {
         XCTAssertEqual(allValues.count, 21)
         
         var expectedAttributes: [String: [CSSValue]] = [
-            "padding": [ .length(10, .px), .length(20, .px), .length(10, .px), .length(20, .px) ],
-            "padding-top": [ .length(10, .px) ],
-            "padding-right": [ .length(20, .px) ],
-            "padding-bottom": [ .length(10, .px) ],
-            "padding-left": [ .length(20, .px) ],
+            CSSAttributes.padding: [ .length(10, .px), .length(20, .px), .length(10, .px), .length(20, .px) ],
+            CSSAttributes.paddingTop: [ .length(10, .px) ],
+            CSSAttributes.paddingRight: [ .length(20, .px) ],
+            CSSAttributes.paddingBottom: [ .length(10, .px) ],
+            CSSAttributes.paddingLeft: [ .length(20, .px) ],
             
-            "font": [ .length(12, .px), .separator, .length(18, .px), .string("Arial") ],
-            "font-family": [ .string("Arial") ],
-            "font-size": [ .length(12, .px) ],
-            "font-stretch": [ .percentage(100) ],
-            "font-style": [ .keyword("normal") ],
-            "font-variant": [ .keyword("normal") ],
-            "font-weight": [ .number(400) ],
-            "line-height": [ .length(18, .px) ],
+            CSSAttributes.font: [ .length(12, .px), .separator, .length(18, .px), .string("Arial") ],
+            CSSAttributes.fontFamily: [ .string("Arial") ],
+            CSSAttributes.fontSize: [ .length(12, .px) ],
+            CSSAttributes.fontStretch: [ .percentage(100) ],
+            CSSAttributes.fontStyle: [ .keyword("normal") ],
+            CSSAttributes.fontVariant: [ .keyword("normal") ],
+            CSSAttributes.fontWeight: [ .number(400) ],
+            CSSAttributes.lineHeight: [ .length(18, .px) ],
             
-            "border-image": [ .url(URL(string: "https://example.com/image.png")!), .number(27), .number(23), .separator, .length(50, .px), .length(30, .px), .separator, .length(1, .rem), .keyword("stretch") ],
-            "border-image-source": [ .url(URL(string: "https://example.com/image.png")!) ],
-            "border-image-slice": [ .number(27), .number(23), .number(27), .number(23) ],
-            "border-image-width": [ .length(50, .px), .length(30, .px), .length(50, .px), .length(30, .px) ],
-            "border-image-outset": [ .length(1, .rem), .length(1, .rem), .length(1, .rem), .length(1, .rem) ],
-            "border-image-repeat": [ .keyword("stretch"), .keyword("stretch") ]
+            CSSAttributes.borderImage: [ .url(URL(string: "https://example.com/image.png")!), .number(27), .number(23), .separator, .length(50, .px), .length(30, .px), .separator, .length(1, .rem), .keyword("stretch") ],
+            CSSAttributes.borderImageSource: [ .url(URL(string: "https://example.com/image.png")!) ],
+            CSSAttributes.borderImageSlice: [ .number(27), .number(23), .number(27), .number(23) ],
+            CSSAttributes.borderImageWidth: [ .length(50, .px), .length(30, .px), .length(50, .px), .length(30, .px) ],
+            CSSAttributes.borderImageOutset: [ .length(1, .rem), .length(1, .rem), .length(1, .rem), .length(1, .rem) ],
+            CSSAttributes.borderImageRepeat: [ .keyword("stretch"), .keyword("stretch") ]
         ]
         for expectedAttribute in expectedAttributes {
             let attributeValue = allValues[expectedAttribute.key]
@@ -188,17 +188,18 @@ final class CSSParserTests: XCTestCase {
         
         let stub2 = StubCSSConsumer(type: "button", identifier: "test2")
         allValues = parsedRules.getAllValues(for: stub2)
-        XCTAssertEqual(allValues.count, 8)
+        XCTAssertEqual(allValues.count, 9)
         
          expectedAttributes = [
-            "font": [ .keyword("italic"), .keyword("small-caps"), .number(700), .percentage(75), .length(12, .px), .separator, .length(18, .px), .string("Times New Roman"), .keyword("serif") ],
-            "font-family": [ .string("Times New Roman"), .keyword("serif") ],
-            "font-size": [ .length(12, .px) ],
-            "font-stretch": [ .percentage(75) ],
-            "font-style": [ .keyword("italic") ],
-            "font-variant": [ .keyword("small-caps") ],
-            "font-weight": [ .number(700) ],
-            "line-height": [ .length(18, .px) ]
+            CSSAttributes.font: [ .keyword("italic"), .keyword("small-caps"), .number(700), .percentage(75), .length(12, .px), .separator, .length(18, .px), .string("Times New Roman"), .keyword("serif") ],
+            CSSAttributes.fontFamily: [ .string("Times New Roman"), .keyword("serif") ],
+            CSSAttributes.fontSize: [ .length(12, .px) ],
+            CSSAttributes.fontStretch: [ .percentage(75) ],
+            CSSAttributes.fontStyle: [ .keyword("italic") ],
+            CSSAttributes.fontVariant: [ .keyword("small-caps") ],
+            CSSAttributes.fontWeight: [ .number(700) ],
+            CSSAttributes.lineHeight: [ .length(18, .px) ],
+            CSSAttributes.verticalAlign: [ .keyword("middle")]
         ]
         for expectedAttribute in expectedAttributes {
             let attributeValue = allValues[expectedAttribute.key]
@@ -214,14 +215,14 @@ final class CSSParserTests: XCTestCase {
     
     func testStandaloneAttributeValueParsing() throws {
         let attributeValue = "green"
-        let values = try CSSParser.parse(attributeName: "color", attributeValue: attributeValue)
+        let values = try CSSParser.parse(attributeName: CSSAttributes.color, attributeValue: attributeValue)
         try CSSTestHelpers.assertColorValue(values: values, expectedValue: CSSColorKeywords.getValue(for: "green"))
     }
     
     func testStandaloneRuleBlockParsing() throws {
         let parsedRuleBlock = try CSSParser.parse(ruleBlock: Self.bufferRuleBlock, validationConfiguration: StubCSSValidationConfiguration())
         XCTAssertEqual(parsedRuleBlock.count, 2)
-        let colorValues = parsedRuleBlock["color"]
+        let colorValues = parsedRuleBlock[CSSAttributes.color]
         try CSSTestHelpers.assertColorValue(values: colorValues, expectedValue: CSSColorKeywords.getValue(for: "black"))
     }
     
@@ -266,7 +267,7 @@ final class CSSParserTests: XCTestCase {
         let parsedRules = try CSSParser.parse(buffer: Self.buffer, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub = StubCSSConsumer(type: "button", pseudoClasses: [ "hover" ])
-        let values = parsedRules.getValue(with: "transform-origin", for: stub)
+        let values = parsedRules.getValue(with: CSSAttributes.transformOrigin, for: stub)
         XCTAssertEqual(values, [ .percentage(50), .percentage(75), .length(0, .px) ])
     }
     
@@ -274,7 +275,7 @@ final class CSSParserTests: XCTestCase {
         let parsedRules = try CSSParser.parse(buffer: Self.bufferWithComments, validationConfiguration: StubCSSValidationConfiguration())
         
         let stub = StubCSSConsumer(type: "button", pseudoClasses: [ "hover" ])
-        let values = parsedRules.getValue(with: "font-family", for: stub)
+        let values = parsedRules.getValue(with: CSSAttributes.fontFamily, for: stub)
         XCTAssertEqual(values, [ .string("Times /* False comment */ New Roman") ] )
     }
     
