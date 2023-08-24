@@ -52,11 +52,13 @@ final class CSSHexColorHelpers {
             throw CSSParserErrors.malformedToken(token)
         }
 
-        return .color(
-            (Float(red) / 255.0).rounded(toPlaces: 4),
-            (Float(green) / 255.0).rounded(toPlaces: 4),
-            (Float(blue) / 255.0).rounded(toPlaces: 4),
-            (Float(alpha) / 255.0).rounded(toPlaces: 4)
+        return .color(CSSColorSpace.sRGB,
+            [
+                (Float(red) / 255.0).rounded(toPlaces: 4),
+                (Float(green) / 255.0).rounded(toPlaces: 4),
+                (Float(blue) / 255.0).rounded(toPlaces: 4),
+                (Float(alpha) / 255.0).rounded(toPlaces: 4)
+            ]
         )
     }
     

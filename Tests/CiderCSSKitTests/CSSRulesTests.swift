@@ -6,7 +6,7 @@ final class CSSRulesTests: XCTestCase {
     func testExample() throws {
         let rules = CSSRules()
         
-        let attributes: [String: [CSSValue]] = [ "color": [.color(1, 0, 0, 1)] ]
+        let attributes: [String: [CSSValue]] = [ "color": [.color(CSSColorSpace.sRGB, [1, 0, 0, 1])] ]
         
         var clause = try CSSClause(clauseTokens: [
             CSSToken(line: 0, type: .string, value: "button")

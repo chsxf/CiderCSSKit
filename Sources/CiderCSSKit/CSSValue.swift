@@ -3,7 +3,7 @@ import Foundation
 public enum CSSValue: Equatable {
     
     case angle(Float, CSSAngleUnit)
-    case color(Float, Float, Float, Float)
+    case color(CSSColorSpace, [Float])
     case keyword(String)
     case length(Float, CSSLengthUnit)
     case number(Float)
@@ -19,9 +19,9 @@ public enum CSSValue: Equatable {
                 return leftValue == rightValue && leftUnit == rightUnit
             }
             
-        case let .color(leftR, leftG, leftB, leftA):
-            if case let .color(rightR, rightG, rightB, rightA) = rhs {
-                return leftR == rightR && leftG == rightG && leftB == rightB && leftA == rightA
+        case let .color(leftColorSpace, leftComponents):
+            if case let .color(rightColorSpace, rightComponents) = rhs {
+                return leftColorSpace == rightColorSpace && leftComponents.elementsEqual(rightComponents)
             }
             
         case let .keyword(leftKeyword):

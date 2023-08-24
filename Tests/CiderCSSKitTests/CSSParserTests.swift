@@ -83,11 +83,11 @@ final class CSSParserTests: XCTestCase {
         
         let expectedColors = [
             CSSColorKeywords.getValue(for: "red"),
-            CSSValue.color(1, 0, 0.502, 1),
-            CSSValue.color(0.502, 0.502, 0.502, 1.0),
-            CSSValue.color(0.6667, 0, 0.7333, 1),
-            CSSValue.color(0.6667, 0.6667, 0.6667, 0.6667),
-            CSSValue.color(1, 0.502, 0, 1)
+            CSSValue.color(CSSColorSpace.sRGB, [1, 0, 0.502, 1]),
+            CSSValue.color(CSSColorSpace.sRGB, [0.502, 0.502, 0.502, 1.0]),
+            CSSValue.color(CSSColorSpace.sRGB, [0.6667, 0, 0.7333, 1]),
+            CSSValue.color(CSSColorSpace.sRGB, [0.6667, 0.6667, 0.6667, 0.6667]),
+            CSSValue.color(CSSColorSpace.sRGB, [1, 0.502, 0, 1])
         ]
         XCTAssertEqual(unwrappedColors.count, expectedColors.count)
         for i in 0..<expectedColors.count {
@@ -127,7 +127,7 @@ final class CSSParserTests: XCTestCase {
         
         let stub2 = StubCSSConsumer(type: "select", classes: ["custom"], pseudoClasses: ["selected"])
         let bgColor = parsedRules.getValue(with: CSSAttributes.backgroundColor, for: stub2)
-        try CSSTestHelpers.assertColorValue(values: bgColor, expectedValue:CSSValue.color(1, 1, 1, 0.5))
+        try CSSTestHelpers.assertColorValue(values: bgColor, expectedValue:CSSValue.color(CSSColorSpace.sRGB, [1, 1, 1, 0.5]))
     }
     
     func testPseudoClasses() throws {
