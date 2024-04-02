@@ -1,29 +1,29 @@
 import Foundation
 
-enum CSSTokenizerErrors : Error {
-    
+enum CSSTokenizerErrors: Error {
+
     case unexpectedEndOfBuffer
-    
+
 }
 
 final class CSSTokenizer {
-    
+
     private let buffer: String
     private let lastPosition: String.Index
-    
+
     private var currentPosition: String.Index
     private var currentLine: Int
-    
+
     private init(buffer: String) {
         self.buffer = buffer
         currentPosition = buffer.startIndex
         currentLine = 0
         lastPosition = buffer.endIndex
     }
-    
+
     static func tokenize(buffer: String) throws -> [CSSToken] {
         var tokens = [CSSToken]()
-        
+
         let tokenizer = CSSTokenizer(buffer: buffer.trimmingCharacters(in: .whitespacesAndNewlines))
         while !tokenizer.hasReachedEndOfBuffer() {
             var hasWhitespaceBefore = false
@@ -33,14 +33,14 @@ final class CSSTokenizer {
             }
             tokens.append(token)
         }
-        
-        return filterWhitespaceTokens(tokens);
+
+        return filterWhitespaceTokens(tokens)
     }
-    
+
     private func hasReachedEndOfBuffer() -> Bool {
         return currentPosition >= lastPosition
     }
-    
+
     private func getNextToken(hasWhitespaceBefore: inout Bool) throws -> CSSToken {
         var firstCharacter: Character
 
@@ -52,7 +52,7 @@ final class CSSTokenizer {
         while firstCharacter.isWhitespaceOrNewline
 
         hasWhitespaceBefore = countWhitespaces >= 1
-                
+
         switch firstCharacter {
         case "{":
             return CSSToken(line: currentLine, type: .openingBrace)
@@ -84,19 +84,19 @@ final class CSSTokenizer {
             return try getGeneralToken(firstCharacter: firstCharacter)
         }
     }
-    
+
     private func getLiteralString() throws -> CSSToken {
         var str = ""
-        
+
         var closed = false
         var previousCharacterWasSkipper = false
-        
+
         while !hasReachedEndOfBuffer() {
             var character = buffer[currentPosition]
             if character == "\n" {
                 currentLine += 1
             }
-            
+
             var appendCharacter = true
             if character == "\\" {
                 previousCharacterWasSkipper = true
@@ -122,33 +122,33 @@ final class CSSTokenizer {
                 moveToNextCharacter()
                 break
             }
-            
+
             moveToNextCharacter()
             if appendCharacter {
                 str.append(character)
             }
         }
-        
+
         if !closed {
             throw CSSTokenizerErrors.unexpectedEndOfBuffer
         }
-        
+
         return CSSToken(line: currentLine, type: .string, value: str, literalString: true)
     }
-    
+
     private func getGeneralToken(firstCharacter: Character) throws -> CSSToken {
         var tokenStr = String(firstCharacter)
         let firstCharacterIsHyphen = firstCharacter == "-"
-        
+
         let numberRE = try NSRegularExpression(pattern: "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$")
         var isNumber = tokenStr == "-" || (tokenStr.first!.isNumber && tokenStr.first!.isASCII)
-        
+
         while !hasReachedEndOfBuffer() {
             let character = buffer[currentPosition]
             if character == "\n" {
                 currentLine += 1
             }
-            
+
             var validCharacters: CharacterSet
             if isNumber {
                 if tokenStr == "-0" || tokenStr == "0" {
@@ -164,17 +164,17 @@ final class CSSTokenizer {
             else {
                 validCharacters = CharacterSet(charactersIn: "-").union(.lowercaseLetters).union(.uppercaseLetters).union(.decimalDigits)
             }
-            
+
             if !character.isContainedIn(characterSet: validCharacters) {
                 break
             }
-            
+
             tokenStr.append(character)
             isNumber = numberRE.firstMatch(in: tokenStr, range: tokenStr.fullNSRange()) != nil
-            
+
             moveToNextCharacter()
         }
-        
+
         if isNumber {
             return CSSToken(line: currentLine, type: .number, value: Float(tokenStr)!)
         }
@@ -182,7 +182,7 @@ final class CSSTokenizer {
             return CSSToken(line: currentLine, type: .string, value: tokenStr)
         }
     }
-    
+
     private func nextCharacter() -> Character {
         let character = buffer[currentPosition]
         if character == "\n" {
@@ -191,34 +191,34 @@ final class CSSTokenizer {
         moveToNextCharacter()
         return character
     }
-    
+
     private func moveToNextCharacter() {
         currentPosition = buffer.index(currentPosition, offsetBy: 1)
     }
-    
+
     private static func filterWhitespaceTokens(_ unfilteredTokens: [CSSToken]) -> [CSSToken] {
         var filteredTokens = [CSSToken]()
-        
+
         let discardableWhitespaceFollowers: [CSSTokenType] = [.openingBrace, .closingBrace, .comma, .closingParenthesis, .colon, .semiColon, .forwardSlash]
         let discardableWhitespacePredecessors: [CSSTokenType] = [.openingBrace, .closingBrace, .comma, .openingParenthesis, .closingParenthesis, .colon, .semiColon, .forwardSlash]
-        
-        for i in 0..<unfilteredTokens.count {
-            let token = unfilteredTokens[i]
-            
+
+        for tokenIndex in 0..<unfilteredTokens.count {
+            let token = unfilteredTokens[tokenIndex]
+
             var appendToken = true
             if token.type == .whitespace {
-                let followerDiscards = i < unfilteredTokens.count - 1 && discardableWhitespaceFollowers.contains(unfilteredTokens[i + 1].type)
-                let predecessorDiscards = i > 0 && discardableWhitespacePredecessors.contains(unfilteredTokens[i - 1].type)
+                let followerDiscards = tokenIndex < unfilteredTokens.count - 1 && discardableWhitespaceFollowers.contains(unfilteredTokens[tokenIndex + 1].type)
+                let predecessorDiscards = tokenIndex > 0 && discardableWhitespacePredecessors.contains(unfilteredTokens[tokenIndex - 1].type)
                 if followerDiscards || predecessorDiscards {
                     appendToken = false
                 }
             }
-            
+
             if appendToken {
                 filteredTokens.append(token)
             }
         }
         return filteredTokens
     }
-    
+
 }

@@ -1,32 +1,32 @@
 public protocol CSSConsumer {
-    
+
     var type: String { get }
     var identifier: String? { get }
     var classes: [String]? { get }
     var pseudoClasses: [String]? { get }
     var ancestor: CSSConsumer? { get }
-    
+
 }
 
 extension CSSConsumer {
-    
+
     public var pseudoClasses: [String]? { nil }
-    
+
     func isMatching(rule: CSSRule) -> Bool {
         guard self.isMatching(clause: rule.clause.lastMember) else { return false }
-        
+
         var previousAncestor: CSSConsumer = self
-        for i in 1..<rule.clause.members.count {
-            let memberIndex = rule.clause.members.count - 1 - i
+        for index in 1..<rule.clause.members.count {
+            let memberIndex = rule.clause.members.count - 1 - index
             guard let ancestor = previousAncestor.firstAncestorMatching(clause: rule.clause.members[memberIndex]) else { return false }
             previousAncestor = ancestor
         }
-        
+
         return true
     }
-    
+
     func isMatching(clause: CSSClauseMember) -> Bool {
-        switch (clause) {
+        switch clause {
         case .universalSelector:
             return true
         case .typeIdentifier(let type):
@@ -38,15 +38,10 @@ extension CSSConsumer {
         case .pseudoClassIdentifier(let pseudoClassName):
             return self.pseudoClasses?.contains(pseudoClassName) ?? false
         case .combinedIdentifier(let members):
-            for member in members {
-                if !self.isMatching(clause: member) {
-                    return false
-                }
-            }
-            return true
+            return members.allSatisfy { self.isMatching(clause: $0) }
         }
     }
-    
+
     func firstAncestorMatching(clause: CSSClauseMember) -> CSSConsumer? {
         var consumer = self.ancestor
         while consumer != nil {
@@ -57,5 +52,5 @@ extension CSSConsumer {
         }
         return nil
     }
-    
+
 }

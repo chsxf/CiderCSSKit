@@ -1,7 +1,6 @@
 import Foundation
 
-public enum CSSParserErrors : Error {
-    
+public enum CSSParserErrors: Error {
     case invalidToken(CSSToken)
     case malformedToken(CSSToken)
     case invalidKeyword(attributeToken: CSSToken, potentialKeyword: CSSToken)
@@ -17,38 +16,38 @@ public enum CSSParserErrors : Error {
     case tooFewShorthandAttributeValues(attributeToken: CSSToken, values: [CSSValue])
     case tooManyShorthandAttributeValues(attributeToken: CSSToken, values: [CSSValue])
     case unexpectedEnd
-    
 }
 
 enum AttributeContext {
-    
+
     case plain
     case hexadecimalColor
     case function
-    
+
 }
 
+// swiftlint:disable type_body_length
 public final class CSSParser {
-    
+
     private let rules = CSSRules()
     private let tokensToParse: [CSSToken]
     private let validationConfiguration: CSSValidationConfiguration
-    
+
     private var eligibleTokenTypes = [CSSTokenType]()
-    private var stringTokenValidRE: NSRegularExpression? = nil
+    private var stringTokenValidRE: NSRegularExpression?
     private var currentTokenIndex: Int = 0
-    
+
     private init(tokens: [CSSToken], validationConfiguration: CSSValidationConfiguration) {
         tokensToParse = tokens
         self.validationConfiguration = validationConfiguration
     }
-    
+
     public static func parse(contentsOf: URL, validationConfiguration: CSSValidationConfiguration? = nil) throws -> CSSRules {
         var buffer = try String(contentsOf: contentsOf)
         buffer = try filterOutComments(buffer: buffer)
         return try Self.parse(buffer: buffer, validationConfiguration: validationConfiguration)
     }
-    
+
     public static func parse(buffer: String, validationConfiguration: CSSValidationConfiguration? = nil) throws -> CSSRules {
         let filteredBuffer = try filterOutComments(buffer: buffer)
         let tokens = try CSSTokenizer.tokenize(buffer: filteredBuffer)
@@ -56,8 +55,8 @@ public final class CSSParser {
         try parser.parse()
         return parser.rules
     }
-    
-    public static func parse(ruleBlock: String, validationConfiguration: CSSValidationConfiguration? = nil) throws -> [String:[CSSValue]] {
+
+    public static func parse(ruleBlock: String, validationConfiguration: CSSValidationConfiguration? = nil) throws -> [String: [CSSValue]] {
         let filteredRuleBlock = try filterOutComments(buffer: ruleBlock)
         var tokens = try CSSTokenizer.tokenize(buffer: filteredRuleBlock)
         guard let lastToken = tokens.last else {
@@ -69,7 +68,7 @@ public final class CSSParser {
         let parser = CSSParser(tokens: tokens, validationConfiguration: validationConfiguration ?? CSSValidationConfiguration.default)
         return try parser.parseRuleBlock()
     }
-    
+
     public static func parse(attributeName: String, attributeValue: String, validationConfiguration: CSSValidationConfiguration? = nil) throws -> [CSSValue] {
         let filteredAttributeValue = try filterOutComments(buffer: attributeValue)
         var tokens = try CSSTokenizer.tokenize(buffer: filteredAttributeValue)
@@ -79,17 +78,17 @@ public final class CSSParser {
         if lastToken.type != .semiColon {
             tokens.append(CSSToken(line: lastToken.line, type: .semiColon))
         }
-        
+
         let parser = CSSParser(tokens: tokens, validationConfiguration: validationConfiguration ?? CSSValidationConfiguration.default)
         return try parser.parseAttributeValue(attributeToken: CSSToken(line: 0, type: .string, value: attributeName), level: 0)
     }
-    
+
     private static func filterOutComments(buffer: String) throws -> String {
         var filteredBuffer: String = ""
-        
+
         var inComment = false
         var inLiteralString = false
-        var previousCharacter: Character? = nil
+        var previousCharacter: Character?
         for char in buffer {
             if char == "/" {
                 if inLiteralString {
@@ -150,32 +149,32 @@ public final class CSSParser {
                 filteredBuffer.append(char)
             }
         }
-        
+
         if inComment || inLiteralString || previousCharacter != nil {
             throw CSSParserErrors.unexpectedEnd
         }
-        
+
         return filteredBuffer
     }
-    
+
     private func parse() throws {
         while !hasReachedEndOfTokens() {
             rules.addRules(try parseNextRules())
         }
     }
-    
+
     private func parseNextRules() throws -> [CSSRule] {
         var ruleTokens = [[CSSToken]]()
         var currentRuleTokens = [CSSToken]()
 
         eligibleTokenTypes = [.sharp, .dot, .colon, .star, .string]
         stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][0-9a-z_-]*$", options: .caseInsensitive)
-        
+
         var foundOpeningBrace = false
-        
+
         repeat {
             let token = try getNextToken()
-            
+
             switch token.type {
             case .star:
                 currentRuleTokens.append(token)
@@ -201,9 +200,9 @@ public final class CSSParser {
             }
         }
         while !foundOpeningBrace && !hasReachedEndOfTokens()
-        
+
         let attributes = try parseRuleBlock()
-        
+
         var newRules = [CSSRule]()
         for tokens in ruleTokens {
             let clause = try CSSClause(clauseTokens: tokens)
@@ -211,19 +210,19 @@ public final class CSSParser {
         }
         return newRules
     }
-    
-    private func parseRuleBlock() throws -> [String:[CSSValue]] {
+
+    private func parseRuleBlock() throws -> [String: [CSSValue]] {
         var foundClosingBrace = false
-        
-        var attributes = [String:[CSSValue]]()
-        var currentAttributeNameToken: CSSToken? = nil
-        
+
+        var attributes = [String: [CSSValue]]()
+        var currentAttributeNameToken: CSSToken?
+
         eligibleTokenTypes = [.closingBrace, .string]
         stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][a-z-]*$", options: .caseInsensitive)
-        
+
         repeat {
             let token = try getNextToken()
-            
+
             switch token.type {
             case .closingBrace:
                 foundClosingBrace = true
@@ -245,30 +244,28 @@ public final class CSSParser {
             }
         }
         while !foundClosingBrace
-        
-        return attributes;
+
+        return attributes
     }
-    
+
     private func parseAttributeValue(attributeToken: CSSToken, level: Int) throws -> [CSSValue] {
         var values = [CSSValue]()
-        
+
         eligibleTokenTypes = [.string, .sharp, .number]
         stringTokenValidRE = try NSRegularExpression(pattern: "^[a-z][0-9a-z-]*$", options: .caseInsensitive)
-        
-        var currentStringToken: CSSToken? = nil
+
+        var currentStringToken: CSSToken?
         var inHexadecimalColor = false
-        
         var foundEnd = false
-        
-        var numberPart: Float? = nil
-        
+        var numberPart: Float?
+
         repeat {
             let token = try getNextToken()
-            
+
             switch token.type {
             case .string:
                 eligibleTokenTypes = [.comma, .semiColon]
-                
+
                 if inHexadecimalColor {
                     values.append(try CSSHexColorHelpers.parseHexadecimalColor(token: token, hexadecimalString: token.value as! String))
                     inHexadecimalColor = false
@@ -291,7 +288,7 @@ public final class CSSParser {
                     currentStringToken = token
                     eligibleTokenTypes.append(.openingParenthesis)
                 }
-                
+
                 if level == 0 {
                     eligibleTokenTypes.append(.whitespace)
                 }
@@ -343,7 +340,7 @@ public final class CSSParser {
                 else if let number = numberPart {
                     values.append(.number(number))
                     numberPart = nil
-                    
+
                     if token.type == .whitespace {
                         eligibleTokenTypes.append(.forwardSlash)
                     }
@@ -357,14 +354,14 @@ public final class CSSParser {
                     values.append(.number(number))
                     numberPart = nil
                 }
-                
+
                 foundEnd = true
             case .forwardSlash:
                 if let number = numberPart {
                     values.append(.number(number))
                     numberPart = nil
                 }
-                
+
                 values.append(.separator)
                 eligibleTokenTypes = [.number, .string]
             default:
@@ -372,10 +369,10 @@ public final class CSSParser {
             }
         }
         while !foundEnd
-        
+
         return validationConfiguration.replaceKeywordsWithAssociatedValues(attributeToken.value as! String, values)
     }
-    
+
     private func getNextToken() throws -> CSSToken {
         if hasReachedEndOfTokens() {
             throw CSSParserErrors.unexpectedEnd
@@ -383,22 +380,20 @@ public final class CSSParser {
 
         let token = tokensToParse[currentTokenIndex]
         currentTokenIndex += 1
-
         if !eligibleTokenTypes.contains(token.type) {
             throw CSSParserErrors.invalidToken(token)
         }
-        
+
         if token.type == .string, !token.literalString, let value = token.value as? String, let stringTokenValidRE {
             if stringTokenValidRE.numberOfMatches(in: value, range: value.fullNSRange()) != 1 {
                 throw CSSParserErrors.malformedToken(token)
             }
         }
-        
+
         return token
     }
-    
-    private func hasReachedEndOfTokens() -> Bool {
-        return currentTokenIndex >= tokensToParse.count
-    }
-    
+
+    private func hasReachedEndOfTokens() -> Bool { currentTokenIndex >= tokensToParse.count }
+
 }
+// swiftlint:enable type_body_length

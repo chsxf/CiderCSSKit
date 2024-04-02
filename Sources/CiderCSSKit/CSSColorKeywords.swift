@@ -1,5 +1,5 @@
 public final class CSSColorKeywords {
-    
+
     static var colors: [String: CSSValue] = [
         "aliceblue": .color(CSSColorSpace.sRGB, [0.9412, 0.9725, 1.0000, 1.0]), // #F0F8FF
         "antiquewhite": .color(CSSColorSpace.sRGB, [0.9804, 0.9216, 0.8431, 1.0]), // #FAEBD7
@@ -150,9 +150,9 @@ public final class CSSColorKeywords {
         "yellow": .color(CSSColorSpace.sRGB, [1.0000, 1.0000, 0.0000, 1.0]), // #FFFF00
         "yellowgreen": .color(CSSColorSpace.sRGB, [0.6039, 0.8039, 0.1961, 1.0]) // #9ACD32
     ]
-    
+
     public static func getValue(for keyword: String) -> CSSValue? {
         return Self.colors[keyword]
     }
-    
+
 }

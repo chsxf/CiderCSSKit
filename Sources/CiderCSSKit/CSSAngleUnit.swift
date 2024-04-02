@@ -1,6 +1,6 @@
 /// Units used for angle values
 public enum CSSAngleUnit: String, CaseIterable {
-    
+
     /// Represents an angle in degrees. One full circle is `360deg`. Examples: `0deg`, `90deg`, `14.23deg`.
     case deg
     /// Represents an angle in radians. One full circle is 2π radians which approximates to `6.2832rad`. `1rad` is 180/π degrees. Examples: `0rad`, `1.0708rad`, `6.2832rad`.
@@ -9,7 +9,7 @@ public enum CSSAngleUnit: String, CaseIterable {
     case grad
     /// Represents an angle in a number of turns. One full circle is `1turn`. Examples: `0turn`, `0.25turn`, `1.2turn`.
     case turn
-    
+
     /// Converts an angle value to another unit
     ///
     /// Angle values are always specified with a unit in CSS. This method helps converting one unit to another with an optional amount.
@@ -28,7 +28,7 @@ public enum CSSAngleUnit: String, CaseIterable {
         let destinationFromDegrees = 1.0 / destinationUnit.toDegreesRatio()
         return selfInDegrees * destinationFromDegrees * amount
     }
-    
+
     private func toDegreesRatio() -> Float {
         switch self {
         case .deg:
@@ -41,5 +41,5 @@ public enum CSSAngleUnit: String, CaseIterable {
             return 360
         }
     }
-    
+
 }

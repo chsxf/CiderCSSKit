@@ -2,7 +2,7 @@ import XCTest
 import CiderCSSKit
 
 final class CSSTestHelpers {
-    
+
     class func assertColorValue(values: [CSSValue]?, expectedValue: CSSValue?, expectedCount: Int = 1, checkedIndex: Int = 0) throws {
         let unwrappedValue = try XCTUnwrap(values)
         XCTAssertEqual(unwrappedValue.count, expectedCount)
@@ -12,5 +12,5 @@ final class CSSTestHelpers {
         }
         XCTAssertEqual(unwrappedValue[checkedIndex], expectedValue)
     }
-    
+
 }

@@ -1,6 +1,6 @@
 final class CSSValidationConfigurationConstants {
-    
-    static let valueGroupingTypeByAttribute: [String:CSSValueGroupingType] = [
+
+    static let valueGroupingTypeByAttribute: [String: CSSValueGroupingType] = [
         CSSAttributes.backgroundColor: .single([.color]),
         CSSAttributes.borderImage: .shorthand([
             CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.borderImageSource),
@@ -59,5 +59,5 @@ final class CSSValidationConfigurationConstants {
         ], min: 1, max: 3, customExpansionMethod: CSSAttributeExpanders.expandTransformOrigin(attributeToken:values:)),
         CSSAttributes.verticalAlign: .single([.keyword("baseline"), .keyword("sub"), .keyword("super"), .keyword("text-top"), .keyword("text-bottom"), .keyword("middle"), .length(), .percentage])
     ]
-    
+
 }

@@ -1,5 +1,5 @@
 public enum CSSColorSpace: String {
-    
+
     case a98RGB = "a98-rgb"
     case cieLab
     case displayP3 = "display-p3"
@@ -11,5 +11,5 @@ public enum CSSColorSpace: String {
     case XYZ = "xyz"
     case XYZd50 = "xyz-d50"
     case XYZd65 = "xyz-d65"
-    
+
 }

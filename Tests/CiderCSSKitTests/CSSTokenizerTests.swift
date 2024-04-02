@@ -5,20 +5,22 @@ import XCTest
 final class CSSTokenizerTests: XCTestCase {
 
     private static var buffer: String!
-    
+
     override class func setUp() {
+        // swiftlint:disable force_try
         let dataURL = Bundle.module.url(forResource: "TokenizerTests", withExtension: "ckcss")
         XCTAssertNotNil(dataURL)
         Self.buffer = try! String(contentsOf: dataURL!)
+        // swiftlint:enable force_try
     }
-    
+
     override class func tearDown() {
         Self.buffer = nil
     }
-    
+
     func testValidTokens() throws {
         let tokens = try CSSTokenizer.tokenize(buffer: Self.buffer)
-        
+
         let expectedTokens = [
             CSSToken(line: 0, type: .star),
             CSSToken(line: 0, type: .openingBrace),
@@ -100,19 +102,19 @@ final class CSSTokenizerTests: XCTestCase {
             CSSToken(line: 18, type: .semiColon),
             CSSToken(line: 19, type: .closingBrace)
         ]
-        
+
         XCTAssertEqual(tokens.count, expectedTokens.count)
 
-        for i in 0..<expectedTokens.count {
-            print(tokens[i])
-            XCTAssertEqual(tokens[i], expectedTokens[i])
+        for index in 0..<expectedTokens.count {
+            print(tokens[index])
+            XCTAssertEqual(tokens[index], expectedTokens[index])
         }
     }
-    
+
     func testStandaloneAttributeValueTokenization() throws {
         let attributeValue = "sprite(\"test\", \"fill\")"
         let tokens = try CSSTokenizer.tokenize(buffer: attributeValue)
-        
+
         let expectedTokens = [
             CSSToken(line: 0, type: .string, value: "sprite"),
             CSSToken(line: 0, type: .openingParenthesis),
@@ -121,11 +123,11 @@ final class CSSTokenizerTests: XCTestCase {
             CSSToken(line: 0, type: .string, value: "fill", literalString: true),
             CSSToken(line: 0, type: .closingParenthesis)
         ]
-        
+
         XCTAssertEqual(tokens.count, expectedTokens.count)
 
-        for i in 0..<expectedTokens.count {
-            XCTAssertEqual(tokens[i], expectedTokens[i])
+        for index in 0..<expectedTokens.count {
+            XCTAssertEqual(tokens[index], expectedTokens[index])
         }
     }
 
