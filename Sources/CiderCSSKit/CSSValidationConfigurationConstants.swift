@@ -24,7 +24,18 @@ final class CSSValidationConfigurationConstants {
             CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.lineHeight, optional: true, afterSeparator: true, defaultValue: .number(1.2)),
             CSSValueShorthandGroupDescriptor(subAttributeName: CSSAttributes.fontFamily)
         ]),
-        CSSAttributes.fontFamily: .multiple([.string, .keyword("sans-serif"), .keyword("serif"), .keyword("monospace")], min: 1),
+        CSSAttributes.fontFamily: .multiple([
+            .string,
+            .keyword("sans-serif"),
+            .keyword("serif"),
+            .keyword("monospace"),
+            .keyword("cursive"),
+            .keyword("fantasy"),
+            .keyword("system-ui"),
+            .keyword("math"),
+            .keyword("emoji"),
+            .keyword("fangsong")
+        ], min: 1),
         CSSAttributes.fontSize: .single([.length(), .percentage]),
         CSSAttributes.fontStretch: .single([
             .percentage,

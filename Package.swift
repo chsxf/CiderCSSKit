@@ -32,6 +32,7 @@ let package = Package(
                 .copy("ParserTestsWithInvalidComment.ckcss"),
                 .copy("ParserCustomTests.ckcss"),
                 .copy("ParserInvalidCustomTests.ckcss"),
+                .copy("ParserInvalidCustomTests2.ckcss"),
                 .copy("ParserRuleBlockTests.ckcss")
             ])
     ]

@@ -8,6 +8,7 @@ final class CSSParserTests: XCTestCase {
     private static var bufferWithInvalidComment: String!
     private static var bufferCustom: String!
     private static var bufferInvalidCustom: String!
+    private static var bufferInvalidCustom2: String!
     private static var bufferRuleBlock: String!
 
     override class func setUp() {
@@ -31,6 +32,10 @@ final class CSSParserTests: XCTestCase {
         let invalidCustomDataURL = Bundle.module.url(forResource: "ParserInvalidCustomTests", withExtension: "ckcss")
         XCTAssertNotNil(invalidCustomDataURL)
         Self.bufferInvalidCustom = try! String(contentsOf: invalidCustomDataURL!)
+
+        let invalidCustomDataURL2 = Bundle.module.url(forResource: "ParserInvalidCustomTests2", withExtension: "ckcss")
+        XCTAssertNotNil(invalidCustomDataURL2)
+        Self.bufferInvalidCustom2 = try! String(contentsOf: invalidCustomDataURL2!)
 
         let ruleBlockDataURL = Bundle.module.url(forResource: "ParserRuleBlockTests", withExtension: "ckcss")
         XCTAssertNotNil(ruleBlockDataURL)
@@ -254,6 +259,17 @@ final class CSSParserTests: XCTestCase {
         }
         catch CSSParserErrors.unknownFunction(let functionToken) {
             XCTAssertEqual(functionToken, CSSToken(line: 1, type: .string, value: "foo"))
+        }
+    }
+
+    func testCustomValidationFailing2() throws {
+        do {
+            _ = try CSSParser.parse(buffer: Self.bufferInvalidCustom2, validationConfiguration: StubInvalidCSSValidationConfiguration())
+            XCTFail("Error should be raised")
+        }
+        catch CSSParserErrors.invalidKeyword(let attributeToken, let potentialKeyword) {
+            XCTAssertEqual(attributeToken, CSSToken(line: 1, type: .string, value: "font-family"))
+            XCTAssertEqual(potentialKeyword, CSSToken(line: 1, type: .string, value: "invalid-keyword"))
         }
     }
 
