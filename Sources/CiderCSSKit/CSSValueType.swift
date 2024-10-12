@@ -48,6 +48,9 @@ public enum CSSValueType: Equatable {
             if case let .length(_, valueUnit) = value {
                 return expectedUnit == nil || expectedUnit! == valueUnit
             }
+            else if case .number(let numberValue) = value {
+                return numberValue == 0
+            }
 
         case .number:
             if case .number = value {

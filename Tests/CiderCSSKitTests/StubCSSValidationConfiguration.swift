@@ -11,6 +11,7 @@ class StubCSSValidationConfiguration: CSSValidationConfiguration {
         var base = super.valueGroupingTypeByAttribute
         base["background"] = .multiple([.color], min: 1)
         base["unit-tester"] = .single([.angle, .length()])
+        base["anchored-position"] = .multiple([.length()], min: 2, max: 2)
         return base
     }
 

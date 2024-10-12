@@ -12,3 +12,19 @@
     font: italic small-caps bold condensed 12px / 18px "Times New Roman", serif;
     vertical-align: middle;
 }
+
+#anchored-position-1 {
+    anchored-position: 0 10px;
+}
+
+#anchored-position-2 {
+    anchored-position: 10px 0;
+}
+
+#anchored-position-3 {
+    anchored-position: 0 0;
+}
+
+#anchored-position-4 {
+    anchored-position: 10px 10px;
+}
