@@ -68,7 +68,8 @@ final class CSSValidationConfigurationConstants {
             .keyword("right", associatedValue: .percentage(100)),
             .keyword("top", associatedValue: .percentage(100))
         ], min: 1, max: 3, customExpansionMethod: CSSAttributeExpanders.expandTransformOrigin(attributeToken:values:)),
-        CSSAttributes.verticalAlign: .single([.keyword("baseline"), .keyword("sub"), .keyword("super"), .keyword("text-top"), .keyword("text-bottom"), .keyword("middle"), .length(), .percentage])
+        CSSAttributes.verticalAlign: .single([.keyword("baseline"), .keyword("sub"), .keyword("super"), .keyword("text-top"), .keyword("text-bottom"), .keyword("middle"), .length(), .percentage]),
+        CSSAttributes.zIndex: .single([.keyword("auto"), .number])
     ]
 
 }

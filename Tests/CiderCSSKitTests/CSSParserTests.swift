@@ -162,7 +162,7 @@ final class CSSParserTests: XCTestCase {
 
         let stub = StubCSSConsumer(type: "button", identifier: "test")
         var allValues = parsedRules.getAllValues(for: stub)
-        XCTAssertEqual(allValues.count, 21)
+        XCTAssertEqual(allValues.count, 22)
 
         var expectedAttributes: [String: [CSSValue]] = [
             CSSAttributes.padding: [ .length(10, .px), .length(20, .px), .length(10, .px), .length(20, .px) ],
@@ -185,7 +185,9 @@ final class CSSParserTests: XCTestCase {
             CSSAttributes.borderImageSlice: [ .number(27), .number(23), .number(27), .number(23) ],
             CSSAttributes.borderImageWidth: [ .length(50, .px), .length(30, .px), .length(50, .px), .length(30, .px) ],
             CSSAttributes.borderImageOutset: [ .length(1, .rem), .length(1, .rem), .length(1, .rem), .length(1, .rem) ],
-            CSSAttributes.borderImageRepeat: [ .keyword("stretch"), .keyword("stretch") ]
+            CSSAttributes.borderImageRepeat: [ .keyword("stretch"), .keyword("stretch") ],
+
+            CSSAttributes.zIndex: [.number(10)]
         ]
         for expectedAttribute in expectedAttributes {
             let attributeValue = allValues[expectedAttribute.key]
