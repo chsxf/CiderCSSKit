@@ -15,14 +15,17 @@
 
 #anchored-position-1 {
     anchored-position: 0 10px;
+    visibility: visible;
 }
 
 #anchored-position-2 {
     anchored-position: 10px 0;
+    visibility: hidden;
 }
 
 #anchored-position-3 {
     anchored-position: 0 0;
+    visibility: collapse;
 }
 
 #anchored-position-4 {

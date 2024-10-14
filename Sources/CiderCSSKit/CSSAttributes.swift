@@ -33,6 +33,8 @@ public final class CSSAttributes {
 
     public static let verticalAlign = "vertical-align"
 
+    public static let visibility = "visibility"
+
     public static let zIndex = "z-index"
 
 }
