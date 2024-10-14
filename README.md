@@ -51,6 +51,8 @@ The list of supported attributes is fairly limited for now but will expand over 
 - `text-align`
 - `transform-origin`
 - `vertical-align`
+- `visibility`
+- `z-index`
 
 ## Planned improvements
 
