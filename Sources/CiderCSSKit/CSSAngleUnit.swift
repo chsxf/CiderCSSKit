@@ -1,5 +1,5 @@
 /// Units used for angle values
-public enum CSSAngleUnit: String, CaseIterable {
+public enum CSSAngleUnit: String, CaseIterable, Sendable {
 
     /// Represents an angle in degrees. One full circle is `360deg`. Examples: `0deg`, `90deg`, `14.23deg`.
     case deg

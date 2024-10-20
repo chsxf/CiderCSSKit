@@ -1,6 +1,6 @@
-public final class CSSColorKeywords {
+public actor CSSColorKeywords {
 
-    static var colors: [String: CSSValue] = [
+    static let colors: [String: CSSValue] = [
         "aliceblue": .color(CSSColorSpace.sRGB, [0.9412, 0.9725, 1.0000, 1.0]), // #F0F8FF
         "antiquewhite": .color(CSSColorSpace.sRGB, [0.9804, 0.9216, 0.8431, 1.0]), // #FAEBD7
         "aqua": .color(CSSColorSpace.sRGB, [0.0000, 1.0000, 1.0000, 1.0]), // #00FFFF

@@ -1,4 +1,4 @@
-public enum CSSColorSpace: String {
+public enum CSSColorSpace: String, Sendable {
 
     case a98RGB = "a98-rgb"
     case cieLab

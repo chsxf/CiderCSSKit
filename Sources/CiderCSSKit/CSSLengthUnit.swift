@@ -2,7 +2,7 @@ public enum CSSLengthUnitErrors: Error {
     case notAbsoluteLength(CSSLengthUnit)
 }
 
-public enum CSSLengthUnit: String, CaseIterable {
+public enum CSSLengthUnit: String, CaseIterable, Sendable {
     // swiftlint:disable identifier_name
     case ch
     case cm

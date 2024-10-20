@@ -2,7 +2,7 @@ public typealias CSSAttributeExpansion = (CSSToken, [CSSValue]) throws -> [Strin
 
 open class CSSValidationConfiguration {
 
-    static let `default` = CSSValidationConfiguration()
+    static var `default`: CSSValidationConfiguration { CSSValidationConfiguration() }
 
     public init() { }
 

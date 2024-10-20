@@ -1,4 +1,4 @@
-public enum CSSTokenType {
+public enum CSSTokenType: Sendable {
 
     case closingBrace
     case closingParenthesis
@@ -18,14 +18,14 @@ public enum CSSTokenType {
 
 }
 
-public struct CSSToken: Equatable {
+public struct CSSToken: Equatable, Sendable {
 
     let line: Int
     public let type: CSSTokenType
-    public let value: Any?
+    public let value: (any Sendable)?
     public let literalString: Bool
 
-    init(line: Int, type: CSSTokenType, value: Any? = nil, literalString: Bool = false) {
+    init(line: Int, type: CSSTokenType, value: (any Sendable)? = nil, literalString: Bool = false) {
         self.line = line
         self.type = type
         self.value = value
