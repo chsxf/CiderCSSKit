@@ -11,7 +11,7 @@ final class CSSParserTests: XCTestCase {
     private static var bufferInvalidCustom2: String!
     private static var bufferRuleBlock: String!
 
-    override class func setUp() {
+    override static func setUp() {
         // swiftlint:disable force_try
         let dataURL = Bundle.module.url(forResource: "ParserTests", withExtension: "ckcss")
         XCTAssertNotNil(dataURL)
@@ -43,7 +43,7 @@ final class CSSParserTests: XCTestCase {
         // swiftlint:enable force_try
     }
 
-    override class func tearDown() {
+    override static func tearDown() {
         Self.buffer = nil
         Self.bufferCustom = nil
         Self.bufferRuleBlock = nil

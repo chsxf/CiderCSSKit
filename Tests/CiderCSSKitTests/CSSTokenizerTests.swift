@@ -6,7 +6,7 @@ final class CSSTokenizerTests: XCTestCase {
 
     private static var buffer: String!
 
-    override class func setUp() {
+    override static func setUp() {
         // swiftlint:disable force_try
         let dataURL = Bundle.module.url(forResource: "TokenizerTests", withExtension: "ckcss")
         XCTAssertNotNil(dataURL)
@@ -14,7 +14,7 @@ final class CSSTokenizerTests: XCTestCase {
         // swiftlint:enable force_try
     }
 
-    override class func tearDown() {
+    override static func tearDown() {
         Self.buffer = nil
     }
 

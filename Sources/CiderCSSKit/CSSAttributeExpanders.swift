@@ -1,6 +1,6 @@
 public final class CSSAttributeExpanders {
 
-    public class func twoValuesExpander(attributeToken: CSSToken, values: [CSSValue]) throws -> [String: [CSSValue]] {
+    public static func twoValuesExpander(attributeToken: CSSToken, values: [CSSValue]) throws -> [String: [CSSValue]] {
         var expandedValues = [CSSValue](values)
 
         if expandedValues.count == 1 {
@@ -11,7 +11,7 @@ public final class CSSAttributeExpanders {
         return [ attributeName: expandedValues ]
     }
 
-    public class func fourValuesExpander(attributeToken: CSSToken, values: [CSSValue]) throws -> [String: [CSSValue]] {
+    public static func fourValuesExpander(attributeToken: CSSToken, values: [CSSValue]) throws -> [String: [CSSValue]] {
         var expandedValues = [CSSValue](values)
 
         if expandedValues.count == 1 {
@@ -28,7 +28,7 @@ public final class CSSAttributeExpanders {
         return [ attributeName: expandedValues ]
     }
 
-    class func expandPadding(attributeToken: CSSToken, values: [CSSValue]) throws -> [String: [CSSValue]] {
+    static func expandPadding(attributeToken: CSSToken, values: [CSSValue]) throws -> [String: [CSSValue]] {
         var result = try fourValuesExpander(attributeToken: attributeToken, values: values)
 
         let expanded = result[CSSAttributes.padding]!
@@ -40,7 +40,7 @@ public final class CSSAttributeExpanders {
         return result
     }
 
-    class func expandTransformOrigin(attributeToken: CSSToken, values: [CSSValue]) throws -> [String: [CSSValue]] {
+    static func expandTransformOrigin(attributeToken: CSSToken, values: [CSSValue]) throws -> [String: [CSSValue]] {
         var expanded: [CSSValue]
 
         switch values.count {

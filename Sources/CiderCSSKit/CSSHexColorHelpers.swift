@@ -1,6 +1,6 @@
 final class CSSHexColorHelpers {
 
-    class func parseHexadecimalColor(token: CSSToken, hexadecimalString: String) throws -> CSSValue {
+    static func parseHexadecimalColor(token: CSSToken, hexadecimalString: String) throws -> CSSValue {
         switch hexadecimalString.count {
         case 3:
             return try parseHexadecimalColor(token: token, hexadecimalString: hexadecimalString, digitsPerComponent: 1, hasAlpha: false)
@@ -15,7 +15,7 @@ final class CSSHexColorHelpers {
         }
     }
 
-    class private func parseHexadecimalColor(token: CSSToken, hexadecimalString: String, digitsPerComponent: Int, hasAlpha: Bool) throws -> CSSValue {
+    static private func parseHexadecimalColor(token: CSSToken, hexadecimalString: String, digitsPerComponent: Int, hasAlpha: Bool) throws -> CSSValue {
         let startIndex = hexadecimalString.startIndex
 
         let greenStartIndex = hexadecimalString.index(startIndex, offsetBy: 1 * digitsPerComponent)
